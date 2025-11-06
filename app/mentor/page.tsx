@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useMemo } from 'react'
+import React, { Suspense, useEffect, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { SolidWhiteBtn, OutlineBtn } from '../components/btns'
@@ -27,9 +27,23 @@ interface MentorData {
   }
 }
 
-const Mentor = () => {
+// Loading component for Suspense fallback
+function MentorLoadingState() {
+  return (
+    <div className='2xl:pt-64 xl:pt-40 lg:pt-28 pt-32 pb-12 px-5 lg:px-88 min-h-screen flex items-center justify-center'>
+      <div className='text-center'>
+        <div className='w-16 h-16 border-4 border-[#DBFF00] border-t-transparent rounded-full animate-spin mx-auto mb-4'></div>
+        <p className='text-2xl text-gray-400'>Loading mentor profile...</p>
+      </div>
+    </div>
+  )
+}
+
+// Separate component that uses useSearchParams
+function MentorContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  
   const mentor = useMemo<MentorData | null>(() => {
     const mentorData = searchParams.get('data')
     if (!mentorData) return null
@@ -62,11 +76,7 @@ const Mentor = () => {
   }, [])
 
   if (!mentor) {
-    return (
-      <div className='2xl:pt-64 xl:pt-40 lg:pt-28 pt-32 pb-12 px-5 lg:px-88 min-h-screen flex items-center justify-center'>
-        <p className='text-2xl text-gray-400'>Loading mentor profile...</p>
-      </div>
-    )
+    return <MentorLoadingState />
   }
 
   return (
@@ -292,4 +302,13 @@ const Mentor = () => {
   )
 }
 
-export default Mentor
+// Main component with Suspense wrapper
+const Mentor = () => {
+  return (
+    <Suspense fallback={<MentorLoadingState />}>
+      <MentorContent />
+    </Suspense>
+  )
+}
+
+export default Mentor 
