@@ -54,7 +54,9 @@ const Navbar = () => {
               {/* Desktop Menu */}
               <div className="hidden md:flex text-[#b6b6b6] items-center space-x-4">
                 <div>
+                  <Link href='/mentors'>
                     <SolidMainBtn title='Browse Mentors'/>
+                  </Link>
                 </div>
                 <div>
                     <OutlineBtn title='About us'/>
@@ -109,15 +111,17 @@ const Navbar = () => {
         {/* Drawer Header */}
         <div className="flex justify-between items-center p-4 border-b border-white/5 bg-black/5">
           <div className=''>
-            <Image 
-                src={'/assets/betamindlogo.png'}
-                alt='Betamind logo'
-                width={120}
-                height={0}
-                priority
-                className=''
-                unoptimized
-            />
+            <Link href='/'>
+              <Image 
+                  src={'/assets/betamindlogo.png'}
+                  alt='Betamind logo'
+                  width={120}
+                  height={0}
+                  priority
+                  className=''
+                  unoptimized
+              />
+            </Link>
           </div>
           <button
             onClick={() => setIsOpen(false)}
@@ -130,10 +134,15 @@ const Navbar = () => {
 
         {/* Drawer Content */}
         <div className="overflow-y-auto h-[calc(100%-4rem)] p-4">
-          {/* Mobile Auth Buttons */}
           <div className="space-y-3 pb-4 mb-4 border-b border-white/5">
-            <SolidMainBtn title='Browse Mentors'/>
-            <OutlineBtn title='About us'/>
+            <div>
+              <Link href='/mentors'>
+                <SolidMainBtn title='Browse Mentors'/>
+              </Link>
+            </div>
+            <div>
+              <OutlineBtn title='About us'/>
+            </div>
           </div>
 
           {/* Mobile Categories */}

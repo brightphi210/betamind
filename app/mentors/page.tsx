@@ -6,7 +6,7 @@ import Link from 'next/link'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { mentors } from '../mocks/mentors'
-import { SolidBlackBtn } from '../components/btns'
+import { SolidBlackBtn, SolidMainBtn } from '../components/btns'
 
 const Mentors = () => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -82,12 +82,12 @@ const Mentors = () => {
           </svg>
         </div>
 
-        <div className='relative lg:px-88 px-5 py-24 pb-0 lg:py-32 lg:pt-56'>
+        <div className='relative lg:px-88 px-5 py-24 pb-5 lg:py-32 lg:pt-56'>
           <div className='max-w-4xl mx-auto text-center'>
             <h1 data-aos="fade-up" data-aos-duration="500" className='text-5xl lg:text-5xl font-bold mb-6'>
               Find Your Perfect <span className='text-[#DBFF00]'>Mentor</span>
             </h1>
-            <p data-aos="fade-up" data-aos-duration="600" className='text-base text-gray-300 mb-10'>
+            <p data-aos="fade-up" data-aos-duration="600" className='text-base text-gray-300 mb-5'>
               Connect with experienced professionals <br className='lg:block hidden'/> across various fields and accelerate your career growth
             </p>
             
@@ -182,7 +182,7 @@ const Mentors = () => {
                     data-aos="fade-up"
                     data-aos-duration={500}
                     data-aos-delay={index * 50}
-                    className='bg-amber-50 text-black rounded-2xl overflow-hidden hover:shadow-2xl '
+                    className='bg-[#0e1b14] text-white rounded-2xl overflow-hidden hover:shadow-2xl '
                   >
                     <div className='lg:h-[280px] h-[350px] p-5 rounded-2xl overflow-hidden relative'>
                       <Image
@@ -203,14 +203,14 @@ const Mentors = () => {
                     <div className='p-5 space-y-3'>
                       <div>
                         <h3 className='text-xl font-bold'>{mentor.fullName}</h3>
-                        <p className='text-sm text-gray-600'>{mentor.title}</p>
+                        <p className='text-sm text-gray-400'>{mentor.title}</p>
                       </div>
 
                       <ul className='flex flex-wrap gap-2'>
                         {mentor.skills.slice(0, 3).map((skill, idx) => (
                           <li
                             key={idx}
-                            className='bg-none border border-emerald-900 text-emerald-900 text-xs rounded-full py-1 px-3'
+                            className='bg-none border border-emerald-200 text-emerald-200 text-xs rounded-full py-1 px-3'
                           >
                             {skill}
                           </li>
@@ -232,7 +232,7 @@ const Mentors = () => {
                             }
                           }}
                         >
-                          <SolidBlackBtn title='View Profile' />
+                          <SolidMainBtn title='View Profile' />
                         </Link>
                       </div>
                     </div>

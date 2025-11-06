@@ -6,9 +6,9 @@ export const mentors = [
         skills: ['AI', 'Mobile Engineering', 'Web. Development', 'Software Architecture', 'Builder', 'Mentor'],
         bio: 'Am Software Developer with 3+ years of experience, I develops scalable web and mobile applications. Focuses on creating clean, efficient solutions that promotes businesses.',
         imgUrl: '/assets/mentorme1.png',
-        twitter: 'https://twitter.com/',
-        linkedin: 'https://linkedin.com/',
-        instagram: 'https://instagram.com/',
+        twitter: 'https://x.com/chibuzorphilip7',
+        linkedin: 'https://www.linkedin.com/in/chibuzor-philip12/',
+        // instagram: 'https://instagram.com/',
     },
 
     {
@@ -19,7 +19,7 @@ export const mentors = [
         imgUrl: '/assets/mentorme2.jpg',
         twitter: 'https://twitter.com/',
         linkedin: 'https://linkedin.com/',
-        instagram: 'https://instagram.com/',
+        // instagram: 'https://instagram.com/', 
     },
 
     {
@@ -30,19 +30,19 @@ export const mentors = [
         imgUrl: '/assets/mentorme3s.jpg',
         twitter: 'https://twitter.com/',
         linkedin: 'https://linkedin.com/',
-        instagram: 'https://instagram.com/',
+        // instagram: 'https://instagram.com/',
     }, 
 
-    {
-        fullName: 'Desire Irechukwu',
-        title: 'Community Manager @Betamind @LetsBuildDao',
-        skills: ['Community Management', 'Social Media', 'Marketing', 'Content Creation', 'Mentor'],
-        bio: 'content writer, community manager, a baker with a passion for Web3 and music. I create engaging content and build communities that connect innovation, creativity and culture.',
-        imgUrl: '/assets/mentorme5.jpg',
-        twitter: 'https://twitter.com/',
-        linkedin: 'https://linkedin.com/',
-        instagram: 'https://instagram.com/',
-    },
+    // {
+    //     fullName: 'Desire Irechukwu',
+    //     title: 'Community Manager @Betamind @LetsBuildDao',
+    //     skills: ['Community Management', 'Social Media', 'Marketing', 'Content Creation', 'Mentor'],
+    //     bio: 'content writer, community manager, a baker with a passion for Web3 and music. I create engaging content and build communities that connect innovation, creativity and culture.',
+    //     imgUrl: '/assets/mentorme5.jpg',
+    //     twitter: 'https://twitter.com/',
+    //     linkedin: 'https://linkedin.com/',
+    //     instagram: 'https://instagram.com/',
+    // },
 
     {
         fullName: 'Igboeche Johnfavour',
@@ -52,6 +52,6 @@ export const mentors = [
         imgUrl: '/assets/mentorme6.jpg',
         twitter: 'https://twitter.com/',
         linkedin: 'https://linkedin.com/',
-        instagram: 'https://instagram.com/',
+        // instagram: 'https://instagram.com/',
     }
-]
+]   

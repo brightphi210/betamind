@@ -43,8 +43,8 @@ const Home = () => {
                 fits your <span className='text-[#DBFF00] font-bold'> Budget</span>
               </h2>
               <p data-aos="fade-up" data-aos-duration="200" className='2xl:w-[30%] xl:w-[55%] lg:w-[80%] md:w-[80%] w-full mx-auto pt-4 text-base sm:text-base lg:text-lg text-gray-300 leading-relaxed'>
-                Betamind is a hub where minds come to get better, through Mentorship. 
-                We make mentorship easy so people can get affordable mentorship
+                Betamind is a hub where minds grow through mentorship. 
+                We make mentorship accessible and affordable for everyone.
               </p>
             </div>
 
@@ -83,9 +83,9 @@ const Home = () => {
         </div>
       </div>
 
-      <div className='flex lg:flex-row flex-col lg:gap-0 gap-6 w-full items-center lg:px-88 px-5 justify-center m-auto p-10 py-24 bg-[#02160b]'>
+      <div className='flex lg:flex-row flex-col lg:gap-0 gap-6 w-full items-center 2xl:px-88 xl:px-40 lg:px-40 px-5 justify-center m-auto p-10 py-24 bg-[#02160b]'>
         <div>
-          <h2 data-aos="fade-up" data-aos-duration="200" className='lg:text-5xl text-4xl'>Why the <span className='text-[#DBFF00] font-bold'>Right</span> Mentor Changes <span className='text-[#DBFF00] font-bold'>Everything !</span></h2>
+          <h2 data-aos="fade-up" data-aos-duration="200" className='2xl:text-5xl xl:text-4xl lg:text-4xl text-4xl'>Why the <span className='text-[#DBFF00] font-bold'>Right</span> Mentor Changes <span className='text-[#DBFF00] font-bold'>Everything !</span></h2>
           <p data-aos="fade-up" data-aos-duration="300" className='text-base pt-4 lg:w-[90%] w-full'>
             The right mentor provides guidance, clarity, & accountability 
             that accelerate personal & professional growth. 
@@ -93,7 +93,9 @@ const Home = () => {
             & unlock opportunities you might not find alone.
           </p>
           <div data-aos="fade-up" data-aos-duration="300" className='w-fit pt-5'>
-            <SolidWhiteBtn title='Browse Mentors'/>
+            <Link href={'/mentors'}>
+              <SolidWhiteBtn title='Browse Mentors'/>
+            </Link>
           </div>
         </div>
 
@@ -111,20 +113,22 @@ const Home = () => {
         </div>
       </div>
 
-      <div className='lg:px-88 px-4 pt-10'>
+      <div className='2xl:px-88 xl:px-40 lg:px-40 px-4 pt-10'>
         <div className='bg-[#DBFF00] lg:grid grid-cols-3 flex flex-col lg:gap-10 gap-5 items-center rounded-3xl text-black lg:p-10 p-7'>
           <div className='col-span-2'>
-              <h2 data-aos="fade-up" data-aos-duration="200" className='lg:text-5xl text-4xl font-bold pb-5'>Why Choose Betamind</h2>
-              <p data-aos="fade-up" data-aos-duration="300" className='lg:w-[90%] w-full pb-2'>
-                Betamind makes mentorship simple, accessible, and affordable. 
-                We connect you with experienced mentors who understand your goals, 
-                guide your growth, and help you achieve real results. 
-                Whether youre starting out or leveling up, 
-                Betamind ensures you get the right guidance—without the high costs or barriers.
-              </p>
-              <div data-aos="fade-up" data-aos-duration="800" className='w-fit pt-5'>
+            <h2 data-aos="fade-up" data-aos-duration="200" className='2xl:text-5xl xl:text-4xl lg:text-4xl text-4xl font-bold pb-5'>Why Choose Betamind</h2>
+            <p data-aos="fade-up" data-aos-duration="300" className='lg:w-[90%] w-full pb-2'>
+              Betamind makes mentorship simple, accessible, and affordable. 
+              We connect you with experienced mentors who understand your goals, 
+              guide your growth, and help you achieve real results. 
+              Whether youre starting out or leveling up, 
+              Betamind ensures you get the right guidance—without the high costs or barriers.
+            </p>
+            <div data-aos="fade-up" data-aos-duration="800" className='w-fit pt-5'>
+              <Link href={'/about'}>
                 <SolidBlackBtn title='About Betamind'/>
-              </div>
+              </Link>
+            </div>
           </div>
           <div data-aos="fade-up" data-aos-duration="300" className='col-span-1'>
             <Image 
@@ -141,16 +145,18 @@ const Home = () => {
         </div>
       </div>
 
-      <div className='flex lg:flex-row flex-col-reverse lg:gap-0 gap-0 w-full lg:px-88 px-4 justify-center m-auto mt-10 p-10 bg-[#02160b]'>
-        <div className='bg-white text-black w-full lg:p-10 p-5 lg:rounded-l-3xl rounded-b-2xl'>
-          <h2 data-aos="fade-up" data-aos-duration="200" className='lg:text-5xl text-4xl'>No strings attached, fully vetted <span className='text-[#1b3b01] font-bold'>Mentors</span>.</h2>
-          <p className='text-base py-5' data-aos="fade-up" data-aos-duration="300">Try your first call for free with every mentor you are meeting. Cancel anytime, no questions asked.</p>
+     <div className='flex lg:flex-row flex-col-reverse lg:gap-0 gap-0 w-full 2xl:px-88 xl:px-40 lg:px-40 px-4 justify-center m-auto mt-10 p-10 bg-[#02160b]'>
+        <div className='bg-white text-black w-full lg:h-auto h-auto lg:p-10 p-5 2xl:rounded-l-3xl xl:rounded-l-3xl lg:rounded-l-3xl lg:rounded-b-none rounded-b-2xl'>
+          <h2 data-aos="fade-up" data-aos-duration="200" className='2xl:text-5xl xl:text-4xl lg:text-4xl text-4xl'>No strings attached, fully vetted <span className='text-[#1b3b01] font-bold'>Mentors</span>.</h2>
+          <p className='text-base py-5' data-aos="fade-up" data-aos-duration="300">Connect directly with trusted mentors — no hidden fees, no commitments, just real guidance when you need it.</p>
           <div data-aos="fade-up" data-aos-duration="300" className='w-fit pt-5'>
-            <SolidBlackBtn title='Get a verified Mentor'/>
+            <Link href={'/'}>
+              <SolidBlackBtn title='Get started here'/>
+            </Link>
           </div>
         </div>
 
-        <div className='w-full '>
+        <div className='w-full h-full lg:h-auto overflow-hidden'>
           <Image 
             src={'/assets/nightfall.webp'}
             alt='This is handshake'
@@ -159,17 +165,19 @@ const Home = () => {
             priority
             quality={100}
             unoptimized
-            className='w-full lg:rounded-r-3xl rounded-t-2xl'
+            className='w-full h-full object-cover 2xl:rounded-r-3xl xl:rounded-r-3xl lg:rounded-r-3xl lg:rounded-t-none rounded-t-2xl'
           />
         </div>
       </div>
 
-      <div className=' lg:px-88 px-4 py-20 text-white'>
+      <div className='2xl:px-88 xl:px-40 lg:px-40 px-4 py-20 text-white'>
         <h2 data-aos="fade-up" data-aos-duration="200" className='lg:text-5xl mb-5 text-4xl text-center text-white'>
           What People are <br className='lg:block hidden'/> saying about <span className='text-[#DBFF00] font-bold'>Betamind</span> 
         </h2>
 
-        <Swiper
+        <p className='text-center text-base text-gray-400'>No testimonials yet</p>
+
+        {/* <Swiper
           slidesPerView={1}
           spaceBetween={5}
           loop={true}
@@ -277,11 +285,11 @@ const Home = () => {
                 </div>
               </div>
             </SwiperSlide>
-        </Swiper>
+        </Swiper> */}
       </div>
 
       {/* Featured Mentors Section */}
-      <div className='lg:px-88 px-4 py-20 bg-[#02160b] text-white'>
+      <div className='2xl:px-88 xl:px-40 lg:px-40 px-4 py-20 bg-[#02160b] text-white'>
         <h2 data-aos="fade-up" data-aos-duration="200" className='lg:text-5xl text-4xl text-center text-white mb-3'>
           Explore available <span className='text-[#DBFF00] font-bold'>Mentors</span>
         </h2>
@@ -289,14 +297,14 @@ const Home = () => {
           Connect with experienced professionals who are ready to guide you on your journey
         </p>
         
-        <div className='grid lg:grid-cols-3 grid-cols-1 lg:gap-3 gap-8 pt-5'>
+        <div className='grid 2xl:grid-cols-3 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 lg:gap-3 gap-8 pt-5'>
           {mentors.slice(0, 6).map((mentor, index) => (
-            <div key={index} data-aos="fade-up" data-aos-duration={500 + (index * 100)} className='bg-amber-50 text-black p-5 rounded-2xl space-y-3 cursor-pointer hover:shadow-2xl transition-shadow duration-300'>
+            <div key={index} data-aos="fade-up" data-aos-duration={500 + (index * 100)} className='bg-[#0e1b14] text-white p-3 rounded-2xl space-y-3 cursor-pointer hover:shadow-2xl transition-shadow duration-300'>
               <div className='h-[350px] overflow-hidden rounded-2xl'>
                 <Image 
                   src={mentor.imgUrl}
                   alt='mentor1'
-                  width={0}
+                  width={0} 
                   height={0}
                   priority
                   quality={100}
@@ -307,10 +315,10 @@ const Home = () => {
 
               <div>
                 <h3 className='pt-4 font-bold text-lg'>{mentor.fullName}</h3>
-                <p className='text-sm text-gray-600 py-1'>{mentor.title}</p>
+                <p className='text-sm text-gray-400 py-1'>{mentor.title}</p>
                 <ul className='flex flex-wrap gap-2 pt-3'>
                   {mentor.skills.map((skill, idx) => (
-                    <li key={idx} className='bg-none border border-emerald-900 text-emerald-900 text-xs rounded-full p-2 px-4'>{skill}</li>
+                    <li key={idx} className='bg-none border border-emerald-200 text-emerald-200 text-xs rounded-full p-2 px-4'>{skill}</li>
                   ))}
                 </ul>
 
@@ -324,7 +332,7 @@ const Home = () => {
                       }
                     }}
                   >
-                    <SolidBlackBtn title='View Profile' />
+                    <SolidMainBtn title='View Profile' />
                   </Link>
                 </div>
               </div>
@@ -341,7 +349,7 @@ const Home = () => {
       </div>
 
       {/* Vision Section */}
-      <div className='lg:px-88 px-4 py-24  text-white relative overflow-hidden'>
+      <div className='2xl:px-88 xl:px-40 lg:px-40 px-4 py-24  text-white relative overflow-hidden'>
         <div className='absolute inset-0 opacity-10'>
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -395,7 +403,7 @@ const Home = () => {
       </div>
 
       {/* Call to Action Section */}
-      <div className='lg:px-88 px-4 py-24 bg-[#DBFF00] text-black relative overflow-hidden'>
+      <div className='2xl:px-88 xl:px-40 lg:px-40 px-4 py-24 bg-[#DBFF00] text-black relative overflow-hidden'>
         <div className='absolute top-0 right-0 w-96 h-96 bg-black/5 rounded-full -translate-y-1/2 translate-x-1/2'></div>
         <div className='absolute bottom-0 left-0 w-96 h-96 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/2'></div>
         
@@ -439,80 +447,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className='bg-[#02160b] text-white border-t border-gray-800'>
-        <div className='lg:px-88 px-4 py-16'>
-          <div className='grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-12 mb-12'>
-            {/* Brand Section */}
-            <div className='lg:col-span-1'>
-              <h3 className='text-3xl font-bold mb-4 text-[#DBFF00]'>Betamind</h3>
-              <p className='text-gray-400 mb-6'>
-                Empowering growth through affordable, accessible mentorship for everyone.
-              </p>
-              <div className='flex gap-4'>
-                <Link href='#' className='w-10 h-10 bg-[#DBFF00]/10 hover:bg-[#DBFF00]/20 rounded-full flex items-center justify-center transition-all duration-300'>
-                  <span className='text-[#DBFF00]'>in</span>
-                </Link>
-                <Link href='#' className='w-10 h-10 bg-[#DBFF00]/10 hover:bg-[#DBFF00]/20 rounded-full flex items-center justify-center transition-all duration-300'>
-                  <span className='text-[#DBFF00]'>𝕏</span>
-                </Link>
-                <Link href='#' className='w-10 h-10 bg-[#DBFF00]/10 hover:bg-[#DBFF00]/20 rounded-full flex items-center justify-center transition-all duration-300'>
-                  <span className='text-[#DBFF00]'>TG</span>
-                </Link>
-              </div>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h4 className='text-lg font-bold mb-4 text-[#DBFF00]'>Quick Links</h4>
-              <ul className='space-y-3'>
-                <li><Link href='/about' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>About Us</Link></li>
-                <li><Link href='/mentors' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Find Mentors</Link></li>
-                <li><Link href='/become-mentor' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Become a Mentor</Link></li>
-                <li><Link href='/pricing' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Pricing</Link></li>
-              </ul>
-            </div>
-
-            {/* Resources */}
-            <div>
-              <h4 className='text-lg font-bold mb-4 text-[#DBFF00]'>Resources</h4>
-              <ul className='space-y-3'>
-                <li><Link href='/blog' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Blog</Link></li>
-                <li><Link href='/success-stories' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Success Stories</Link></li>
-                <li><Link href='/faq' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>FAQ</Link></li>
-                <li><Link href='/support' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Support</Link></li>
-              </ul>
-            </div>
-
-            {/* Contact */}
-            <div>
-              <h4 className='text-lg font-bold mb-4 text-[#DBFF00]'>Contact Us</h4>
-              <ul className='space-y-3 text-gray-400'>
-                <li>betamind@gmail.com</li>
-                <li>+234 (0) 123 456 789</li>
-                <li className='pt-4'>
-                  <Link href='/contact' className='inline-block bg-[#DBFF00] text-black px-6 py-2 rounded-full font-semibold hover:bg-[#c5e600] transition-all duration-300'>
-                    Get in Touch
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Bottom Bar */}
-          <div className='border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4'>
-            <p className='text-gray-400 text-sm'>
-              © 2025 Betamind. All rights reserved.
-            </p>
-            <div className='flex gap-6 text-sm'>
-              <Link href='/privacy' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Privacy Policy</Link>
-              <Link href='/terms' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Terms of Service</Link>
-              <Link href='/cookies' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Cookie Policy</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }

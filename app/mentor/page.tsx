@@ -20,11 +20,8 @@ interface MentorData {
   languages?: string[]
   sessionsCompleted?: number
   rating?: number
-  socials?: {
-    twitter?: string
-    instagram?: string
-    linkedin?: string
-  }
+  twitter?: string
+  linkedin?: string
 }
 
 // Loading component for Suspense fallback
@@ -49,21 +46,18 @@ function MentorContent() {
     if (!mentorData) return null
     try {
       const parsedMentor = JSON.parse(mentorData)
-      // Add default values for missing fields
+      console.log('This is mentor data', parsedMentor.twitter)
       return {
         ...parsedMentor,
-        bio: parsedMentor.bio || "Experienced professional dedicated to helping mentees achieve their career goals through personalized guidance and industry insights.",
+        bio: parsedMentor.bio,
         experience: parsedMentor.experience || "10+ years",
         hourlyRate: parsedMentor.hourlyRate || "$50-100",
         availability: parsedMentor.availability || "Weekdays & Weekends",
         languages: parsedMentor.languages || ["English", "Spanish"],
         sessionsCompleted: parsedMentor.sessionsCompleted || 127,
         rating: parsedMentor.rating || 4.9,
-        socials: parsedMentor.socials || {
-          twitter: "https://twitter.com/mentor",
-          instagram: "https://instagram.com/mentor",
-          linkedin: "https://linkedin.com/in/mentor"
-        }
+        twitter: parsedMentor.twitter,
+        linkedin: parsedMentor.linkedin
       }
     } catch (error) {
       console.error('Error parsing mentor data:', error)
@@ -125,7 +119,7 @@ function MentorContent() {
               </div>
 
               {/* Quick Stats Card */}
-              <div data-aos="fade-up" data-aos-duration="200" className='mt-6 bg-[#141d18] rounded-2xl p-6 space-y-4'>
+              {/* <div data-aos="fade-up" data-aos-duration="200" className='mt-6 bg-[#141d18] rounded-2xl p-6 space-y-4'>
                 <div className='flex items-center justify-between'>
                   <span className='text-gray-400'>Rating</span>
                   <div className='flex items-center gap-2'>
@@ -141,15 +135,15 @@ function MentorContent() {
                   <span className='text-gray-400'>Response Time</span>
                   <span className='text-white font-semibold'>Within 24h</span>
                 </div>
-              </div>
+              </div> */}
 
               {/* Social Media Links */}
               <div data-aos="fade-up" data-aos-duration="200" className='mt-6 bg-[#141d18] rounded-2xl p-6'>
                 <h3 className='text-white font-semibold mb-4'>Connect with me</h3>
                 <div className='flex items-center gap-3'>
-                  {mentor.socials?.twitter && (
+                  {mentor.twitter && (
                     <a 
-                      href={mentor.socials.twitter}
+                      href={mentor.twitter}
                       target="_blank"
                       rel="noopener noreferrer"
                       className='w-12 h-12 bg-[#DBFF00] hover:bg-white rounded-full flex items-center justify-center transition-colors group'
@@ -157,19 +151,10 @@ function MentorContent() {
                       <FaXTwitter className='text-black text-xl' />
                     </a>
                   )}
-                  {mentor.socials?.instagram && (
+                 
+                  {mentor?.linkedin && (
                     <a 
-                      href={mentor.socials.instagram}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className='w-12 h-12 bg-[#DBFF00] hover:bg-white rounded-full flex items-center justify-center transition-colors group'
-                    >
-                      <FaInstagram className='text-black text-xl' />
-                    </a>
-                  )}
-                  {mentor.socials?.linkedin && (
-                    <a 
-                      href={mentor.socials.linkedin}
+                      href={mentor?.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
                       className='w-12 h-12 bg-[#DBFF00] hover:bg-white rounded-full flex items-center justify-center transition-colors group'
@@ -191,10 +176,10 @@ function MentorContent() {
                 <p className='text-2xl text-[#DBFF00] mb-6'>{mentor.title}</p>
                 
                 {/* Action Buttons */}
-                <div className='flex flex-wrap gap-4'>
+                {/* <div className='flex flex-wrap gap-4'>
                   <SolidWhiteBtn title='Book a Session' />
                   <OutlineBtn title='Send Message' />
-                </div>
+                </div> */}
               </div>
 
               {/* About Section */}
