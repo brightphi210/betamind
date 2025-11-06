@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #010c06;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #010c06;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  /* font-family: var(--font-hanken-grotesk), sans-serif; */
+  font-family: var(--font-bricolage), sans-serif;
+  /* font-family: var(--font-space), sans-serif; */
+}
+
+
+.swiper-button-prev, .swiper-button-next{
+  /* border-radius: 50%;
+  padding: 5px; */
+}
+
+.swiper-button-next .swiper-navigation-icon{
+  width: 35px;
+  height: 35px;
+  background-color: gainsboro;
+  padding: 8px;
+  border-radius: 50%;
+  color: rgb(1, 44, 35);
+}
+
+.swiper-button-prev .swiper-navigation-icon{
+  width: 35px;
+  height: 35px;
+  background-color: gainsboro;
+  padding: 8px;
+  border-radius: 50%;
+  color: rgb(1, 44, 35);
+}
