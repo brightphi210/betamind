@@ -27,7 +27,7 @@ const spacegrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: "Betamind",
-  description: "A Hub where Minds get better",
+  description: "Betamind is a hub where minds grow through mentorship. We make mentorship accessible and affordable for everyone.",
 };
 
 export default function RootLayout({
