@@ -82,7 +82,7 @@ const Mentors = () => {
           </svg>
         </div>
 
-        <div className='relative lg:px-88 px-5 py-24 pb-5 lg:py-32 lg:pt-56'>
+        <div className='relative 2xl:px-72 xl:px-40 lg:px-40 px-5 py-24 pb-5 lg:py-20 lg:pt-56'>
           <div className='max-w-4xl mx-auto text-center'>
             <h1 data-aos="fade-up" data-aos-duration="500" className='text-5xl lg:text-5xl font-bold mb-6'>
               Find Your Perfect <span className='text-[#DBFF00]'>Mentor</span>
@@ -113,7 +113,7 @@ const Mentors = () => {
       </div>
 
       {/* Main Content */}
-      <div className='lg:px-88 px-6 py-12 '>
+      <div className='2xl:px-72 xl:px-40 lg:px-40 px-6 py-12 '>
         <div className='flex lg:flex-row flex-col gap-4'>
           {/* Sidebar Filters */}
           <aside className='lg:w-68 w-full'>
@@ -268,7 +268,7 @@ const Mentors = () => {
       </div>
 
       {/* CTA Section */}
-      <div className='lg:px-88 px-4 py-20 bg-gradient-to-br from-[#0a2818] to-[#02160b] border-t border-gray-800'>
+      <div className='2xl:px-72 xl:px-40 lg:px-40 px-4 py-20 bg-gradient-to-br from-[#0a2818] to-[#02160b] border-t border-gray-800'>
         <div className='max-w-4xl mx-auto text-center'>
           <h2 data-aos="fade-up" data-aos-duration="500" className='text-4xl lg:text-5xl font-bold mb-6'>
             {"Can't find the right mentor?"}

@@ -35,7 +35,6 @@ const Footer = () => {
                 <li><Link href='/about' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>About Us</Link></li>
                 <li><Link href='/mentors' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Find Mentors</Link></li>
                 <li><Link href='/become-mentor' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Become a Mentor</Link></li>
-                <li><Link href='/pricing' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Pricing</Link></li>
               </ul>
             </div>
 
@@ -44,7 +43,6 @@ const Footer = () => {
               <h4 className='text-lg font-bold mb-4 text-[#DBFF00]'>Resources</h4>
               <ul className='space-y-3'>
                 <li><Link href='/blog' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Blog</Link></li>
-                <li><Link href='/success-stories' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Success Stories</Link></li>
                 <li><Link href='/faq' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>FAQ</Link></li>
                 <li><Link href='/support' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Support</Link></li>
               </ul>
@@ -55,7 +53,7 @@ const Footer = () => {
               <h4 className='text-lg font-bold mb-4 text-[#DBFF00]'>Contact Us</h4>
               <ul className='space-y-3 text-gray-400'>
                 <li>betamind@gmail.com</li>
-                <li>+234 (0) 123 456 789</li>
+                <li>+234 809 4422 807</li>
                 <li className='pt-4'>
                   <Link href='/contact' className='inline-block bg-[#DBFF00] text-black px-6 py-2 rounded-full font-semibold hover:bg-[#c5e600] transition-all duration-300'>
                     Get in Touch
@@ -70,11 +68,6 @@ const Footer = () => {
             <p className='text-gray-400 text-sm'>
               © 2025 Betamind. All rights reserved.
             </p>
-            <div className='flex gap-6 text-sm'>
-              <Link href='/privacy' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Privacy Policy</Link>
-              <Link href='/terms' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Terms of Service</Link>
-              <Link href='/cookies' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Cookie Policy</Link>
-            </div>
           </div>
         </div>
       </footer>

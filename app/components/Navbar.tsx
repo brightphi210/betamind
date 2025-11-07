@@ -59,7 +59,9 @@ const Navbar = () => {
                   </Link>
                 </div>
                 <div>
+                  <Link href='/about'>
                     <OutlineBtn title='About us'/>
+                  </Link>
                 </div>
               </div>
 
@@ -141,7 +143,9 @@ const Navbar = () => {
               </Link>
             </div>
             <div>
-              <OutlineBtn title='About us'/>
+              <Link href='/about'>
+                <OutlineBtn title='About us'/>
+              </Link>
             </div>
           </div>
 

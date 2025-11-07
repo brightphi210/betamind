@@ -7,6 +7,7 @@ import { SolidWhiteBtn, OutlineBtn } from '../components/btns'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { FaXTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa6'
+import Link from 'next/link'
 
 interface MentorData {
   fullName: string
@@ -22,6 +23,7 @@ interface MentorData {
   rating?: number
   twitter?: string
   linkedin?: string
+  sessionTypes?: string[]
 }
 
 // Loading component for Suspense fallback
@@ -50,14 +52,15 @@ function MentorContent() {
       return {
         ...parsedMentor,
         bio: parsedMentor.bio,
-        experience: parsedMentor.experience || "10+ years",
-        hourlyRate: parsedMentor.hourlyRate || "$50-100",
+        experience: parsedMentor.experience,
+        hourlyRate: parsedMentor.hourlyRate || "Flexible",
         availability: parsedMentor.availability || "Weekdays & Weekends",
-        languages: parsedMentor.languages || ["English", "Spanish"],
+        languages: parsedMentor.languages || ["English"],
         sessionsCompleted: parsedMentor.sessionsCompleted || 127,
         rating: parsedMentor.rating || 4.9,
         twitter: parsedMentor.twitter,
-        linkedin: parsedMentor.linkedin
+        linkedin: parsedMentor.linkedin,
+        sessionTypes: parsedMentor.sessionTypes || ["1-on-1", "Group", "Workshops"]
       }
     } catch (error) {
       console.error('Error parsing mentor data:', error)
@@ -89,13 +92,13 @@ function MentorContent() {
           </svg>
         </div>
 
-        <div className='relative 2xl:pt-64 xl:pt-40 lg:pt-28 pt-32 pb-12 px-5 lg:px-88'>
+        <div className='relative 2xl:pt-64 xl:pt-40 lg:pt-24 pt-24 pb-12 2xl:px-72 xl:px-40 lg:px-40 px-4'>
           {/* Back Button */}
           <button 
             onClick={() => router.back()}
             data-aos="fade-right"
             data-aos-duration="100"
-            className='mb-8 text-[#DBFF00] hover:text-white transition-colors flex items-center gap-2 group'
+            className='mb-8 text-[#DBFF00] cursor-pointer hover:text-white transition-colors flex items-center gap-2 group'
           >
             <svg className='w-5 h-5 group-hover:-translate-x-1 transition-transform' fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -104,7 +107,7 @@ function MentorContent() {
           </button>
 
           {/* Profile Header */}
-          <div className='grid lg:grid-cols-3 gap-10 items-start'>
+          <div className='grid 2xl:grid-cols-3 xl:grid-cols-3 lg:grid-cols-3 2xl:gap-10 xl:gap-5 lg:gap-5 items-start'>
             {/* Left Column - Image & Quick Stats */}
             <div className='lg:col-span-1'>
               <div data-aos="fade-up" data-aos-duration="300" className='relative h-[400px] lg:h-[500px] rounded-3xl overflow-hidden shadow-2xl'>
@@ -138,30 +141,64 @@ function MentorContent() {
               </div> */}
 
               {/* Social Media Links */}
-              <div data-aos="fade-up" data-aos-duration="200" className='mt-6 bg-[#141d18] rounded-2xl p-6'>
-                <h3 className='text-white font-semibold mb-4'>Connect with me</h3>
-                <div className='flex items-center gap-3'>
-                  {mentor.twitter && (
-                    <a 
-                      href={mentor.twitter}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className='w-12 h-12 bg-[#DBFF00] hover:bg-white rounded-full flex items-center justify-center transition-colors group'
-                    >
-                      <FaXTwitter className='text-black text-xl' />
-                    </a>
-                  )}
-                 
-                  {mentor?.linkedin && (
-                    <a 
-                      href={mentor?.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className='w-12 h-12 bg-[#DBFF00] hover:bg-white rounded-full flex items-center justify-center transition-colors group'
-                    >
-                      <FaLinkedinIn className='text-black text-xl' />
-                    </a>
-                  )}
+              <div data-aos="fade-up" data-aos-duration="200" className='mt-6 bg-gradient-to-br from-[#141d18] to-[#0a120f] rounded-2xl p-5 border border-[#1a2621] relative overflow-hidden'>
+                {/* Decorative background elements */}
+                <div className='absolute top-0 right-0 w-32 h-32 bg-[#DBFF00] opacity-5 rounded-full -translate-y-16 translate-x-16'></div>
+                <div className='absolute bottom-0 left-0 w-24 h-24 bg-[#DBFF00] opacity-5 rounded-full translate-y-12 -translate-x-12'></div>
+                
+                <div className='relative z-10'>
+                  <div className='flex items-center gap-3 mb-6'>
+                    <div className='w-10 h-10 bg-[#DBFF00] rounded-lg flex items-center justify-center'>
+                      <svg className='w-5 h-5 text-black' fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                      </svg>
+                    </div>
+                    <h3 className='text-white font-bold text-xl'>Let's Connect</h3>
+                  </div>
+                  
+                  <p className='text-gray-400 text-sm mb-6'>
+                    Follow me on social media for insights, tips, and updates on mentoring sessions.
+                  </p>
+                  
+                  <div className='space-y-4'>
+                    {mentor.twitter && (
+                      <a 
+                        href={mentor.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className='flex items-center gap-4 p-2 bg-[#1a2621] hover:bg-[#1f2d26] rounded-xl transition-all duration-300 hover:translate-x-1 group'
+                      >
+                        <div className='w-8 h-8 bg-[#DBFF00] group-hover:bg-white rounded-full flex items-center justify-center transition-colors flex-shrink-0'>
+                          <FaXTwitter className='text-black text-xl' />
+                        </div>
+                        <div className='flex-1'>
+                          <p className='text-white font-semibold text-sm'>Twitter / X</p>
+                        </div>
+                        <svg className='w-5 h-5 text-gray-500 group-hover:text-[#DBFF00] transition-colors' fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </a>
+                    )}
+                   
+                    {mentor?.linkedin && (
+                      <a 
+                        href={mentor?.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className='flex items-center gap-4 p-2 bg-[#1a2621] hover:bg-[#1f2d26] rounded-xl transition-all duration-300 hover:translate-x-1 group'
+                      >
+                        <div className='w-8 h-8 bg-[#DBFF00] group-hover:bg-white rounded-full flex items-center justify-center transition-colors flex-shrink-0'>
+                          <FaLinkedinIn className='text-black text-xl' />
+                        </div>
+                        <div className='flex-1'>
+                          <p className='text-white font-semibold text-sm'>LinkedIn</p>
+                        </div>
+                        <svg className='w-5 h-5 text-gray-500 group-hover:text-[#DBFF00] transition-colors' fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -169,7 +206,7 @@ function MentorContent() {
             {/* Right Column - Details */}
             <div className='lg:col-span-2 space-y-8'>
               {/* Name & Title */}
-              <div data-aos="fade-up" data-aos-duration="200">
+              <div >
                 <h1 className='text-5xl lg:text-6xl font-bold text-white mb-3'>
                   {mentor.fullName}
                 </h1>
@@ -197,12 +234,27 @@ function MentorContent() {
                   {mentor.skills.map((skill, idx) => (
                     <li 
                       key={idx} 
-                      className='bg-[#DBFF00] text-black font-semibold text-sm rounded-full px-4 py-2 hover:bg-white transition-colors cursor-default'
+                      className='border border-emerald-100 text-emerald-50 text-sm rounded-full px-4 py-2 cursor-default'
                     >
                       {skill}
                     </li>
                   ))}
                 </ul>
+              </div>
+
+              {/* Session Types */}
+              <div data-aos="fade-up" data-aos-duration="200" className='bg-[#141d18] rounded-2xl p-8'>
+                <h2 className='text-2xl font-bold text-white mb-4'>Session Types Offered</h2>
+                <div className='flex flex-wrap gap-3'>
+                  {mentor.sessionTypes?.map((type, idx) => (
+                    <div 
+                      key={idx} 
+                      className='bg-[#DBFF00] text-black font-semibold text-sm rounded-full px-5 py-2.5 cursor-default'
+                    >
+                      {type}
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* Details Grid */}
@@ -217,7 +269,7 @@ function MentorContent() {
                     </div>
                     <h3 className='text-xl font-bold text-white'>Experience</h3>
                   </div>
-                  <p className='text-gray-300 text-lg'>{mentor.experience} in the industry</p>
+                  <p className='text-gray-300 text-lg'>{mentor.experience} years in the industry</p>
                 </div>
 
                 {/* Rate */}
@@ -230,7 +282,7 @@ function MentorContent() {
                     </div>
                     <h3 className='text-xl font-bold text-white'>Hourly Rate</h3>
                   </div>
-                  <p className='text-gray-300 text-lg'>{mentor.hourlyRate}/session</p>
+                  <p className='text-gray-300 text-lg'>{mentor.hourlyRate}</p>
                 </div>
 
                 {/* Availability */}
@@ -265,7 +317,7 @@ function MentorContent() {
       </div>
 
       {/* Bottom CTA Section */}
-      <div className='bg-[#DBFF00] py-16 px-5 lg:px-88'>
+      <div className='bg-[#DBFF00] py-16 px-5 2xl:px-72 xl:px-40 lg:px-40'>
         <div data-aos="fade-up" data-aos-duration="300" className='max-w-4xl mx-auto text-center'>
           <h2 className='text-4xl lg:text-5xl font-bold text-black mb-4'>
             Ready to start your journey with {mentor.fullName.split(' ')[0]}?
@@ -274,12 +326,17 @@ function MentorContent() {
             Book your first session today and get personalized guidance to achieve your goals.
           </p>
           <div className='flex flex-wrap gap-4 justify-center'>
-            <button className='bg-black text-white px-10 py-4 rounded-full text-lg font-semibold hover:bg-gray-900 transition-colors'>
+            <button className='bg-black cursor-pointer text-white px-10 py-4 rounded-full text-lg font-semibold hover:bg-gray-900 transition-colors'>
               Schedule Free Consultation
             </button>
-            <button className='bg-transparent border-2 border-black text-black px-10 py-4 rounded-full text-lg font-semibold hover:bg-black hover:text-white transition-colors'>
-              View All Mentors
-            </button>
+
+            <div>
+              <Link href={'/mentors'}>
+                <button className='bg-transparent border-2 border-black cursor-pointer text-black px-10 py-4 rounded-full text-lg font-semibold'>
+                  View All Mentors
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -296,4 +353,4 @@ const Mentor = () => {
   )
 }
 
-export default Mentor 
+export default Mentor
