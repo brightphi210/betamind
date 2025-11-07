@@ -431,7 +431,7 @@ const Home = () => {
             </Link>
           </div>
 
-          <div data-aos="fade-up" data-aos-duration="300" className='grid grid-cols-1 md:grid-cols-3 gap-8 mt-16'>
+          {/* <div data-aos="fade-up" data-aos-duration="300" className='grid grid-cols-1 md:grid-cols-3 gap-8 mt-16'>
             <div className='bg-white/60 backdrop-blur p-6 rounded-2xl'>
               <p className='text-4xl font-bold mb-2'>500+</p>
               <p className='text-gray-700 font-medium'>Expert Mentors</p>
@@ -444,7 +444,7 @@ const Home = () => {
               <p className='text-4xl font-bold mb-2'>95%</p>
               <p className='text-gray-700 font-medium'>Satisfaction Rate</p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
