@@ -52,8 +52,8 @@ const Footer = () => {
             <div>
               <h4 className='text-lg font-bold mb-4 text-[#DBFF00]'>Contact Us</h4>
               <ul className='space-y-3 text-gray-400'>
-                <li>betamind@gmail.com</li>
-                <li>+234 809 4422 807</li>
+                <li>betamind123@gmail.com</li>
+                <li>+234 9041204694</li>
                 <li className='pt-4'>
                   <Link href='/support' className='inline-block bg-[#DBFF00] text-black px-6 py-2 rounded-full font-semibold hover:bg-[#c5e600] transition-all duration-300'>
                     Get in Touch

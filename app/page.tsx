@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { OutlineBtn, SolidBlackBtn, SolidMainBtn, SolidWhiteBtn } from './components/btns'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -12,14 +12,38 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { mentors } from './mocks/mentors';
+import RoleSelectionModal from './components/SelectModal';
 
 const Home = () => {
   useEffect(() => {
     AOS.init();
   }, [])
 
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isModalOpen]);
+
+  const handleGetStarted = (e: any) => {
+    e.preventDefault();
+    setIsModalOpen(true);
+  };
   return (
     <div>
+
+      <RoleSelectionModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
       <div className='relative overflow-hidden'>
         <div className='absolute inset-0 lg:opacity-30 opacity-5'>
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -49,11 +73,13 @@ const Home = () => {
             </div>
 
             <div data-aos="fade-up" data-aos-duration="200" className='lg:flex lg:flex-row flex flex-col gap-3 m-auto lg:justify-center'>
-              <div>
+              <div onClick={handleGetStarted}>
                 <SolidWhiteBtn title='Get Started'/>
               </div>
               <div>
-                <OutlineBtn title='Browse Mentors'/>
+                <Link href={'/mentors'}>
+                  <OutlineBtn title='Browse Mentors'/>
+                </Link>
               </div>
             </div>
 
@@ -149,10 +175,8 @@ const Home = () => {
         <div className='bg-white text-black w-full lg:h-auto h-auto lg:p-10 p-5 2xl:rounded-l-3xl xl:rounded-l-3xl lg:rounded-l-3xl lg:rounded-b-none rounded-b-2xl'>
           <h2 data-aos="fade-up" data-aos-duration="200" className='2xl:text-5xl xl:text-4xl lg:text-4xl text-4xl'>No strings attached, fully vetted <span className='text-[#1b3b01] font-bold'>Mentors</span>.</h2>
           <p className='text-base py-5' data-aos="fade-up" data-aos-duration="300">Connect directly with trusted mentors — no hidden fees, no commitments, just real guidance when you need it.</p>
-          <div data-aos="fade-up" data-aos-duration="300" className='w-fit pt-5'>
-            <Link href={'/'}>
-              <SolidBlackBtn title='Get started here'/>
-            </Link>
+          <div onClick={handleGetStarted} data-aos="fade-up" data-aos-duration="300" className='w-fit pt-5'>
+            <SolidBlackBtn title='Get started here'/>
           </div>
         </div>
 
@@ -418,11 +442,9 @@ const Home = () => {
           </p>
 
           <div data-aos="fade-up" data-aos-duration="700" className='flex flex-col sm:flex-row gap-5 justify-center items-center mb-12'>
-            <Link href='/signup'>
-              <button className='bg-black text-[#DBFF00] font-bold px-6 py-3 rounded-lg hover:bg-gray-900 transition-all duration-300 text-base cursor-pointer shadow-xl hover:shadow-2xl hover:scale-105'>
-                Get Started for Free
-              </button>
-            </Link>
+            <button onClick={handleGetStarted} className='bg-black text-[#DBFF00] font-bold px-6 py-3 rounded-lg hover:bg-gray-900 transition-all duration-300 text-base cursor-pointer shadow-xl hover:shadow-2xl hover:scale-105'>
+              Get Started for Free
+            </button>
             
             <Link href='/mentors'>
               <button className='bg-white text-black font-bold px-6 py-3 rounded-lg hover:bg-gray-100 transition-all duration-300 text-base cursor-pointer shadow-xl hover:shadow-2xl hover:scale-105'>

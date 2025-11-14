@@ -112,9 +112,9 @@ const Support = () => {
       ),
       title: "Email Support",
       description: "Get help via email",
-      contact: "support@betamind.com",
-      link: "mailto:support@betamind.com"
-    },
+      contact: "betamind123@gmail.com",
+      link: "mailto:betamind123@gmail.com"
+    },  
     {
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">

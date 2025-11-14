@@ -277,16 +277,26 @@ const Mentors = () => {
             Let us help you find the perfect match for your goals
           </p>
           <div data-aos="fade-up" data-aos-duration="700" className='flex flex-col sm:flex-row gap-4 justify-center'>
-            <Link href='/request-mentor'>
+            <a className=''
+                href={'https://forms.gle/8pCTowztYmb1X4L27'}
+                target="_blank"
+                rel="noopener noreferrer"
+                >
               <button className='bg-[#DBFF00] text-black font-bold px-10 py-4 rounded-full hover:bg-[#c5e600] transition-all duration-300 shadow-lg'>
                 Request a Mentor
               </button>
-            </Link>
-            <Link href='/become-mentor'>
+            </a>
+
+
+            <a className=''
+                href={'https://forms.gle/FGzgmb71FWjRMDc56'}
+                target="_blank"
+                rel="noopener noreferrer"
+                >
               <button className='bg-transparent border-2 border-[#DBFF00] text-[#DBFF00] font-bold px-10 py-4 rounded-full hover:bg-[#DBFF00] hover:text-black transition-all duration-300'>
                 Become a Mentor
               </button>
-            </Link>
+            </a>
           </div>
         </div>
       </div>

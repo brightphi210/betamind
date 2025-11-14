@@ -15,14 +15,14 @@ export const mentors = [
 
     {
         fullName: 'Emeka Michael Awa',
-        title: 'Mechatronics Engineering, Backend Developer @Betamind',
+        title: 'Mechatronics Engineer, Backend Developer @Betamind',
         skills: ['Backend Development', 'Python', 'Mechatronics', 'AI', 'Robotics', 'Mentor', ],
         bio: 'Passionate about robotics and software, he also teaches programming to young learners and strives to bridge the gap between theory and hands-on engineering experience.',
         imgUrl: '/assets/mentorme2.jpg',
         experience: '3+',
         sessionTypes: ["1-on-1", "Group", "Workshops"],
-        twitter: 'https://twitter.com/',
-        linkedin: 'https://linkedin.com/',
+        twitter: 'https://x.com/Mictovic',
+        linkedin: 'https://linkedin.com/in/emeka-michael-2059a3230/',
         // instagram: 'https://instagram.com/', 
     },
 

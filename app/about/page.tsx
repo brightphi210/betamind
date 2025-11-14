@@ -2,10 +2,29 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaXTwitter, FaLinkedinIn, FaGithub } from 'react-icons/fa6';
+import RoleSelectionModal from '../components/SelectModal';
 
 const AboutPage = () => {
+      const [isModalOpen, setIsModalOpen] = useState(false);
+    useEffect(() => {
+      if (isModalOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'unset';
+      }
+      
+      return () => {
+        document.body.style.overflow = 'unset';
+      };
+    }, [isModalOpen]);
+  
+    const handleGetStarted = (e: any) => {
+      e.preventDefault();
+      setIsModalOpen(true);
+    };
+  
   useEffect(() => {
     // Simple scroll reveal effect
     const observerOptions = {
@@ -40,8 +59,8 @@ const AboutPage = () => {
       role: "Co-Founder & CTO",
       image: "/assets/mentorme2.jpg",
       bio: "Software Engineer, Co-Builder @Creve",
-      twitter: "https://twitter.com",
-      linkedin: "https://linkedin.com"
+      twitter: "https://x.com/Mictovic",
+      linkedin: "https://linkedin.com/in/emeka-michael-2059a3230/"
     },
     {
       name: "Kelly Edojah",
@@ -56,7 +75,7 @@ const AboutPage = () => {
       role: "Content Lead & Community Manager",
       image: "/assets/beta.png",
       bio: "Content Lead, Marketing, Community Manager @Betamind @LetsBuildDao",
-      twitter: "https://twitter.com",
+      twitter: "https://x.com/Desire_scribe?t=FtDGkvNxDjNA8805-NwN-A&s",
       linkedin: "https://linkedin.com",
     },
   ];
@@ -100,15 +119,15 @@ const AboutPage = () => {
     }
   ];
 
-  const stats = [
-    { number: "10K+", label: "Active Users" },
-    { number: "500+", label: "Expert Mentors" },
-    { number: "50K+", label: "Sessions Completed" },
-    { number: "98%", label: "Satisfaction Rate" }
-  ];
+
 
   return (
     <div className="min-h-screen bg-[#020c08] text-white">
+
+      <RoleSelectionModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
 
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-[#000804] to-[#000c05] border-b border-gray-900 lg:pt-40 pt-32 lg:pb-20 pb-10 px-5 lg:px-20">
@@ -286,11 +305,9 @@ const AboutPage = () => {
                 </div>
 
                 <div>
-                    <Link href={'/mentors'}>
-                        <button className="bg-transparent border-2 border-black text-black px-8 py-4 rounded-full text-lg font-semibold cursor-pointer transition-colors">
-                            Get Started
-                        </button>
-                    </Link>
+                    <button onClick={handleGetStarted} className="bg-transparent border-2 border-black text-black px-8 py-4 rounded-full text-lg font-semibold cursor-pointer transition-colors">
+                        Get Started
+                    </button>
                 </div>
             </div>
           </div>
