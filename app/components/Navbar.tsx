@@ -168,7 +168,7 @@ const Navbar = () => {
               </Link>
             </div>
 
-            <div>
+            <div onClick={handleLinkClick}>
               <Link href='/support'>
                 <SolidBlackBtn title='Get in touch'/>
               </Link>
