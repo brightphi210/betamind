@@ -13,6 +13,9 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { mentors } from './mocks/mentors';
 import RoleSelectionModal from './components/SelectModal';
+import { FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
+import { FaMailchimp } from 'react-icons/fa';
+import { IoMdMail } from 'react-icons/io';
 
 const Home = () => {
   useEffect(() => {
@@ -59,7 +62,7 @@ const Home = () => {
         </div>
 
         <div className='relative '>
-          <div className='2xl:pt-64 xl:pt-40 lg:pt-28 pt-32 pb-12 px-5 sm:px-6 lg:px-8'>
+          <div className='2xl:pt-64 xl:pt-40 lg:pt-28 pt-32 pb-8 px-5 sm:px-6 lg:px-8'>
             <div className='lg:text-center text-left mb-5 lg:mb-5'>
               <h2 data-aos="fade-up" data-aos-duration="100" className='text-[52px] lg:text-5xl xl:text-5xl 2xl:text-6xl  font-medium leading-tight lg:leading-tight'>
                 Get 
@@ -83,7 +86,7 @@ const Home = () => {
               </div>
             </div>
 
-            <div data-aos="fade-up" data-aos-duration="300" className='relative lg:hidden pt-5 w-[90%] mx-auto '>
+            <div data-aos="fade-up" data-aos-duration="300" className='relative hidden pt-5 w-[90%] mx-auto '>
               <div className='relative  w-full h-[300px] sm:h-[400px] lg:h-[500px] xl:h-[700px] rounded-lg overflow-hidden shadow-2xl'>
                 <Image 
                   src={'/assets/bannera.png'}
@@ -99,17 +102,54 @@ const Home = () => {
           </div>
         </div>
 
-        <div className='bg-[#DBFF00] pb-5 lg:block hidden text-black text-center w-[50%] justify-center m-auto h-full rounded-tl-4xl rounded-tr-4xl'>
-          <p data-aos="fade-up" data-aos-duration="300" className='text-3xl pb-3 pt-10'>betamind@gmail.com</p>
-          <ul data-aos="fade-up" data-aos-duration="300" className='flex gap-3 m-auto justify-center bottom-5'>
-            <li>@LinkedIn</li>
-            <li>@Twitter</li>
-            <li>@Telegram</li>
+        <div className='bg-[#DBFF00] py-5 pt-10 lg:block block relative text-black text-center lg:w-[50%] w-[90%] justify-center m-auto h-full rounded-tl-4xl rounded-tr-4xl'>
+          <ul className='flex gap-2 m-auto justify-center bottom-5'>
+            <a 
+              href="mailto:betamind@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className=''
+            >
+              <div className='flex items-center gap-1'>
+                <div className='w-12 h-12 bg-[#171a01] rounded-full flex items-center justify-center transition-colors flex-shrink-0'>
+                  <IoMdMail className='text-white text-2xl' />
+                </div>
+              </div>
+            </a>
+
+            <li>
+              <a 
+                href="https://www.linkedin.com/company/betaminds/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className=''
+              >
+                <div className='flex items-center gap-1'>
+                  <div className='w-12 h-12 bg-[#171a01] group-hover:bg-white rounded-full flex items-center justify-center transition-colors flex-shrink-0'>
+                    <FaLinkedinIn className='text-white text-2xl' />
+                  </div>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a 
+                href="https://x.com/betamindxyz" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className=''
+              >
+                <div className='flex items-center gap-1'>
+                  <div className='w-12 h-12 bg-[#171a01] group-hover:bg-white rounded-full flex items-center justify-center transition-colors flex-shrink-0'>
+                    <FaXTwitter className='text-white text-2xl' />
+                  </div>
+                </div>
+              </a>
+            </li>
           </ul>
         </div>
       </div>
 
-      <div className='flex lg:flex-row flex-col lg:gap-0 gap-6 w-full items-center 2xl:px-88 xl:px-40 lg:px-40 px-5 justify-center m-auto p-10 py-24 bg-[#02160b]'>
+      <div className='flex lg:flex-row flex-col lg:gap-0 gap-6 w-full items-center 2xl:px-88 xl:px-40 lg:px-40 px-5 justify-center m-auto p-10 py-16 bg-[#02160b]'>
         <div>
           <h2 data-aos="fade-up" data-aos-duration="200" className='2xl:text-5xl xl:text-4xl lg:text-4xl text-4xl'>Why the <span className='text-[#DBFF00] font-bold'>Right</span> Mentor Changes <span className='text-[#DBFF00] font-bold'>Everything !</span></h2>
           <p data-aos="fade-up" data-aos-duration="300" className='text-base pt-4 lg:w-[90%] w-full'>

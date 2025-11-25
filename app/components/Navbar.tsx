@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { RiCloseLargeLine } from "react-icons/ri";
 import { RiMenu4Fill } from "react-icons/ri";
 import { OutlineBtn, SolidMainBtn, SolidWhiteBtn } from './btns';
@@ -9,14 +10,17 @@ import Link from 'next/link';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   const categories = [
     'All',
     'Software',
     'Design',
     'Media/Production',
+    'Hardware/Robotics',
     'Marketing',
     'Web 3',
+    'Forex/Crypto',
   ];
 
   // Prevent body scroll when menu is open
@@ -31,6 +35,16 @@ const Navbar = () => {
     };
   }, [isOpen]);
 
+  const handleCategoryClick = (category: string) => {
+    setIsOpen(false);
+    const searchQuery = category === 'All' ? '' : category;
+    router.push(`/mentors?category=${encodeURIComponent(searchQuery)}`);
+  };
+
+  const handleLinkClick = () => {
+    setIsOpen(false);
+  };
+
   return (
     <>
       <nav className="w-full text-sm backdrop-blur-xl bg-black/30 shadow-lg z-40 fixed ">
@@ -38,7 +52,7 @@ const Navbar = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
             <div className="flex justify-between items-center h-16">
               <div className=''>
-                <Link href={'/'}>
+                <Link href={'/'} onClick={handleLinkClick}>
                   <Image 
                       src={'/assets/betamindlogo.png'}
                       alt='Betamind logo'
@@ -86,6 +100,7 @@ const Navbar = () => {
               {categories.map((category) => (
                 <button
                   key={category}
+                  onClick={() => handleCategoryClick(category)}
                   className="whitespace-nowrap cursor-pointer text-gray-800 text-sm font-medium transition-all duration-200 border-b-2 border-transparent hover:border-[#585853] hover:text-[#676865] h-full"
                 >
                   {category}
@@ -113,7 +128,7 @@ const Navbar = () => {
         {/* Drawer Header */}
         <div className="flex justify-between items-center p-4 border-b border-white/5 bg-black/5">
           <div className=''>
-            <Link href='/'>
+            <Link href='/' onClick={handleLinkClick}>
               <Image 
                   src={'/assets/betamindlogo.png'}
                   alt='Betamind logo'
@@ -137,12 +152,12 @@ const Navbar = () => {
         {/* Drawer Content */}
         <div className="overflow-y-auto h-[calc(100%-4rem)] p-4">
           <div className="space-y-3 pb-4 mb-4 border-b border-white/5">
-            <div>
+            <div onClick={handleLinkClick}>
               <Link href='/mentors'>
                 <SolidMainBtn title='Browse Mentors'/>
               </Link>
             </div>
-            <div>
+            <div onClick={handleLinkClick}>
               <Link href='/about'>
                 <OutlineBtn title='About us'/>
               </Link>
@@ -158,7 +173,7 @@ const Navbar = () => {
               <button
                 key={category}
                 className="w-full text-left text-gray-300 hover:text-[#d4d7c2] hover:bg-white/5 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200"
-                onClick={() => setIsOpen(false)}
+                onClick={() => handleCategoryClick(category)}
               >
                 {category}
               </button>

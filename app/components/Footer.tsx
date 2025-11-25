@@ -16,15 +16,13 @@ const Footer = () => {
                 Empowering growth through affordable, accessible mentorship for everyone.
               </p>
               <div className='flex gap-4'>
-                <Link href='#' className='w-10 h-10 bg-[#DBFF00]/10 hover:bg-[#DBFF00]/20 rounded-full flex items-center justify-center transition-all duration-300'>
+                <Link href='https://www.linkedin.com/company/betaminds/' className='w-10 h-10 bg-[#DBFF00]/10 hover:bg-[#DBFF00]/20 rounded-full flex items-center justify-center transition-all duration-300'>
                   <span className='text-[#DBFF00]'>in</span>
                 </Link>
-                <Link href='#' className='w-10 h-10 bg-[#DBFF00]/10 hover:bg-[#DBFF00]/20 rounded-full flex items-center justify-center transition-all duration-300'>
+                <Link href='https://x.com/betamindxyz' className='w-10 h-10 bg-[#DBFF00]/10 hover:bg-[#DBFF00]/20 rounded-full flex items-center justify-center transition-all duration-300'>
                   <span className='text-[#DBFF00]'>𝕏</span>
                 </Link>
-                <Link href='#' className='w-10 h-10 bg-[#DBFF00]/10 hover:bg-[#DBFF00]/20 rounded-full flex items-center justify-center transition-all duration-300'>
-                  <span className='text-[#DBFF00]'>TG</span>
-                </Link>
+                
               </div>
             </div>
 
