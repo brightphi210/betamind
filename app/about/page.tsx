@@ -73,10 +73,11 @@ const AboutPage = () => {
     {
       name: "Desire Irechukwu",
       role: "Content Lead & Community Manager",
-      image: "/assets/beta.png",
+      image: "/assets/desire.JPG",
+      // image: "/assets/desire2.jpeg",
       bio: "Content Lead, Marketing, Community Manager @Betamind @LetsBuildDao",
       twitter: "https://x.com/Desire_scribe?t=FtDGkvNxDjNA8805-NwN-A&s",
-      linkedin: "https://linkedin.com",
+      linkedin: "https://www.linkedin.com/in/desire-irechukwu-897870313/",
     },
   ];
 
