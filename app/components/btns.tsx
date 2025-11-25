@@ -1,4 +1,5 @@
 import React from 'react'
+import { GoArrowRight } from 'react-icons/go';
 
 interface BtnProps {
     title: string;
@@ -35,9 +36,10 @@ export const SolidBlackBtn = ({ title, onClick, ...props }: BtnProps) => {
     <button 
         {...props}
         onClick={onClick} 
-        className="w-full bg-[#010c06] hover:bg-[#010c06b2] cursor-pointer text-gray-50 px-4 py-3 rounded-lg text-base font-medium transition-colors duration-200"
+        className="w-full flex gap-1 items-center m-auto justify-center bg-[#010c06]/90 hover:bg-[#010c06b2] cursor-pointer text-gray-50 px-4 py-3 rounded-lg text-base font-medium transition-colors duration-200"
     >
         {title}
+        <p><GoArrowRight  /></p>
     </button>
   )
 }

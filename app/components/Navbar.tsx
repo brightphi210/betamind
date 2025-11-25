@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { RiCloseLargeLine } from "react-icons/ri";
 import { RiMenu4Fill } from "react-icons/ri";
-import { OutlineBtn, SolidMainBtn, SolidWhiteBtn } from './btns';
+import { OutlineBtn, SolidBlackBtn, SolidMainBtn, SolidWhiteBtn } from './btns';
 import Link from 'next/link';
 
 const Navbar = () => {
@@ -75,6 +75,11 @@ const Navbar = () => {
                 <div>
                   <Link href='/about'>
                     <OutlineBtn title='About us'/>
+                  </Link>
+                </div>
+                <div>
+                  <Link href='/support'>
+                    <SolidBlackBtn title='Get in touch'/>
                   </Link>
                 </div>
               </div>
@@ -160,6 +165,12 @@ const Navbar = () => {
             <div onClick={handleLinkClick}>
               <Link href='/about'>
                 <OutlineBtn title='About us'/>
+              </Link>
+            </div>
+
+            <div>
+              <Link href='/support'>
+                <SolidBlackBtn title='Get in touch'/>
               </Link>
             </div>
           </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, Suspense } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -9,7 +9,8 @@ import 'aos/dist/aos.css'
 import { mentors } from '../mocks/mentors'
 import { SolidBlackBtn, SolidMainBtn } from '../components/btns'
 
-const Mentors = () => {
+// Separate the component that uses useSearchParams
+function MentorsContent() {
   const searchParams = useSearchParams()
   const categoryParam = searchParams.get('category')
   
@@ -26,6 +27,8 @@ const Mentors = () => {
     }
   }, [categoryParam])
 
+  // ... rest of your component code stays exactly the same ...
+  
   useEffect(() => {
     AOS.init()
   }, [])
@@ -419,6 +422,22 @@ const Mentors = () => {
         }
       `}</style>
     </div>
+  )
+}
+
+// Main component with Suspense boundary
+const Mentors = () => {
+  return (
+    <Suspense fallback={
+      <div className='min-h-screen bg-[#000804] flex items-center justify-center'>
+        <div className='text-center'>
+          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-[#DBFF00] mx-auto mb-4'></div>
+          <p className='text-gray-400'>Loading mentors...</p>
+        </div>
+      </div>
+    }>
+      <MentorsContent />
+    </Suspense>
   )
 }
 
