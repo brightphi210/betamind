@@ -8,7 +8,7 @@ export const mentors = [
         imgUrl: '/assets/mentorme1.png',
         experience: '3+',
         category: 'Software',
-        sessionTypes: ["1-on-1", "Group", "Workshops"],
+        sessionTypes: ["1-on-1", "Group"],
         rates: {
             oneOnOne: '₦30,000 / session',
             group: '₦5,000 / person',
@@ -17,6 +17,8 @@ export const mentors = [
         twitter: 'https://x.com/chibuzorphilip7',
         linkedin: 'https://www.linkedin.com/in/chibuzor-philip12/',
     },
+
+
   
     {
         fullName: 'Emeka Michael Awa',
@@ -26,10 +28,10 @@ export const mentors = [
         imgUrl: '/assets/mentorme2.jpg',
         experience: '3+',
         category: 'Software',
-        sessionTypes: ["1-on-1", "Group", "Workshops"],
+        sessionTypes: ["1-on-1", "Group"],
         rates: {
-            oneOnOne: '₦12,000 / session',
-            group: '₦7,000 / person',
+            oneOnOne: '₦25,000 / session',
+            group: '₦15,000 / person',
         },
         dailyMentoringTime: '1-2 hours',
         twitter: 'https://x.com/Mictovic',
@@ -44,14 +46,14 @@ export const mentors = [
         imgUrl: '/assets/mentorme3s.jpg',
         experience: '3+',
         category: 'Content',
-        sessionTypes: ["1-on-1", "Group", "Workshops"],
+        sessionTypes: ["1-on-1", "Group"],
         rates: {
-            oneOnOne: '₦10,000 / session',
-            group: '₦6,000 / person',
+            oneOnOne: '₦30,000 / session',
+            group: '₦10,000 / person',
         },
         dailyMentoringTime: '2-4 hours',
-        twitter: 'https://twitter.com/',
-        linkedin: 'https://linkedin.com/',
+        twitter: '',
+        linkedin: '',
     },
  
     {
@@ -62,13 +64,40 @@ export const mentors = [
         imgUrl: '/assets/mentorme6.jpg',
         experience: '4+',
         category: 'Software',
-        sessionTypes: ["1-on-1", "Group", "Workshops"],
+        sessionTypes: ["1-on-1", "Group"],
         rates: {
-            oneOnOne: '₦18,000 / session',
-            group: '₦10,000 / person',
+            oneOnOne: '₦20,000 / session',
+            group: '₦5,000 / person',
         },
         dailyMentoringTime: '2-3 hours',
-        twitter: 'https://twitter.com/',
+        twitter: '',
         linkedin: 'https://www.linkedin.com/in/igboeche-john-940b28286/',
     },
+
+    {
+        fullName: 'Precious Anosike',
+        title: 'Co-founder @Xpress-Pixels | Electronics Engineering Student |  Graphics Designer',
+        skills: [
+            'Embedded Systems',
+            'Electronics Engineering',
+            'Graphics Design',
+            'Video Editing',
+            'Voice-over Creation',
+            'Leadership',
+            'Mentorship'
+        ],
+        bio: 'I am an Electronics Engineering student passionate about technology, specializing in Embedded Systems with the goal of developing smart solutions that simplify life and solve real-world problems. With over five years of experience in graphics design—both mobile design and Adobe Photoshop—I create visually compelling content for brands and individuals. I also offer video editing and professional voice-over services, ensuring high-quality multimedia outputs tailored to clients’ needs. My impact extends to community mentorship, technical support, and leadership, having trained peers, led technical teams, and contributed to various initiatives. I am committed to fostering innovation, mentoring aspiring tech talents, and contributing to Nigeria’s technological advancement.',
+        imgUrl: '/assets/mentor6.jpg',
+        experience: '5+',
+        category: 'Electronics & Creative Media',
+        sessionTypes: ["1-on-1", "Group"],
+        rates: {
+            oneOnOne: '₦15,000 / session',
+            group: '₦5,000 / person',
+        },
+        dailyMentoringTime: '2 hours',
+        twitter: '',
+        linkedin: 'https://www.linkedin.com/in/chibuike-anosike-0a52832a5',
+    }
+
 ]
