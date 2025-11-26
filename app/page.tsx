@@ -13,7 +13,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { mentors } from './mocks/mentors';
 import RoleSelectionModal from './components/SelectModal';
-import { FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
+import { FaLinkedinIn, FaStar, FaXTwitter } from 'react-icons/fa6';
 import { FaMailchimp } from 'react-icons/fa';
 import { IoMdMail } from 'react-icons/io';
 
@@ -362,46 +362,71 @@ const Home = () => {
         </p>
         
         <div className='grid 2xl:grid-cols-3 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 lg:gap-3 gap-8 pt-5'>
-          {mentors.slice(0, 6).map((mentor, index) => (
-            <div key={index} data-aos="fade-up" data-aos-duration={500 + (index * 100)} className='bg-[#0e1b14] text-white p-3 rounded-2xl space-y-3 cursor-pointer hover:shadow-2xl transition-shadow duration-300'>
-              <div className='h-[350px] overflow-hidden rounded-2xl'>
-                <Image 
-                  src={mentor.imgUrl}
-                  alt='mentor1'
-                  width={0} 
-                  height={0}
-                  priority
-                  quality={100}
-                  unoptimized
-                  className='w-full h-full object-cover'
-                />
-              </div>
+            {mentors.slice(0, 6).map((mentor, index) => (
+              <div key={index} data-aos="fade-up" data-aos-duration={500 + (index * 100)} className='bg-[#0e1b14] text-white rounded-2xl space-y-3 cursor-pointer hover:shadow-2xl transition-shadow duration-300'>
+                {/* Card Content */}
+                <div className='p-6'>
+                  {/* Image Section */}
+                  <div className='h-[300px] overflow-hidden rounded-2xl mb-3'>
+                    <Image 
+                      src={mentor.imgUrl || "/placeholder.svg"}
+                      alt={mentor.fullName}
+                      width={0} 
+                      height={0}
+                      priority
+                      quality={100}
+                      unoptimized
+                      className='w-full h-full object-cover'
+                    />
+                  </div>
 
-              <div>
-                <h3 className='pt-4 font-bold text-lg'>{mentor.fullName}</h3>
-                <p className='text-sm text-gray-400 py-1'>{mentor.title}</p>
-                <ul className='flex flex-wrap gap-2 pt-3'>
-                  {mentor.skills.map((skill, idx) => (
-                    <li key={idx} className='bg-none border border-emerald-200 text-emerald-200 text-xs rounded-full p-2 px-4'>{skill}</li>
-                  ))}
-                </ul>
+                  {/* Category & Rating - on flex line */}
+                  <div className='flex gap-3 items-center mb-3'>
+                    {mentor.category && (
+                      <span className='inline-block bg-[#DBFF00] text-black px-3 py-1 rounded-full text-xs font-bold flex-shrink-0'>
+                        {mentor.category}
+                      </span>
+                    )}
 
-                <div className='pt-6'>
-                  <Link 
-                    href={{
-                      pathname: '/mentor',
-                      query: { 
-                        id: index,
-                        data: JSON.stringify(mentor)
-                      }
-                    }}
-                  >
-                    <SolidMainBtn title='View Profile' />
-                  </Link>
+                      <div className='flex items-center gap-1 bg-black/50 px-2 py-1 rounded-full text-xs font-bold'>
+                        <FaStar className='text-yellow-400' />
+                        <span>{mentor.rating.toFixed(1)}</span>
+                      </div>
+                  </div>
+
+                  {/* Name & Title */}
+                  <div className='mb-3'>
+                    <h3 className='font-bold text-lg'>{mentor.fullName}</h3>
+                    <p className='text-sm text-gray-400 py-1'>{mentor.title}</p>
+                  </div>
+
+                  {/* Skills */}
+                  <ul className='flex flex-wrap gap-2 pt-2 mb-4'>
+                    {mentor.skills.slice(0, 3).map((skill, idx) => (
+                      <li key={idx} className='bg-none border border-emerald-200 text-emerald-200 text-xs rounded-full p-2 px-3'>{skill}</li>
+                    ))}
+                    {mentor.skills.length > 3 && (
+                      <li className='text-xs text-gray-500 p-2 px-3'>+{mentor.skills.length - 3} more</li>
+                    )}
+                  </ul>
+
+                  {/* View Profile Button */}
+                  <div className='pt-2'>
+                    <Link 
+                      href={{
+                        pathname: '/mentor',
+                        query: { 
+                          id: index,
+                          data: JSON.stringify(mentor)
+                        }
+                      }}
+                    >
+                      <SolidMainBtn title='View Profile' />
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
 
         {/* View All Mentors Button */}

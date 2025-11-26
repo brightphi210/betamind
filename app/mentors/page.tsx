@@ -7,33 +7,28 @@ import { useSearchParams } from 'next/navigation'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { mentors } from '../mocks/mentors'
-import { SolidBlackBtn, SolidMainBtn } from '../components/btns'
+import { FaStar } from 'react-icons/fa6'
 
-// Separate the component that uses useSearchParams
 function MentorsContent() {
   const searchParams = useSearchParams()
   const categoryParam = searchParams.get('category')
   
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedSkills, setSelectedSkills] = useState<string[]>([])
-  const [priceRange, setPriceRange] = useState('all')
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [sortBy, setSortBy] = useState('featured')
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false)
 
-  // Set initial search query from URL parameter
   useEffect(() => {
     if (categoryParam) {
       setSearchQuery(categoryParam)
     }
   }, [categoryParam])
-
-  // ... rest of your component code stays exactly the same ...
   
   useEffect(() => {
     AOS.init()
   }, [])
 
-  // Prevent body scroll when modal is open
   useEffect(() => {
     if (isFilterModalOpen) {
       document.body.style.overflow = 'hidden'
@@ -45,62 +40,61 @@ function MentorsContent() {
     }
   }, [isFilterModalOpen])
 
-  // Get all unique skills from mentors
   const allSkills = [...new Set(mentors.flatMap(mentor => mentor.skills))]
+  const allCategories = [...new Set(mentors.map(mentor => mentor.category || 'Other'))]
 
-  // Filter and sort mentors
   const filteredMentors = useMemo(() => {
     let result = [...mentors]
 
-    // Search filter
     if (searchQuery) {
       result = result.filter(mentor => 
         mentor.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         mentor.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        mentor.skills.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()))
+        mentor.skills.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        mentor.category?.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }
 
-    // Skills filter
     if (selectedSkills.length > 0) {
       result = result.filter(mentor =>
         selectedSkills.some(skill => mentor.skills.includes(skill))
       )
     }
 
-    // Sort
+    if (selectedCategory !== 'all') {
+      result = result.filter(mentor => mentor.category === selectedCategory)
+    }
+
     if (sortBy === 'name') {
       result.sort((a, b) => a.fullName.localeCompare(b.fullName))
+    } else if (sortBy === 'rating') {
+      result.sort((a, b) => (b.rating || 0) - (a.rating || 0))
     } else if (sortBy === 'popular') {
       result.reverse()
     }
 
     return result
-  }, [searchQuery, selectedSkills, priceRange, sortBy])
+  }, [searchQuery, selectedSkills, selectedCategory, sortBy])
 
   const toggleSkill = (skill: string) => {
     setSelectedSkills((prev: string[]) =>
-      prev.includes(skill)
-        ? prev.filter(s => s !== skill)
-        : [...prev, skill]
+      prev.includes(skill) ? prev.filter(s => s !== skill) : [...prev, skill]
     )
   }
 
   const clearFilters = () => {
     setSearchQuery('')
     setSelectedSkills([])
-    setPriceRange('all')
+    setSelectedCategory('all')
     setSortBy('featured')
   }
 
-  // Filter content component (reusable for both sidebar and modal)
   const FilterContent = () => (
     <div className='space-y-6'>
-      {/* Filter Header */}
       <div className='bg-[#011409] p-6 rounded-2xl border border-gray-800'>
         <div className='flex justify-between items-center mb-4'>
           <h3 className='text-xl font-bold text-[#DBFF00]'>Filters</h3>
-          {(selectedSkills.length > 0 || searchQuery) && (
+          {(selectedSkills.length > 0 || selectedCategory !== 'all' || searchQuery) && (
             <button
               onClick={clearFilters}
               className='text-sm text-gray-400 hover:text-[#DBFF00] transition-colors'
@@ -108,6 +102,36 @@ function MentorsContent() {
               Clear All
             </button>
           )}
+        </div>
+
+        {/* Category Filter */}
+        <div className='mb-6'>
+          <label className='block text-sm font-semibold mb-3 text-gray-300'>Category</label>
+          <div className='space-y-2'>
+            <button
+              onClick={() => setSelectedCategory('all')}
+              className={`w-full text-left px-4 py-2 rounded-lg transition-all ${
+                selectedCategory === 'all'
+                  ? 'bg-[#DBFF00] text-black font-semibold'
+                  : 'bg-[#001309] border border-gray-700 hover:border-[#DBFF00] text-gray-300'
+              }`}
+            >
+              All Categories
+            </button>
+            {allCategories.map(category => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`w-full text-left px-4 py-2 rounded-lg transition-all ${
+                  selectedCategory === category
+                    ? 'bg-[#DBFF00] text-black font-semibold'
+                    : 'bg-[#001309] border border-gray-700 hover:border-[#DBFF00] text-gray-300'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Skills Filter */}
@@ -131,9 +155,8 @@ function MentorsContent() {
         </div>
       </div>
 
-      {/* Stats Card */}
       <div className='bg-gradient-to-br from-[#DBFF00] to-[#c5e600] p-6 rounded-2xl text-black'>
-        <h4 className='text-2xl font-bold '>{filteredMentors.length}</h4>
+        <h4 className='text-2xl font-bold'>{filteredMentors.length}</h4>
         <p className='text-sm'>Mentors Available</p>
       </div>
     </div>
@@ -164,7 +187,6 @@ function MentorsContent() {
               Connect with experienced professionals <br className='lg:block hidden'/> across various fields and accelerate your career growth
             </p>
             
-            {/* Search Bar */}
             <div data-aos="fade-up" data-aos-duration="700" className='max-w-2xl mx-auto'>
               <div className='relative'>
                 <input
@@ -188,7 +210,7 @@ function MentorsContent() {
       {/* Main Content */}
       <div className='2xl:px-72 xl:px-40 lg:px-40 px-6 py-12'>
         <div className='flex lg:flex-row flex-col gap-4'>
-          {/* Sidebar Filters - Hidden on mobile */}
+          {/* Sidebar Filters */}
           <aside className='lg:w-68 w-full lg:block hidden'>
             <div className='sticky top-24'>
               <FilterContent />
@@ -215,15 +237,15 @@ function MentorsContent() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                 </svg>
                 Filters
-                {selectedSkills.length > 0 && (
+                {(selectedSkills.length > 0 || selectedCategory !== 'all') && (
                   <span className='bg-black text-[#DBFF00] rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold'>
-                    {selectedSkills.length}
+                    {selectedSkills.length + (selectedCategory !== 'all' ? 1 : 0)}
                   </span>
                 )}
               </button>
             </div>
 
-            {/* Results Header - Desktop only */}
+            {/* Results Header */}
             <div className='mb-8 lg:block hidden'>
               <h2 className='text-2xl font-bold mb-2'>
                 {searchQuery ? `Results for "${searchQuery}"` : 'All Mentors'}
@@ -258,12 +280,23 @@ function MentorsContent() {
                       <div className='absolute top-3 right-3 bg-[#DBFF00] text-black px-3 py-1 rounded-full text-xs font-bold'>
                         Available
                       </div>
+                      {mentor.rating > 0 && (
+                        <div className='absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1'>
+                          <FaStar className='text-yellow-400' />
+                          {mentor.rating.toFixed(1)}
+                        </div>
+                      )}
                     </div>
 
                     <div className='p-5 space-y-3'>
                       <div>
                         <h3 className='text-xl font-bold'>{mentor.fullName}</h3>
                         <p className='text-sm text-gray-400'>{mentor.title}</p>
+                        {mentor.category && (
+                          <span className='inline-block mt-2 bg-[#DBFF00]/10 text-[#DBFF00] px-2 py-1 rounded text-xs font-semibold'>
+                            {mentor.category}
+                          </span>
+                        )}
                       </div>
 
                       <ul className='flex flex-wrap gap-2'>
@@ -292,7 +325,9 @@ function MentorsContent() {
                             }
                           }}
                         >
-                          <SolidMainBtn title='View Profile' />
+                          <button className='w-full bg-[#DBFF00] text-black font-semibold py-3 rounded-full hover:bg-[#c5e600] transition-all duration-300'>
+                            View Profile
+                          </button>
                         </Link>
                       </div>
                     </div>
@@ -314,32 +349,20 @@ function MentorsContent() {
                 </button>
               </div>
             )}
-
-            {/* Load More Button */}
-            {filteredMentors.length > 0 && filteredMentors.length >= 12 && (
-              <div className='text-center mt-12'>
-                <button className='bg-[#141d18] border border-gray-700 text-white px-10 py-4 rounded-full hover:border-[#DBFF00] hover:bg-[#1a2820] transition-all duration-300 font-semibold'>
-                  Load More Mentors
-                </button>
-              </div>
-            )}
           </main>
         </div>
       </div>
 
-      {/* Filter Modal - Mobile only */}
+      {/* Filter Modal */}
       {isFilterModalOpen && (
         <div className='lg:hidden fixed inset-0 z-50 overflow-hidden'>
-          {/* Backdrop */}
           <div 
             className='absolute inset-0 bg-black/50 backdrop-blur-sm'
             onClick={() => setIsFilterModalOpen(false)}
           />
           
-          {/* Modal */}
           <div className='absolute bottom-0 left-0 right-0 bg-[#01140c] rounded-t-3xl max-h-[85vh] w-[95%] justify-center items-center rounded-3xl m-auto overflow-y-auto animate-slide-up'>
-            {/* Modal Header */}
-            <div className='sticky top-0 bg-[#01140c]  px-6 py-4 flex items-center justify-between'>
+            <div className='sticky top-0 bg-[#01140c] px-6 py-4 flex items-center justify-between'>
               <h3 className='text-2xl font-bold text-[#DBFF00]'>Filters</h3>
               <button
                 onClick={() => setIsFilterModalOpen(false)}
@@ -351,12 +374,10 @@ function MentorsContent() {
               </button>
             </div>
 
-            {/* Modal Content */}
             <div className='p-2'>
               <FilterContent />
             </div>
 
-            {/* Modal Footer */}
             <div className='sticky bottom-0 bg-[#01140c] border-t border-gray-800 px-6 py-4 flex gap-3'>
               <button
                 onClick={clearFilters}
@@ -385,21 +406,21 @@ function MentorsContent() {
             Let us help you find the perfect match for your goals
           </p>
           <div data-aos="fade-up" data-aos-duration="700" className='flex flex-col sm:flex-row gap-4 justify-center'>
-            <a className=''
-                href={'https://forms.gle/8pCTowztYmb1X4L27'}
-                target="_blank"
-                rel="noopener noreferrer"
-                >
+            <a 
+              href='https://forms.gle/8pCTowztYmb1X4L27'
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <button className='bg-[#DBFF00] text-black font-bold px-10 py-4 rounded-full hover:bg-[#c5e600] transition-all duration-300 shadow-lg'>
                 Request a Mentor
               </button>
             </a>
 
-            <a className=''
-                href={'https://forms.gle/FGzgmb71FWjRMDc56'}
-                target="_blank"
-                rel="noopener noreferrer"
-                >
+            <a 
+              href='https://forms.gle/FGzgmb71FWjRMDc56'
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <button className='bg-transparent border-2 border-[#DBFF00] text-[#DBFF00] font-bold px-10 py-4 rounded-full hover:bg-[#DBFF00] hover:text-black transition-all duration-300'>
                 Become a Mentor
               </button>
@@ -410,12 +431,8 @@ function MentorsContent() {
 
       <style jsx>{`
         @keyframes slide-up {
-          from {
-            transform: translateY(100%);
-          }
-          to {
-            transform: translateY(0);
-          }
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
         }
         .animate-slide-up {
           animation: slide-up 0.3s ease-out;
@@ -425,7 +442,6 @@ function MentorsContent() {
   )
 }
 
-// Main component with Suspense boundary
 const Mentors = () => {
   return (
     <Suspense fallback={
