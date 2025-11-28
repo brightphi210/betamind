@@ -70,7 +70,7 @@ const Home = () => {
                 fits your <span className='text-[#DBFF00] font-bold'> Budget</span>
               </h2>
               <p data-aos="fade-up" data-aos-duration="200" className='2xl:w-[30%] xl:w-[55%] lg:w-[80%] md:w-[80%] w-full mx-auto pt-4 text-base sm:text-base lg:text-lg text-gray-300 leading-relaxed'>
-                Betamind is a hub where minds grow through mentorship. 
+                Betamind is a hub where minds become better through mentorship. 
                 We make mentorship accessible and affordable for everyone.
               </p>
             </div>
