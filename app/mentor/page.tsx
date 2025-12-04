@@ -116,7 +116,7 @@ function MentorContent() {
   return (
     <div className='min-h-screen bg-[#020c08]'>
       {/* Header Section */}
-      <div className='relative overflow-hidden bg-gradient-to-b from-[#010e06] to-[#000c07]'>
+      <div className='relative overflow-hidden bg-linear-to-b from-[#010e06] to-[#000c07]'>
         <div className='absolute inset-0 opacity-10'>
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -148,7 +148,7 @@ function MentorContent() {
               {/* Mobile view: flex layout */}
               <div className='lg:hidden flex gap-4 mb-6'>
                 {/* Profile Image - smaller on mobile */}
-                <div className='relative w-32 h-32 flex-shrink-0 rounded-2xl overflow-hidden shadow-2xl border-4 border-[#DBFF00]/20'>
+                <div className='relative w-32 h-32 shrink-0 rounded-2xl overflow-hidden shadow-2xl border-4 border-[#DBFF00]/20'>
                   <Image 
                     src={mentor.imgUrl || "/placeholder.svg"}
                     alt={mentor.fullName}
@@ -311,7 +311,7 @@ function MentorContent() {
                     {mentor.reviews.map((review, idx) => (
                       <div key={idx} className='bg-[#0a120f] rounded-xl p-3 border border-[#1a2621]'>
                         <div className='flex items-start gap-4'>
-                          <div className='w-12 h-12 bg-[#DBFF00] rounded-full flex items-center justify-center text-black font-bold flex-shrink-0'>
+                          <div className='w-12 h-12 bg-[#DBFF00] rounded-full flex items-center justify-center text-black font-bold shrink-0'>
                             {review.name.charAt(0)}
                           </div>
                           <div className='flex-1'>
@@ -403,7 +403,7 @@ function MentorContent() {
               )}
 
               {/* Social & Portfolio Links */}
-              <div className='mt-4 bg-gradient-to-br from-[#141d18] to-[#0a120f] rounded-2xl p-5 border border-[#1a2621]'>
+              <div className='mt-4 bg-linear-to-br from-[#141d18] to-[#0a120f] rounded-2xl p-5 border border-[#1a2621]'>
                 <div className='flex items-center gap-3 mb-4'>
                   <div className='w-10 h-10 bg-[#DBFF00] rounded-lg flex items-center justify-center'>
                     <svg className='w-5 h-5 text-black' fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -476,7 +476,7 @@ function MentorContent() {
                     {mentor.reviews.map((review, idx) => (
                       <div key={idx} className='bg-[#0a120f] rounded-xl p-3 border border-[#1a2621]'>
                         <div className='flex items-start gap-4'>
-                          <div className='w-12 h-12 bg-[#DBFF00] rounded-full flex items-center justify-center text-black font-bold flex-shrink-0'>
+                          <div className='w-12 h-12 bg-[#DBFF00] rounded-full flex items-center justify-center text-black font-bold shrink-0'>
                             {review.name.charAt(0)}
                           </div>
                           <div className='flex-1'>

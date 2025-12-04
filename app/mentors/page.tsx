@@ -155,7 +155,7 @@ function MentorsContent() {
         </div>
       </div>
 
-      <div className='bg-gradient-to-br from-[#DBFF00] to-[#c5e600] p-6 rounded-2xl text-black'>
+      <div className='bg-linear-to-br from-[#DBFF00] to-[#c5e600] p-6 rounded-2xl text-black'>
         <h4 className='text-2xl font-bold'>{filteredMentors.length}</h4>
         <p className='text-sm'>Mentors Available</p>
       </div>
@@ -165,7 +165,7 @@ function MentorsContent() {
   return (
     <div className='min-h-screen text-white'>
       {/* Hero Section */}
-      <div className='relative overflow-hidden bg-gradient-to-br from-[#000804] to-[#000c05] border-b border-gray-900'>
+      <div className='relative overflow-hidden bg-linear-to-br from-[#000804] to-[#000c05] border-b border-gray-900'>
         <div className='absolute inset-0 opacity-10'>
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -397,7 +397,7 @@ function MentorsContent() {
       )}
 
       {/* CTA Section */}
-      <div className='2xl:px-72 xl:px-40 lg:px-40 px-4 py-20 bg-gradient-to-br from-[#0a2818] to-[#02160b] border-t border-gray-800'>
+      <div className='2xl:px-72 xl:px-40 lg:px-40 px-4 py-20 bg-linear-to-br from-[#0a2818] to-[#02160b] border-t border-gray-800'>
         <div className='max-w-4xl mx-auto text-center'>
           <h2 data-aos="fade-up" data-aos-duration="500" className='text-4xl lg:text-5xl font-bold mb-6'>
             {"Can't find the right mentor?"}
