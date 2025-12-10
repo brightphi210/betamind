@@ -64,7 +64,7 @@ const Home = () => {
         <div className='relative '>
           <div className='2xl:pt-64 xl:pt-40 lg:pt-28 pt-32 pb-8 px-5 sm:px-6 lg:px-8'>
             <div className='lg:text-center text-left mb-5 lg:mb-5'>
-              <h2 data-aos="fade-up" data-aos-duration="100" className='text-[52px] lg:text-5xl xl:text-5xl 2xl:text-6xl  font-medium leading-tight lg:leading-tight'>
+              <h2 data-aos="fade-up" data-aos-duration="100" className='text-[52px] lg:text-5xl xl:text-5xl 2xl:text-6xl  font-medium leading-14 lg:leading-tight'>
                 Get 
                 <span className='text-[#d4d7c2] font-bold'> Mentorship</span> that <br className='hidden sm:block'/> 
                 fits your <span className='text-[#DBFF00] font-bold'> Budget</span>
