@@ -286,9 +286,9 @@ const AboutPage = () => {
       </div>
 
       {/* CTA Section */}
-      <div className="2xl:px-88 xl:px-40 lg:px-40 px-4 py-20 bg-gradient-to-b from-transparent to-[#010e06]">
+      <div className="2xl:px-88 xl:px-40 lg:px-40 px-4 py-20 bg-linear-to-b from-transparent to-[#010e06]">
         <div className="mx-auto text-center">
-          <div className="bg-gradient-to-br from-[#DBFF00] to-[#b8d900] rounded-3xl p-12 lg:p-16">
+          <div className="bg-linear-to-br from-[#DBFF00] to-[#b8d900] rounded-3xl p-12 lg:p-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-black mb-6">
               Join Our Growing Community
             </h2>
