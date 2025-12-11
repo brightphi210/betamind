@@ -95,7 +95,7 @@ function MentorContent() {
         twitter: parsedMentor.twitter,
         linkedin: parsedMentor.linkedin,
         portfolio: parsedMentor.portfolio,
-        certificates: parsedMentor.certificates,
+        certificates: parsedMentor.awards,
         sessionTypes: parsedMentor.sessionTypes || ["1-on-1", "Group"],
         category: parsedMentor.category,
         rates: parsedMentor.rates || 0,
@@ -284,12 +284,12 @@ function MentorContent() {
               {/* Certificates Section */}
               {mentor.certificates && mentor.certificates.length > 0 ? (
                 <div className='bg-[#141d18] rounded-2xl p-6'>
-                  <h2 className='text-2xl font-bold text-white mb-4'>Certifications</h2>
-                  <div className='grid md:grid-cols-2 gap-4'>
+                  <h2 className='text-2xl font-bold text-white mb-4'>Certifications/Awards</h2>
+                  <div className='grid 2xl:grid-cols-3 xl:grid-cols-3 lg:grid-cols-3 grid-cols-2 gap-2'>
                     {mentor.certificates.map((cert, idx) => (
-                      <div key={idx} className='relative h-48 rounded-xl overflow-hidden border border-[#1a2621] hover:border-[#DBFF00] transition-all'>
+                      <div key={idx} className='relative aspect-square rounded-xl overflow-hidden border border-[#1a2621] hover:border-[#DBFF00] transition-all'>
                         <Image 
-                          src={cert || "/placeholder.svg"}
+                          src={cert}
                           alt={`Certificate ${idx + 1}`}
                           fill
                           className='object-cover'
@@ -311,9 +311,6 @@ function MentorContent() {
                     {mentor.reviews.map((review, idx) => (
                       <div key={idx} className='bg-[#0a120f] rounded-xl p-3 border border-[#1a2621]'>
                         <div className='flex items-start gap-4'>
-                          <div className='w-12 h-12 bg-[#DBFF00] rounded-full flex items-center justify-center text-black font-bold shrink-0'>
-                            {review.name.charAt(0)}
-                          </div>
                           <div className='flex-1'>
                             <div className='flex items-center justify-between mb-2'>
                               <h4 className='text-white font-semibold'>{review.name}</h4>
@@ -466,19 +463,16 @@ function MentorContent() {
             </div>
 
             {/* Reviews Section */}
-              <div className='bg-[#141d18] block lg:hidden rounded-2xl p-6'>
-                <h2 className='text-2xl font-bold text-white mb-4'>
+              <div className='bg-[#141d18] block lg:hidden rounded-xl p-3'>
+                <h2 className='text-2xl font-bold text-white mb-2'>
                   Reviews {mentor?.totalReviews && mentor?.totalReviews > 0 && `(${mentor.totalReviews})`}
                 </h2>
                 
                 {mentor.reviews && mentor.reviews.length > 0 ? (
-                  <div className='space-y-4'>
+                  <div className='space-y-2'>
                     {mentor.reviews.map((review, idx) => (
                       <div key={idx} className='bg-[#0a120f] rounded-xl p-3 border border-[#1a2621]'>
                         <div className='flex items-start gap-4'>
-                          <div className='w-12 h-12 bg-[#DBFF00] rounded-full flex items-center justify-center text-black font-bold shrink-0'>
-                            {review.name.charAt(0)}
-                          </div>
                           <div className='flex-1'>
                             <div className='flex items-center justify-between mb-2'>
                               <h4 className='text-white font-semibold'>{review.name}</h4>
@@ -610,12 +604,12 @@ function MentorContent() {
               {/* Certificates Section */}
               {mentor.certificates && mentor.certificates.length > 0 ? (
                 <div className='bg-[#141d18] rounded-2xl p-6'>
-                  <h2 className='text-2xl font-bold text-white mb-4'>Certifications</h2>
-                  <div className='grid md:grid-cols-2 gap-4'>
+                  <h2 className='text-2xl font-bold text-white mb-4'>Certifications/Awards</h2>
+                  <div className='grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-3 grid-cols-2 gap-2'>
                     {mentor.certificates.map((cert, idx) => (
-                      <div key={idx} className='relative h-48 rounded-xl overflow-hidden border border-[#1a2621] hover:border-[#DBFF00] transition-all'>
+                      <div key={idx} className='relative aspect-square rounded-xl overflow-hidden border border-[#1a2621] hover:border-[#DBFF00] transition-all'>
                         <Image 
-                          src={cert || "/placeholder.svg"}
+                          src={cert}
                           alt={`Certificate ${idx + 1}`}
                           fill
                           className='object-cover'
@@ -627,19 +621,16 @@ function MentorContent() {
               ) : null}
 
               {/* Reviews Section */}
-              <div className='bg-[#141d18] lg:block block rounded-2xl p-6'>
-                <h2 className='text-2xl font-bold text-white mb-4'>
+              <div className='bg-[#141d18] lg:block block rounded-2xl p-5'>
+                <h2 className='text-2xl font-bold text-white mb-2'>
                   Reviews {mentor?.totalReviews && mentor?.totalReviews > 0 && `(${mentor.totalReviews})`}
                 </h2>
                 
                 {mentor.reviews && mentor.reviews.length > 0 ? (
-                  <div className='space-y-4'>
+                  <div className='space-y-2'>
                     {mentor.reviews.map((review, idx) => (
                       <div key={idx} className='bg-[#0a120f] rounded-xl p-3 border border-[#1a2621]'>
                         <div className='flex items-start gap-4'>
-                          <div className='w-12 h-12 bg-[#DBFF00] rounded-full flex items-center justify-center text-black font-bold flex-shrink-0'>
-                            {review.name.charAt(0)}
-                          </div>
                           <div className='flex-1'>
                             <div className='flex items-center justify-between mb-2'>
                               <h4 className='text-white font-semibold'>{review.name}</h4>

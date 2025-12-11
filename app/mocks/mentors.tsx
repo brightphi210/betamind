@@ -16,34 +16,33 @@ export const mentors = [
         twitter: 'https://x.com/chibuzorphilip7',
         linkedin: 'https://www.linkedin.com/in/chibuzor-philip12/',
         portfolio: 'https://brightphilip.vercel.app',
-        certificates: [
-            '/assets/cert1.jpg',
-            '/assets/cert2.jpg'
+        awards: [
+            '/assets/award.jpg',
         ],
         rating: 4.8,
         totalReviews: 12,
         reviews: [
-            {
-                name: 'Sarah Johnson',
-                rating: 5,
-                comment: 'Bright is an exceptional mentor! His guidance helped me land my first developer role. He breaks down complex concepts into digestible pieces.',
-                date: '2024-10-15',
-                avatar: '/assets/avatar1.jpg'
-            },
-            {
-                name: 'David Chen',
-                rating: 5,
-                comment: 'Best investment I made in my career. Bright\'s mentorship on mobile development was invaluable. Highly recommend!',
-                date: '2024-09-22',
-                avatar: '/assets/avatar2.jpg'
-            },
-            {
-                name: 'Amaka Obi',
-                rating: 4,
-                comment: 'Very knowledgeable and patient. Helped me understand React Native from scratch. Would definitely book another session.',
-                date: '2024-08-10',
-                avatar: '/assets/avatar3.jpg'
-            }
+            // {
+            //     name: 'Sarah Johnson',
+            //     rating: 5,
+            //     comment: 'Bright is an exceptional mentor! His guidance helped me land my first developer role. He breaks down complex concepts into digestible pieces.',
+            //     date: '2024-10-15',
+            //     avatar: '/assets/avatar1.jpg'
+            // },
+            // {
+            //     name: 'David Chen',
+            //     rating: 5,
+            //     comment: 'Best investment I made in my career. Bright\'s mentorship on mobile development was invaluable. Highly recommend!',
+            //     date: '2024-09-22',
+            //     avatar: '/assets/avatar2.jpg'
+            // },
+            // {
+            //     name: 'Amaka Obi',
+            //     rating: 4,
+            //     comment: 'Very knowledgeable and patient. Helped me understand React Native from scratch. Would definitely book another session.',
+            //     date: '2024-08-10',
+            //     avatar: '/assets/avatar3.jpg'
+            // }
         ]
     },
     {
@@ -136,7 +135,35 @@ export const mentors = [
         dailyMentoringTime: '2 hours',
         twitter: '',
         linkedin: 'https://www.linkedin.com/in/chibuike-anosike-0a52832a5',
-        portfolio: null,
+        portfolio: 'https://drive.google.com/drive/folders/1QsZojQ8oh993vGvuLIbhNYdCw1dRuGxs',
+        certificates: null,
+        rating: 0.0,
+        totalReviews: 0,
+        reviews: []
+    },
+
+    {
+        fullName: 'Anosike Prince Chinedu',
+        title: 'Creative mind behind Princepixel | Graphics Designer',
+        skills: [
+            'Graphics Design',
+            'Brand Design',
+            'Motion Graphics',
+        ],
+
+        bio: 'I’m the creative mind behind Princepixel, where bold ideas meet clean, thoughtful execution. With over five years of hands on experience, I help brands stand out through intentional graphics, brand design, and motion work. I’ve collaborated with teams and organizations like StartupSouth, Tosin Sanni, Proactive Media, the European Association of Geoscientists and Engineers (EAGE), Helixgade, and others. My focus is simple: create visuals that tell a clear story, carry their own personality, and leave a lasting impression.',
+        imgUrl: '/assets/mentor7.png',
+        experience: '5+',
+        category: 'Graphics & Brand Design',
+        sessionTypes: ["1-on-1", "Group"],
+        rates: {
+            oneOnOne: '₦30,000 / session',
+            group: '₦10,000 / person',
+        },
+        dailyMentoringTime: '2 hours',
+        twitter: 'https://x.com/Anosikeprince24?t=oqwfyUUT4ramZ6Ji75Uoug&s=09',
+        linkedin: 'https://www.linkedin.com/in/prince-anosike-9898111a5?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',
+        portfolio: 'https://drive.google.com/drive/folders/1mCfobCEZQiBHB7h9mZGU9j0BzsCSCqc7',
         certificates: null,
         rating: 0.0,
         totalReviews: 0,
