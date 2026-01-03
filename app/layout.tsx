@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-  import { Hanken_Grotesk, Bricolage_Grotesque, Space_Grotesk  } from "next/font/google";
-  import "./globals.css";
-  import Navbar from "./components/Navbar";
-  import Footer from "./components/Footer";
+import { Hanken_Grotesk, Bricolage_Grotesque, Space_Grotesk } from "next/font/google";
+import "./globals.css";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
   const hankenGrotesk = Hanken_Grotesk({
     subsets: ['latin'],

@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
-import { FaCheckCircle, FaUserCheck, FaHandshake, FaGavel } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { FaCheckCircle, FaUserCheck, FaHandshake, FaGavel, FaMoneyBillWave } from 'react-icons/fa';
 
 const MentorPoliciesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,6 +52,17 @@ const MentorPoliciesPage = () => {
         "Honor your scheduled sessions or provide adequate notice for cancellations",
         "Use the platform's communication tools for all mentorship interactions",
         "Comply with pricing guidelines and payment terms"
+      ]
+    },
+    {
+      icon: <FaMoneyBillWave className="text-3xl" />,
+      title: "Payment & Commission",
+      items: [
+        "Betamind charges a 30% commission fee on all mentorship sessions",
+        "Mentors receive 70% of the session fee",
+        "Payments are processed via bank transfer",
+        "All payments are made every weekend by Friday",
+        "Ensure your bank details are accurate and up to date"
       ]
     }
   ];
@@ -115,7 +126,7 @@ const MentorPoliciesPage = () => {
       {/* Policies Section - Flexed */}
       <div className="2xl:px-88 xl:px-40 lg:px-40 px-4 py-10">
         <div className="mx-auto">
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {policies.map((policy, idx) => (
               <div key={idx} className="bg-[#01140a] rounded-2xl p-8 border border-[#1a2621] hover:border-[#DBFF00] transition-all duration-300 flex flex-col">
                 <div className="flex flex-col items-center text-center mb-6">
@@ -201,4 +212,3 @@ const MentorPoliciesPage = () => {
 };
 
 export default MentorPoliciesPage;
-          

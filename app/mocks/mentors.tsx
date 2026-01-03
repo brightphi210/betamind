@@ -105,7 +105,7 @@ export const mentors = [
         dailyMentoringTime: '2-3 hours',
         twitter: '',
         linkedin: 'https://www.linkedin.com/in/igboeche-john-940b28286/',
-        portfolio: null,
+        portfolio: 'https://github.com/Johnfavour20',
         certificates: null,
         rating: 0.0,
         totalReviews: 0,
@@ -164,6 +164,35 @@ export const mentors = [
         twitter: 'https://x.com/Anosikeprince24?t=oqwfyUUT4ramZ6Ji75Uoug&s=09',
         linkedin: 'https://www.linkedin.com/in/prince-anosike-9898111a5?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',
         portfolio: 'https://drive.google.com/drive/folders/1mCfobCEZQiBHB7h9mZGU9j0BzsCSCqc7',
+        certificates: null,
+        rating: 0.0,
+        totalReviews: 0,
+        reviews: []
+    },
+
+
+    {
+        fullName: 'Daniel Ojoma Uhiene',
+        title: 'Multidisciplinary designer ',
+        skills: [
+            'UIUX',
+            'Brand Identity',
+            'Motion Graphics',  
+        ],
+
+        bio: "I'm a multidisciplinary designer, focused on crafting products and experiences, my tools are UI and Motion design",
+        imgUrl: '/assets/mentor8.jpg',
+        experience: '5+',
+        category: 'Brand Design',
+        sessionTypes: ["1-on-1", "Group"],
+        rates: {
+            oneOnOne: '₦40,000 / session',
+            group: '₦10,000 / person',
+        },
+        dailyMentoringTime: '3 hours',
+        twitter: 'https://x.com/belteshazzzar',
+        linkedin: 'https://www.linkedin.com/in/daniel-ojoma-963609205?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',
+        portfolio: null,
         certificates: null,
         rating: 0.0,
         totalReviews: 0,
