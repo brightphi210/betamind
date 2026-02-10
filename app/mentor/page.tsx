@@ -1,11 +1,11 @@
 'use client'
 
-import React, { Suspense, useEffect, useMemo } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Image from 'next/image'
-import { FaXTwitter, FaLinkedinIn, FaStar, FaRegStar } from 'react-icons/fa6'
-import Link from 'next/link'
-import { FaStarHalfAlt } from 'react-icons/fa'
+import { Suspense, useMemo } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
+import { FaXTwitter, FaLinkedinIn, FaStar } from 'react-icons/fa6';
+import Link from 'next/link';
+import { FaStarHalfAlt } from 'react-icons/fa';
 
 interface Review {
   name: string
@@ -672,14 +672,16 @@ function MentorContent() {
             Book your first session today and get personalized guidance
           </p>
           <div className='flex flex-wrap gap-4 justify-center'>
-            <button className='bg-black cursor-pointer text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-900 transition-colors'>
-              Schedule Consultation
-            </button>
-            <Link href='/mentors'>
-              <button className='bg-transparent border-2 border-black cursor-pointer text-black px-8 py-3 rounded-full text-lg font-semibold hover:bg-black hover:text-white transition-colors'>
-                View All Mentors
-              </button>
-            </Link>
+              <a href="https://wa.link/lyrmqd" target="_blank" rel="noopener noreferrer">
+                <button className='bg-black cursor-pointer text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-900 transition-colors'>
+                  Schedule Consultation
+                </button>
+              </a>
+              <Link href='/mentors'>
+                <button className='bg-transparent border-2 border-black cursor-pointer text-black px-8 py-3 rounded-full text-lg font-semibold hover:bg-black hover:text-white transition-colors'>
+                  View All Mentors
+                </button>
+              </Link>
           </div>
         </div>
       </div>
