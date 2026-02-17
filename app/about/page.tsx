@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import { FaXTwitter, FaLinkedinIn, FaGithub } from 'react-icons/fa6';
+import { useEffect, useState } from 'react';
+import { FaXTwitter, FaLinkedinIn } from 'react-icons/fa6';
 import RoleSelectionModal from '../components/SelectModal';
 
 const AboutPage = () => {
@@ -64,7 +64,7 @@ const AboutPage = () => {
     },
     {
       name: "Kelly Edojah",
-      role: "Co-Founder & COO",
+      role: "Content Lead",
       image: "/assets/mentorme3s.jpg",
       bio: "Brand/Content Designer",
       twitter: "https://twitter.com",
@@ -72,7 +72,7 @@ const AboutPage = () => {
     },
     {
       name: "Desire Irechukwu",
-      role: "Content Lead & Community Manager",
+      role: "Lead Community & Marketing Manager ",
       image: "/assets/desire.JPG",
       // image: "/assets/desire2.jpeg",
       bio: "Content Lead, Marketing, Community Manager @Betamind @LetsBuildDao",
