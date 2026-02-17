@@ -299,21 +299,51 @@ export const mentors = [
 
         bio: "I help business owners register and protect their businesses so they can build with confidence",
         imgUrl: '/assets/mentor11.jpg',
-        experience: '7',
+        experience: '3',
         category: 'Marketing',
         sessionTypes: ["1-on-1", "Group"],
         rates: {
             oneOnOne: '30,000 / session',
-            group: '5,000 / person',
+            group: '10,000 / person',
         },
         dailyMentoringTime: '1-2 hours',
         twitter: 'https://x.com/IsraellaIt?t=SYcyE6mL4iI7d9t2GqMN1w&s=09',
         linkedin: null,
-        portfolio: null,
+        portfolio: 'imaaregistrationacademy.com',
         awards: null,
         rating: 0.0,
         totalReviews: 0,
         reviews: []
     },
 
+    {
+        fullName: 'Ayebaemi Prince Anwasi',
+        title: 'Software Engineer, Full-Stack Developer',
+        skills: [
+            'Web Development', 
+            'Mobile Development', 
+            'Project Management',
+            'Business',
+            'Infrastructure'
+
+        ],
+
+        bio: "Hello! I'm Anwasi Prince Ayebaemi, a dedicated Full-Stack Developer and the Co-founder and COO of BMP Inovations. With over 6 years of hands-on experience, I've led teams through the successful delivery of 10+ projects, contributing to a 40% boost in overall productivity. Currently pursuing my Higher National Diploma (HND) or National Diploma (ND) in Computer Software Engineering at NIIT Institute, I thrive on addressing complex challenges and staying at the forefront of technological advancements. My technical proficiency is complemented by a passion for driving innovation and creating solutions that make a meaningful impact. Co-founder and COO of BMP Inovations, where I contribute to the startup’s vision and strategy. Experienced in mentoring and coaching, with skills in project management and digital marketing. Passionate about solving problems, trying new things, and always open to learning. Whether it's crafting robust code, collaborating with cross-functional teams, or embracing the latest industry trends, I approach each project with a commitment to excellence. Let's connect and explore how my skills and enthusiasm can elevate your team's success.",
+        imgUrl: '/assets/mentor12.jpg',
+        experience: '6+',
+        category: 'Software Development',
+        sessionTypes: ["1-on-1", "Group"],
+        rates: {
+            oneOnOne: '40,000 / session',
+            group: '8,000 / person',
+        },
+        dailyMentoringTime: '1-2 hours',
+        twitter: 'https://x.com/AyebaemiA',
+        linkedin: 'https://ng.linkedin.com/in/ayebaemi-anwasi-b99854259',
+        portfolio: 'https://my-react-portfolio-ayewealth.vercel.app/',
+        awards: null,
+        rating: 0.0,
+        totalReviews: 0,
+        reviews: []
+    },
 ]

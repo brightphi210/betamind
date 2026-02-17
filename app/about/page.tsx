@@ -63,6 +63,14 @@ const AboutPage = () => {
       linkedin: "https://linkedin.com/in/emeka-michael-2059a3230/"
     },
     {
+      name: "Ayebaemi Prince Anwasi",
+      role: "Co-Founder & COO",
+      image: "/assets/mentor12.jpg",
+      bio: "Software Engineer, Full-Stack Developer",
+      twitter: "https://x.com/AyebaemiA",
+      linkedin: "https://ng.linkedin.com/in/ayebaemi-anwasi-b99854259"
+    },
+    {
       name: "Kelly Edojah",
       role: "Content Lead",
       image: "/assets/mentorme3s.jpg",
@@ -70,6 +78,8 @@ const AboutPage = () => {
       twitter: "https://twitter.com",
       linkedin: "https://linkedin.com"
     },
+
+
     {
       name: "Desire Irechukwu",
       role: "Lead Community & Marketing Manager ",

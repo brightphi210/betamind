@@ -28,11 +28,6 @@ body {
 }
 
 
-.swiper-button-prev, .swiper-button-next{
-  /* border-radius: 50%;
-  padding: 5px; */
-}
-
 .swiper-button-next .swiper-navigation-icon{
   width: 35px;
   height: 35px;
