@@ -156,6 +156,7 @@ function MentorContent() {
                     className='object-cover'
                     priority
                     quality={100}
+                    unoptimized
                   />
                 </div>
 
@@ -674,7 +675,7 @@ function MentorContent() {
           <div className='flex flex-wrap gap-4 justify-center'>
               <a href="https://wa.link/lyrmqd" target="_blank" rel="noopener noreferrer">
                 <button className='bg-black cursor-pointer text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-900 transition-colors'>
-                  Schedule Consultation
+                  Book this Mentor
                 </button>
               </a>
               <Link href='/mentors'>
