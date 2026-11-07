@@ -1,295 +1,196 @@
 'use client'
 
-import React, { useState } from 'react'
-import Link from 'next/link'
-import { FaXTwitter, FaLinkedinIn } from 'react-icons/fa6'
+/**
+ * Save as app/contact/page.tsx
+ * (imports ../ui, i.e. app/ui.tsx)
+ */
 
-const Support = () => {
-  const [openFaq, setOpenFaq] = useState<number | null>(null)
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  })
+import { RiArrowRightUpLine, RiMailLine, RiPhoneLine, RiWhatsappFill } from 'react-icons/ri';
+import { B, Eyebrow, H2, LIME, Lime, Reveal, Section, cardClass } from '../components/UI';
 
-  const toggleFaq = (index: number) => {
-    setOpenFaq(openFaq === index ? null : index)
-  }
+const NUMBER_LOCAL = '09041204694';
+const NUMBER_INTL = '2349041204694'; // 0904… → +234 904…
+const EMAIL = 'betamind123@gmail.com';
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
-  }
+const waLink = (text: string) => `https://wa.me/${NUMBER_INTL}?text=${encodeURIComponent(text)}`;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle form submission
-    console.log('Form submitted:', formData)
-    // Reset form
-    setFormData({ name: '', email: '', subject: '', message: '' })
-  }
+/**
+ * QR code for https://wa.me/2349041204694 (error correction M).
+ * Each string is one row; "1" = dark module.
+ */
+const QR_ROWS = [
+  '11111110001111110001001111111', '10000010011011111010001000001', '10111010110001010011001011101',
+  '10111010111000110110101011101', '10111010110100011001001011101', '10000010101010000000101000001',
+  '11111110101010101010101111111', '00000000100110101010000000000', '10111110011010001110101111100',
+  '01001000101011110001011110001', '00100110010001111100000110000', '10010101101111010010100101010',
+  '01111111100010110110110001100', '01010000010100011101011110001', '01011110001100000010001001100',
+  '11110100110000101000001100010', '00110010110010001110110001100', '10011100010111110001001010101',
+  '10010011110101111000110110100', '10011000011001010010011010010', '10110111100000110011111110111',
+  '00000000101000011011100011111', '11111110000110000011101011100', '10000010111000101010100010001',
+  '10111010110010001010111110111', '10111010101001110110010001100', '10111010111100011101001111110',
+  '10000010001101110111110101010', '11111110111100010000001111100',
+];
 
-  const faqs = [
-    {
-      category: "Getting Started",
-      questions: [
-        {
-          question: "How do I get started with Betamind?",
-          answer: "Getting started is simple! Browse our mentor directory, select a mentor that matches your goals, and book your first session. You can filter mentors by expertise, availability, and language to find the perfect match."
-        },
-        {
-          question: "How much does mentorship cost?",
-          answer: "Each mentor sets their own rates, which are displayed on their profile. We believe in transparent pricing with no hidden fees. Many mentors offer flexible packages and discounted rates for multiple sessions."
-        },
-        {
-          question: "What types of sessions are available?",
-          answer: "Mentors offer various session types including 1-on-1 consultations, group sessions, and workshops. Session formats can be video calls, phone calls, or async messaging depending on the mentor's offerings."
-        }
-      ]
-    },
-    {
-      category: "For Mentees",
-      questions: [
-        {
-          question: "How do I choose the right mentor?",
-          answer: "Review mentor profiles carefully, looking at their expertise, experience, and bio. Check their session types and availability. You can also reach out to mentors with questions before booking to ensure they're the right fit for your goals."
-        },
-        {
-          question: "Can I reschedule or cancel a session?",
-          answer: "Yes, you can reschedule or cancel sessions according to each mentor's cancellation policy, which is stated on their profile. We recommend giving at least 24 hours notice when possible."
-        },
-        {
-          question: "How are sessions conducted?",
-          answer: "Most sessions are conducted via video call through our platform. Some mentors also offer phone calls or async messaging. The session format will be clearly stated when you book."
-        }
-      ]
-    },
-    {
-      category: "For Mentors",
-      questions: [
-        {
-          question: "How do I become a mentor on Betamind?",
-          answer: "We carefully vet all mentors to ensure quality. Apply through our 'Become a Mentor' page, providing details about your expertise and experience. Our team will review your application and get back to you within 5-7 business days."
-        },
-        {
-          question: "How do I set my rates?",
-          answer: "You have full control over your pricing. Set your hourly rate, package prices, and availability based on your expertise and schedule. You can update your rates at any time from your mentor dashboard."
-        },
-        {
-          question: "How and when do I get paid?",
-          answer: "Payments are processed securely through our platform. You'll receive payment within 7 days after a completed session. We support multiple payout methods including bank transfer and digital wallets."
-        }
-      ]
-    },
-    {
-      category: "Technical Support",
-      questions: [
-        {
-          question: "What if I experience technical issues during a session?",
-          answer: "If you encounter technical difficulties, contact our support team immediately. We'll work to resolve the issue quickly. If a session is significantly impacted, we'll work with both parties to reschedule or provide a refund."
-        },
-        {
-          question: "What are the system requirements?",
-          answer: "For video sessions, you'll need a stable internet connection, a device with a camera and microphone, and an updated web browser (Chrome, Firefox, or Safari recommended). Mobile app is also available for iOS and Android."
-        },
-        {
-          question: "Is my data secure?",
-          answer: "Absolutely. We use industry-standard encryption to protect your personal information and payment details. We never share your data with third parties without your consent. Read our Privacy Policy for more details."
-        }
-      ]
+const QRCode = () => {
+  const n = QR_ROWS.length;
+  const q = 4; // quiet zone
+  const d = QR_ROWS.map((row, y) => {
+    let out = '';
+    let x = 0;
+    while (x < n) {
+      if (row[x] === '1') {
+        let w = 1;
+        while (x + w < n && row[x + w] === '1') w++;
+        out += `M${x + q} ${y + q}h${w}v1h-${w}z`;
+        x += w;
+      } else x++;
     }
-  ]
-
-  const supportOptions = [
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-      ),
-      title: "Email Support",
-      description: "Get help via email",
-      contact: "betamind123@gmail.com",
-      link: "mailto:betamind123@gmail.com"
-    },  
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
-      ),
-      title: "Live Chat",
-      description: "Chat with our team",
-      contact: "Available 9am - 6pm WAT",
-      link: "https://chat.whatsapp.com/C86un93PjdhDZQLEkIuxTP?mode=wwt"
-    },
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
-      ),
-      title: "Contact us",
-      description: "09041204694",
-      contact: "Call/Whatsapp",
-    //   link: "#"
-    }
-  ]
+    return out;
+  }).join('');
 
   return (
-    <div className="min-h-screen bg-[#020c08] text-white">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#000804] to-[#000c05] border-b border-gray-900 lg:pt-40 pt-32 lg:pb-20 pb-10 px-5 2xl:px-88 xl:px-40 lg:px-40">
-        <div className="absolute inset-0 opacity-10">
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="support-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-                <circle cx="30" cy="30" r="2" fill="#DBFF00" opacity="0.3"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#support-pattern)"/>
-          </svg>
-        </div>
+    <svg
+      viewBox={`0 0 ${n + q * 2} ${n + q * 2}`}
+      role="img"
+      aria-label="QR code: scan to chat with Betamind customer care on WhatsApp"
+      shapeRendering="crispEdges"
+      className="h-full w-full"
+    >
+      <rect width="100%" height="100%" fill="#fff" />
+      <path d={d} fill="#111" />
+    </svg>
+  );
+};
 
-        <div className="relative mx-auto text-center lg:pt-10">
-          <div className="inline-block mb-6 px-4 py-2 bg-[#DBFF00] bg-opacity-10 border border-[#DBFF00] rounded-full">
-            <span className="text-black text-sm font-semibold">Support Center</span>
-          </div>
-          <h1 className="lg:text-5xl text-4xl font-bold mb-6 leading-snug">
-            How Can We
-            <span className="text-[#DBFF00]"> Help You?</span>
-          </h1>
-          <p className="text-base text-gray-400 max-w-2xl mx-auto">
-            Get answers to your questions, contact our support team, or browse our FAQ section
-          </p>
-        </div>
-      </div>
+const topics = [
+  { t: "I'm attending an event", d: 'Tickets, registration, reminders and event questions.', msg: "Hello Betamind, I need help with an event I'm attending." },
+  { t: "I'm hosting an event", d: 'Creating events, ticketing and attendee communication.', msg: "Hello Betamind, I'd like help with hosting an event." },
+  { t: 'Mentorship & products', d: 'Booking mentors, becoming a mentor and digital products.', msg: "Hello Betamind, I have a question about mentorship or digital products." },
+];
 
-      {/* Support Options */}
-      <div className="2xl:px-88 xl:px-40 lg:px-40 px-4 py-20">
-        <div className="mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4">Get in Touch</h2>
-            <p className="text-gray-400 text-base">Choose your preferred way to reach us</p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
-            {supportOptions.map((option, idx) => (
-              <a
-                key={idx}
-                href={option.link}
-                className="bg-[#01140a] border border-[#1a2621] hover:border-[#DBFF00] rounded-2xl p-8 transition-all duration-300 hover:transform hover:-translate-y-1 group"
-              >
-                <div className="w-16 h-16 bg-[#DBFF00] rounded-xl flex items-center justify-center text-black mb-6 group-hover:scale-110 transition-transform">
-                  {option.icon}
-                </div>
-                <h3 className="text-xl font-bold mb-2">{option.title}</h3>
-                <p className="text-gray-400 text-sm mb-3">{option.description}</p>
-                <p className="text-[#DBFF00] text-sm font-semibold">{option.contact}</p>
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
+const ContactPage = () => {
+  return (
+    <main className="bg-black text-white">
+      {/* ============ HERO (dark) ============ */}
+      <Section hero shade>
+        <div className="grid items-center gap-14 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
+          <Reveal>
+            <Eyebrow>Contact</Eyebrow>
+            <h1 className="text-5xl font-light leading-[0.98] tracking-tighter sm:text-6xl lg:text-[68px]">
+              Talk to a <Lime>real person.</Lime>
+            </h1>
+            <p className="mt-8 max-w-md text-[17px] leading-relaxed text-white/80">
+              Our <B>customer care team</B> is on WhatsApp. Tap the icon to start a chat, or scan the QR code with your phone.
+            </p>
 
-      {/* FAQ Section */}
-      <div className="2xl:px-88 xl:px-40 lg:px-40 px-4 py-20 bg-[#01140a]">
-        <div className="mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
-            <p className="text-gray-400 text-base">Find quick answers to common questions</p>
-          </div>
+            <a
+              href={waLink('Hello Betamind, I need some help.')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group mt-10 inline-flex items-center gap-5 rounded-full border border-white/10 bg-white/5 py-2 pl-2 pr-6 transition-colors hover:bg-white/10"
+            >
+              <span className="relative flex h-16 w-16 items-center justify-center rounded-full bg-[#25D366] text-4xl text-white shadow-[0_0_30px_rgba(37,211,102,0.35)] transition-transform group-hover:scale-105">
+                <span aria-hidden className="absolute inset-0 animate-ping rounded-full bg-[#25D366]/40" />
+                <RiWhatsappFill className="relative" />
+              </span>
+              <span>
+                <span className="block text-sm font-semibold">Chat on WhatsApp</span>
+                <span className="block text-sm text-white/60">{NUMBER_LOCAL}</span>
+              </span>
+            </a>
+          </Reveal>
 
-          <div className="max-w-4xl mx-auto space-y-8">
-            {faqs.map((category, catIdx) => (
-              <div key={catIdx}>
-                <h3 className="text-2xl font-bold text-[#DBFF00] mb-4">{category.category}</h3>
-                <div className="space-y-3">
-                  {category.questions.map((faq, faqIdx) => {
-                    const uniqueIdx = catIdx * 100 + faqIdx
-                    return (
-                      <div
-                        key={uniqueIdx}
-                        className="bg-[#011409] border border-[#1a2621] rounded-xl overflow-hidden"
-                      >
-                        <button
-                          onClick={() => toggleFaq(uniqueIdx)}
-                          className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[#01140a] transition-colors"
-                        >
-                          <span className="font-semibold text-white pr-4">{faq.question}</span>
-                          <svg
-                            className={`w-5 h-5 text-[#DBFF00] flex-shrink-0 transition-transform ${
-                              openFaq === uniqueIdx ? 'rotate-180' : ''
-                            }`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </button>
-                        {openFaq === uniqueIdx && (
-                          <div className="px-6 pb-5">
-                            <p className="text-gray-400 text-sm leading-relaxed">{faq.answer}</p>
-                          </div>
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
+          <Reveal delay={150} className="flex justify-center lg:justify-end">
+            <div className="w-full max-w-[300px] rounded-[28px] border-t-2 border-[#C8F34D] bg-white p-5 text-[#111] shadow-2xl">
+              <div className="aspect-square w-full overflow-hidden rounded-2xl">
+                <QRCode />
               </div>
-            ))}
-          </div>
+              <p className="mt-4 text-center text-sm font-semibold">Scan to chat on WhatsApp</p>
+              <p className="mt-1 text-center text-xs text-black/60">Point your phone camera at the code</p>
+            </div>
+          </Reveal>
         </div>
-      </div>
+      </Section>
 
-
-      {/* Additional Resources */}
-      <div className="2xl:px-88 xl:px-40 lg:px-40 px-4 py-20 bg-[#01140a]">
-        <div className="mx-auto text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-4">Still Need Help?</h2>
-          <p className="text-gray-400 text-base mb-8 max-w-2xl mx-auto">
-            Connect with our community on social media or explore our resource center for more information
-          </p>
-          
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <a
-              href="https://twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-12 h-12 bg-[#1a2621] hover:bg-[#DBFF00] rounded-full flex items-center justify-center transition-colors group"
-            >
-              <FaXTwitter className="text-white group-hover:text-black text-xl" />
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-12 h-12 bg-[#1a2621] hover:bg-[#DBFF00] rounded-full flex items-center justify-center transition-colors group"
-            >
-              <FaLinkedinIn className="text-white group-hover:text-black text-xl" />
-            </a>
+      {/* ============ TOPICS (light) ============ */}
+      <Section tone="light">
+        <Reveal>
+          <Eyebrow>How can we help?</Eyebrow>
+          <div className="max-w-3xl">
+            <H2>Pick a topic and we&apos;ll <Lime>start the chat.</Lime></H2>
           </div>
+        </Reveal>
 
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/about">
-              <button className="bg-transparent border-2 border-[#DBFF00] text-[#DBFF00] px-8 py-3 rounded-full font-semibold hover:bg-[#DBFF00] hover:text-black transition-colors">
-                About Betamind
-              </button>
-            </Link>
-            <Link href="/mentors">
-              <button className="bg-[#DBFF00] text-black px-8 py-3 rounded-full font-semibold hover:bg-[#c4e600] transition-colors">
-                Browse Mentors
-              </button>
-            </Link>
-          </div>
+        <div className="mt-14 grid gap-6 md:grid-cols-3">
+          {topics.map((t, i) => (
+            <Reveal key={t.t} delay={i * 120}>
+              <a
+                href={waLink(t.msg)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${cardClass(true)} group flex h-full flex-col justify-between p-7 transition-shadow hover:shadow-xl`}
+              >
+                <div>
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#25D366] text-2xl text-white">
+                    <RiWhatsappFill />
+                  </span>
+                  <h3 className="mt-8 text-2xl font-normal leading-tight tracking-tight">{t.t}</h3>
+                  <p className="mt-3 text-[15px] leading-relaxed text-black/70">{t.d}</p>
+                </div>
+                <span className="mt-8 flex items-center gap-2 text-sm font-semibold">
+                  Chat with us
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-black/5 transition-colors group-hover:bg-[#C8F34D]">
+                    <RiArrowRightUpLine />
+                  </span>
+                </span>
+              </a>
+            </Reveal>
+          ))}
         </div>
-      </div>
-    </div>
-  )
-}
+      </Section>
 
-export default Support
+      {/* ============ DETAILS (dark) ============ */}
+      <Section>
+        <Reveal>
+          <Eyebrow>Other ways to reach us</Eyebrow>
+        </Reveal>
+        <div className="grid gap-5 md:grid-cols-3">
+          {[
+            { icon: <RiPhoneLine />, label: 'Phone', value: NUMBER_LOCAL, href: `tel:${NUMBER_LOCAL}` },
+            { icon: <RiMailLine />, label: 'Email', value: EMAIL, href: `mailto:${EMAIL}` },
+            { icon: <RiWhatsappFill />, label: 'WhatsApp', value: NUMBER_LOCAL, href: waLink('Hello Betamind, I need some help.') },
+          ].map((c, i) => (
+            <Reveal key={c.label} delay={i * 100}>
+              <a
+                href={c.href}
+                {...(c.label === 'WhatsApp' ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:bg-white/[0.07]"
+              >
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-2xl" style={{ background: 'rgba(200,243,77,0.12)', color: LIME }}>
+                  {c.icon}
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-xs uppercase tracking-wide text-white/50">{c.label}</span>
+                  <span className="block truncate text-[15px] font-semibold">{c.value}</span>
+                </span>
+              </a>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+
+      {/* Floating WhatsApp button */}
+      <a
+        href={waLink('Hello Betamind, I need some help.')}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat with customer care on WhatsApp"
+        className="fixed bottom-5 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-3xl text-white shadow-xl transition-transform hover:scale-110"
+      >
+        <RiWhatsappFill />
+      </a>
+    </main>
+  );
+};
+
+export default ContactPage;

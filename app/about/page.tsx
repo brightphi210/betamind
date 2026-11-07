@@ -1,330 +1,174 @@
 'use client'
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { FaXTwitter, FaLinkedinIn } from 'react-icons/fa6';
-import RoleSelectionModal from '../components/SelectModal';
+/**
+ * Save as app/about/page.tsx
+ * (imports ../ui, i.e. app/ui.tsx)
+ */
 
-const AboutPage = () => {
-      const [isModalOpen, setIsModalOpen] = useState(false);
-    useEffect(() => {
-      if (isModalOpen) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = 'unset';
-      }
-      
-      return () => {
-        document.body.style.overflow = 'unset';
-      };
-    }, [isModalOpen]);
-  
-    const handleGetStarted = (e: any) => {
-      e.preventDefault();
-      setIsModalOpen(true);
-    };
-  
+import { useEffect, useRef, useState } from 'react';
+import { RiArrowLeftLine, RiArrowRightLine } from 'react-icons/ri';
+import { B, Eyebrow, GhostBtn, H2, LIME, Lime, PrimaryBtn, Reveal, Section, SectionHead, cardClass } from '../components/UI';
+
+// DUMMY team: replace names, roles and photos with your real team
+const team = [
+  { name: 'Amaka Obi', role: 'Founder & CEO', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&q=80' },
+  { name: 'Tunde Bakare', role: 'Head of Product', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&q=80' },
+  { name: 'Ifeoma Nnadi', role: 'Community Lead', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=800&q=80' },
+  { name: 'Emeka Johnson', role: 'Lead Engineer', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&q=80' },
+  { name: 'Sade Williams', role: 'Design Lead', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80' },
+  { name: 'Kelechi Okafor', role: 'Partnerships', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80' },
+];
+
+const values = [
+  { n: '01', t: 'Access', d: 'Empowering growth through affordable, accessible mentorship for everyone.' },
+  { n: '02', t: 'Experience', d: 'Learning from people who have been there is one of the fastest ways to move forward.' },
+  { n: '03', t: 'Community', d: 'The right room changes things. We help people find it, and help people build it.' },
+];
+
+/** Team carousel: arrows, dots, drag/swipe, and a gentle autoplay that pauses on hover */
+const TeamCarousel = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const paused = useRef(false);
+  const [idx, setIdx] = useState(0);
+
+  const step = () => {
+    const card = ref.current?.firstElementChild as HTMLElement | null;
+    return card ? card.offsetWidth + 20 : 300;
+  };
+  const scrollBy = (d: number) => ref.current?.scrollBy({ left: d * step(), behavior: 'smooth' });
+  const scrollToIdx = (i: number) => ref.current?.scrollTo({ left: i * step(), behavior: 'smooth' });
+
+  const onScroll = () => {
+    const el = ref.current;
+    if (el) setIdx(Math.min(team.length - 1, Math.round(el.scrollLeft / step())));
+  };
+
   useEffect(() => {
-    // Simple scroll reveal effect
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('reveal');
-        }
-      });
-    }, observerOptions);
-
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-    return () => observer.disconnect();
+    const t = setInterval(() => {
+      const el = ref.current;
+      if (!el || paused.current) return;
+      const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 8;
+      if (atEnd) el.scrollTo({ left: 0, behavior: 'smooth' });
+      else el.scrollBy({ left: step(), behavior: 'smooth' });
+    }, 4500);
+    return () => clearInterval(t);
   }, []);
 
-  const teamMembers = [
-    {
-      name: "Bright Philip",
-      role: "Founder & CEO",
-      image: '/assets/mentorme1.png',
-      bio: "Software Engineer, Creator of @BetaUI, Co-Builder @Creve",
-      twitter: "https://x.com/chibuzorphilip7",
-      linkedin: "https://www.linkedin.com/in/chibuzor-philip12/",
-    },
-    {
-      name: "Emeka Michael Awa",
-      role: "Co-Founder & CTO",
-      image: "/assets/mentorme2.jpg",
-      bio: "Software Engineer, Co-Builder @Creve",
-      twitter: "https://x.com/Mictovic",
-      linkedin: "https://linkedin.com/in/emeka-michael-2059a3230/"
-    },
-    {
-      name: "Ayebaemi Prince Anwasi",
-      role: "Co-Founder & COO",
-      image: "/assets/mentor12.jpg",
-      bio: "Software Engineer, Full-Stack Developer",
-      twitter: "https://x.com/AyebaemiA",
-      linkedin: "https://ng.linkedin.com/in/ayebaemi-anwasi-b99854259"
-    },
-    {
-      name: "Kelly Edojah",
-      role: "Content Lead",
-      image: "/assets/mentorme3s.jpg",
-      bio: "Brand/Content Designer",
-      twitter: "https://twitter.com",
-      linkedin: "https://linkedin.com"
-    },
-
-
-    {
-      name: "Desire Irechukwu",
-      role: "Lead Community & Marketing Manager ",
-      image: "/assets/desire.JPG",
-      // image: "/assets/desire2.jpeg",
-      bio: "Content Lead, Marketing, Community Manager @Betamind @LetsBuildDao",
-      twitter: "https://x.com/Desire_scribe?t=FtDGkvNxDjNA8805-NwN-A&s",
-      linkedin: "https://www.linkedin.com/in/desire-irechukwu-897870313/",
-    },
-  ];
-
-  const values = [
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-      ),
-      title: "Accessible to All",
-      description: "Mentorship shouldn't be limited by privilege or proximity. We make quality guidance available to everyone, everywhere."
-    },
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
-      ),
-      title: "Fully Vetted Mentors",
-      description: "Every mentor on Betamind is carefully vetted to ensure you receive authentic guidance from experienced professionals."
-    },
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-      ),
-      title: "Real Progress",
-      description: "We're built for tangible growth. Our platform focuses on meaningful connections that drive real skill development and career advancement."
-    },
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-        </svg>
-      ),
-      title: "Affordable & Transparent",
-      description: "No hidden costs, no barriers. We believe quality mentorship should be affordable and transparent for everyone."
-    }
-  ];
-
-
-
   return (
-    <div className="min-h-screen bg-[#020c08] text-white">
-
-      <RoleSelectionModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-      />
-
-      {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#000804] to-[#000c05] border-b border-gray-900 lg:pt-40 pt-32 lg:pb-20 pb-10 px-5 lg:px-20">
-        {/* Decorative Background */}
-        <div className="absolute inset-0 opacity-10">
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="about-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-                <circle cx="30" cy="30" r="2" fill="#DBFF00" opacity="0.3"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#about-pattern)"/>
-          </svg>
-        </div>
-
-        <div className="relative max-w-6xl mx-auto text-center lg:pt-10">
-          <div className="inline-block mb-6 px-4 py-2 bg-[#DBFF00] bg-opacity-10 border border-[#DBFF00] rounded-full">
-            <span className="text-black text-sm font-semibold">About Us</span>
+    <div
+      onMouseEnter={() => (paused.current = true)}
+      onMouseLeave={() => (paused.current = false)}
+      onFocus={() => (paused.current = true)}
+      onBlur={() => (paused.current = false)}
+    >
+      <div
+        ref={ref}
+        onScroll={onScroll}
+        className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {team.map((m) => (
+          <div
+            key={m.name}
+            className="group relative h-[400px] w-[78%] shrink-0 snap-start overflow-hidden rounded-3xl sm:w-[46%] lg:w-[calc((100%-2.5rem)/3)]"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={m.img} alt={m.name} className="absolute inset-0 h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-6">
+              <p className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: LIME }}>{m.role}</p>
+              <h3 className="mt-1 text-2xl font-bold tracking-tight">{m.name}</h3>
+            </div>
           </div>
-          <h1 className="lg:text-5xl text-4xl font-bold mb-6 leading-snug">
-            Building Better Minds <br className='lg:block hidden'/> Through
-            <span className="mt-2 text-[#DBFF00]"> Mentorship</span>
-          </h1>
-          <p className="text-base text-gray-400 max-w-3xl mx-auto mb-0 ">
-            At Betamind, we believe that growth starts with guidance. We are a mentorship platform 
-            built to make access to quality mentorship easy, affordable, and meaningful.
-          </p>
-        </div>
+        ))}
       </div>
 
-      {/* Stats Section */}
-      {/* <div className="px-5 lg:px-20 py-16 fade-in">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8">
-          {stats.map((stat, idx) => (
-            <div key={idx} className="text-center p-6 bg-[#141d18] rounded-2xl border border-[#1a2621]">
-              <div className="text-4xl lg:text-5xl font-bold text-[#DBFF00] mb-2">{stat.number}</div>
-              <div className="text-gray-400">{stat.label}</div>
-            </div>
+      <div className="mt-4 flex items-center justify-between">
+        <div className="flex gap-2">
+          {team.map((m, i) => (
+            <button
+              key={m.name}
+              onClick={() => scrollToIdx(i)}
+              aria-label={`Go to ${m.name}`}
+              className={`h-2 rounded-full transition-all duration-300 ${i === idx ? 'w-6 bg-[#C8F34D]' : 'w-2 bg-white/30 hover:bg-white/50'}`}
+            />
           ))}
         </div>
-      </div> */}
-
-      {/* Mission Section */}
-      <div className="2xl:px-88 xl:px-40 lg:px-40 px-4 py-10">
-        <div className="mx-auto">
-          <div className="lg:grid lg:grid-cols-2 flex flex-col-reverse lg:gap-8 gap-4 items-center">
-            <div className="fade-in">
-              <h2 className="text-4xl lg:text-5xl font-bold mb-6">Our Mission</h2>
-              <p className="text-gray-300 text-base mb-6 leading-relaxed">
-                We understand that mentorship shouldn't be limited to privilege or proximity. That's why 
-                Betamind brings mentorship closer to you — through a platform that's flexible, transparent, 
-                and built for real progress.
-              </p>
-              <p className="text-gray-300 text-base leading-relaxed">
-                At the heart of Betamind is a community of fully vetted mentors across different fields 
-                who are ready to share their experience, guide your learning process, and help you reach 
-                your next level — all without the barriers of cost or access.
-              </p>
-              <div className="mt-8 p-6 bg-[#DBFF00] bg-opacity-10 border-l-4 border-[#DBFF00] rounded-lg">
-                <p className="text-black text-base font-semibold italic">
-                  "Because at Betamind, we don't just connect mentors and mentees — we build better minds."
-                </p>
-              </div>
-            </div>
-            <div className="relative h-[400px] lg:h-[500px] rounded-3xl overflow-hidden">
-               <Image 
-                src={'/assets/mentorme5.jpg'}
-                alt='patter'
-                width={0}
-                height={0}
-                priority
-                quality={100}
-                unoptimized
-                className='w-full'
-                />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#020c08] via-transparent to-transparent"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Values Section */}
-      <div className="2xl:px-88 xl:px-40 lg:px-40 px-4 py-20 bg-[#01140a]">
-        <div className="mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4">Our Core Values</h2>
-            <p className="text-base text-gray-400">The principles that guide everything we do</p>
-          </div>
-          <div className="grid md:grid-cols-2 2xl:grid-cols-3 xl:grid-cols-3 lg:grid-cols-3 gap-4">
-            {values.map((value, idx) => (
-              <div key={idx} className="bg-[#011409] rounded-2xl p-5 ease-linear delay-200 transition-all border border-[#1a2621] hover:border-[#DBFF00]">
-                <div className="w-16 h-16 bg-[#DBFF00] rounded-xl flex items-center justify-center text-black mb-4">
-                  {value.icon}
-                </div>
-                <h3 className="text-xl font-bold mb-3">{value.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{value.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Team Section */}
-      <div className="2xl:px-88 xl:px-40 lg:px-40 px-4 py-20">
-        <div className="mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4">Meet the Team</h2>
-            <p className="text-xl text-gray-400">The passionate people behind the vision</p>
-          </div>
-          <div className="grid md:grid-cols-2 2xl:grid-cols-3 xl:grid-cols-3 lg:grid-cols-3 gap-4">
-            {teamMembers.map((member, idx) => (
-              <div key={idx} className="group">
-                <div className="bg-[#01140a] rounded-2xl overflow-hidden border border-[#1a2621] hover:border-[#DBFF00] transition-all duration-300">
-                  <div className="relative h-80 overflow-hidden">
-                    <img 
-                      src={member.image} 
-                      alt={member.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#01140a] via-transparent to-transparent"></div>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-2xl font-bold mb-1">{member.name}</h3>
-                    <p className="text-[#DBFF00] mb-4">{member.role}</p>
-                    <p className="text-gray-400 text-sm mb-6 leading-relaxed">{member.bio}</p>
-                    <div className="flex items-center gap-3">
-                      {member.twitter && (
-                        <a 
-                          href={member.twitter}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-10 h-10 bg-[#1a2621] hover:bg-[#DBFF00] rounded-full flex items-center justify-center transition-colors group/icon"
-                        >
-                          <FaXTwitter className="text-white group-hover/icon:text-black text-lg" />
-                        </a>
-                      )}
-                      {member.linkedin && (
-                        <a 
-                          href={member.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-10 h-10 bg-[#1a2621] hover:bg-[#DBFF00] rounded-full flex items-center justify-center transition-colors group/icon"
-                        >
-                          <FaLinkedinIn className="text-white group-hover/icon:text-black text-lg" />
-                        </a>
-                      )}
-                     
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* CTA Section */}
-      <div className="2xl:px-88 xl:px-40 lg:px-40 px-4 py-20 bg-linear-to-b from-transparent to-[#010e06]">
-        <div className="mx-auto text-center">
-          <div className="bg-linear-to-br from-[#DBFF00] to-[#b8d900] rounded-3xl p-12 lg:p-16">
-            <h2 className="text-4xl lg:text-5xl font-bold text-black mb-6">
-              Join Our Growing Community
-            </h2>
-            <p className="text-xl text-gray-800 mb-8">
-              Whether you're looking for guidance or ready to share your expertise, 
-              there's a place for you here.
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-                <div>
-                    <Link href={'/mentors'}>
-                        <button className="bg-black text-white px-8 cursor-pointer py-4 rounded-full text-lg font-semibold hover:bg-gray-900 transition-colors">
-                            Browse Mentors
-                        </button>
-                    </Link>
-                </div>
-
-                <div>
-                    <button onClick={handleGetStarted} className="bg-transparent border-2 border-black text-black px-8 py-4 rounded-full text-lg font-semibold cursor-pointer transition-colors">
-                        Get Started
-                    </button>
-                </div>
-            </div>
-          </div>
+        <div className="flex gap-3">
+          <button onClick={() => scrollBy(-1)} aria-label="Previous" className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"><RiArrowLeftLine /></button>
+          <button onClick={() => scrollBy(1)} aria-label="Next" className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"><RiArrowRightLine /></button>
         </div>
       </div>
     </div>
+  );
+};
+
+const AboutPage = () => {
+  return (
+    <main className="bg-black text-white">
+      {/* ============ HERO (dark) ============ */}
+      <Section hero shade>
+        <Reveal className="max-w-3xl">
+          <Eyebrow>About Betamind</Eyebrow>
+          <h1 className="text-5xl font-light leading-[0.98] tracking-tighter sm:text-6xl lg:text-[72px]">
+            Where curiosity meets <Lime>opportunity.</Lime>
+          </h1>
+          <p className="mt-8 max-w-xl text-[17px] leading-relaxed text-white/80">
+            <B>Betamind</B> brings <B>events, mentors and knowledge</B> together in one place, so people spend less time searching and more time doing.
+          </p>
+          <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-white/80">
+            We believe <B>growth should be affordable and accessible</B>, and that the right room, the right person or the right resource can change what happens next.
+          </p>
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            <PrimaryBtn href="/#explore">Explore Betamind</PrimaryBtn>
+            <GhostBtn href="/contact">Contact us</GhostBtn>
+          </div>
+        </Reveal>
+      </Section>
+
+      {/* ============ WHAT WE BELIEVE (light) ============ */}
+      <Section tone="light">
+        <Reveal>
+          <Eyebrow>What we believe</Eyebrow>
+          <div className="max-w-3xl">
+            <H2>Good things happen when people are <Lime>connected.</Lime></H2>
+          </div>
+        </Reveal>
+
+        <div className="mt-14 grid gap-6 md:grid-cols-3">
+          {values.map((v, i) => (
+            <Reveal key={v.n} delay={i * 120}>
+              <div className={`${cardClass(true)} h-full p-7`}>
+                <p className="mb-10 text-sm font-semibold text-black/50">{v.n}</p>
+                <h3 className="text-3xl font-normal tracking-tighter">{v.t}</h3>
+                <p className="mt-3 text-[15px] leading-relaxed text-black/70">{v.d}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+
+      {/* ============ TEAM (dark) ============ */}
+      <Section>
+        <SectionHead eyebrow="The team" title={<>The people behind <Lime>Betamind.</Lime></>}>
+          <p>A team that cares about making the right room easier to find, whether you are attending, mentoring or creating.</p>
+        </SectionHead>
+        <Reveal className="mt-14">
+          <TeamCarousel />
+        </Reveal>
+      </Section>
+
+      {/* ============ CTA (light) ============ */}
+      <Section tone="light">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <div className="flex justify-center"><Eyebrow>Get in touch</Eyebrow></div>
+          <H2>Have a question? <Lime>Talk to us.</Lime></H2>
+          <p className="mx-auto mt-6 max-w-md text-black/70">
+            Whether you are <B>attending</B>, <B>hosting</B> or <B>mentoring</B>, our customer care team is a message away.
+          </p>
+          <div className="mt-10 flex justify-center"><PrimaryBtn href="/contact">Contact us</PrimaryBtn></div>
+        </Reveal>
+      </Section>
+    </main>
   );
 };
 

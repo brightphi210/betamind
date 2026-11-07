@@ -1,76 +1,126 @@
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
+import { RiFacebookFill, RiInstagramLine, RiLinkedinFill, RiTwitterXFill } from 'react-icons/ri';
+import { GET_STARTED_URL, SOCIALS } from '../lib/links';
 
-import React from 'react'
+const socials = [
+  { label: 'X', href: SOCIALS.x, Icon: RiTwitterXFill },
+  { label: 'LinkedIn', href: SOCIALS.linkedin, Icon: RiLinkedinFill },
+  { label: 'Instagram', href: SOCIALS.instagram, Icon: RiInstagramLine },
+  { label: 'Facebook', href: SOCIALS.facebook, Icon: RiFacebookFill },
+];
+
+const columns = [
+  {
+    title: 'Discover',
+    links: [
+      { label: 'Explore Events', href: '/events' },
+      { label: 'Find Mentors', href: '/become-a-mentor' },
+      { label: 'Digital Products', href: '/digital-products' },
+      { label: 'Host an Event', href: '/events' },
+      { label: 'Become a Mentor', href: '/become-a-mentor' },
+    ],
+  },
+  {
+    title: 'Betamind',
+    links: [
+      { label: 'About Betamind', href: '/about' },
+      { label: 'Contact and Support', href: '/support' },
+      { label: 'Log in', href: GET_STARTED_URL },
+      { label: 'Get started', href: GET_STARTED_URL },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      { label: 'Privacy policy', href: '/privacy' },
+      { label: 'Terms of service', href: '/terms' },
+      { label: 'Help & support', href: '/support' },
+    ],
+  },
+];
+
+const linkClass = 'text-sm text-white/80 transition-colors hover:text-[#C8F34D]';
 
 const Footer = () => {
   return (
-    <div>
-              {/* Footer */}
-      <footer className='bg-[#02160b] text-white border-t border-gray-800'>
-        <div className='2xl:px-88 xl:px-40 lg:px-40 px-4 py-16'>
-          <div className='grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-12 mb-12'>
-            {/* Brand Section */}
-            <div className='lg:col-span-1'>
-              <h3 className='text-3xl font-bold mb-4 text-[#DBFF00]'>Betamind</h3>
-              <p className='text-gray-400 mb-6'>
-                Empowering growth through affordable, accessible mentorship for everyone.
-              </p>
-              <div className='flex gap-4'>
-                <Link href='https://www.linkedin.com/company/betaminds/' className='w-10 h-10 bg-[#DBFF00]/10 hover:bg-[#DBFF00]/20 rounded-full flex items-center justify-center transition-all duration-300'>
-                  <span className='text-[#DBFF00]'>in</span>
-                </Link>
-                <Link href='https://x.com/betamindxyz' className='w-10 h-10 bg-[#DBFF00]/10 hover:bg-[#DBFF00]/20 rounded-full flex items-center justify-center transition-all duration-300'>
-                  <span className='text-[#DBFF00]'>𝕏</span>
-                </Link>
-                
-              </div>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h4 className='text-lg font-bold mb-4 text-[#DBFF00]'>Quick Links</h4>
-              <ul className='space-y-3'>
-                <li><Link href='/about' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>About Us</Link></li>
-                <li><Link href='/mentors' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Find Mentors</Link></li>
-                <li><Link href='/mentor-policies' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Mentor Policies</Link></li>
-              </ul>
-            </div>
-
-            {/* Resources */}
-            <div>
-              <h4 className='text-lg font-bold mb-4 text-[#DBFF00]'>Resources</h4>
-              <ul className='space-y-3'>
-                {/* <li><Link href='/blog' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Blog</Link></li> */}
-                <li><Link href='/support' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>FAQ</Link></li>
-                <li><Link href='/support' className='text-gray-400 hover:text-[#DBFF00] transition-colors duration-300'>Support</Link></li>
-              </ul>
-            </div>
-
-            {/* Contact */}
-            <div>
-              <h4 className='text-lg font-bold mb-4 text-[#DBFF00]'>Contact Us</h4>
-              <ul className='space-y-3 text-gray-400'>
-                <li>betamind123@gmail.com</li>
-                <li>+234 9041204694</li>
-                <li className='pt-4'>
-                  <Link href='/support' className='inline-block bg-[#DBFF00] text-black px-6 py-2 rounded-full font-semibold hover:bg-[#c5e600] transition-all duration-300'>
-                    Get in Touch
-                  </Link>
-                </li>
-              </ul>
+    <footer className="relative overflow-hidden bg-black text-white">
+      <div className="mx-auto max-w-7xl px-4 pt-16 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.4fr_2fr]">
+          {/* Brand */}
+          <div>
+            <Link href="/">
+              <Image
+                src="/assets/betamindlogo.png"
+                alt="Betamind logo"
+                width={120}
+                height={32}
+                unoptimized
+                className="h-auto w-[120px] object-contain"
+              />
+            </Link>
+            <p className="mt-5 max-w-sm text-white/70">
+              Where curiosity meets opportunity. Discover people, experiences, and resources that move you forward.
+            </p>
+            <div className="mt-6 flex gap-3">
+              {socials.map(({ label, href, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-lg text-[#C8F34D] transition-colors hover:bg-white/10"
+                >
+                  <Icon />
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Bottom Bar */}
-          <div className='border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4'>
-            <p className='text-gray-400 text-sm'>
-              © 2025 Betamind. All rights reserved.
-            </p>
+          {/* Link columns */}
+          <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
+            {columns.map((col) => (
+              <div key={col.title}>
+                <h4 className="mb-5 text-[11px] font-medium uppercase tracking-wider text-white/40">
+                  {col.title}
+                </h4>
+                <ul className="space-y-3">
+                  {col.links.map((l) => (
+                    <li key={l.label}>
+                      {l.href.startsWith('http') ? (
+                        <a href={l.href} className={linkClass}>
+                          {l.label}
+                        </a>
+                      ) : (
+                        <Link href={l.href} className={linkClass}>
+                          {l.label}
+                        </Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
-      </footer>
-    </div>
-  )
-}
 
-export default Footer
+        {/* Bottom bar */}
+        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-6 text-sm text-white/70 sm:flex-row sm:items-center">
+          <p className="uppercase">© {new Date().getFullYear()} Betamind</p>
+          <p className="uppercase">Made for curious minds</p>
+        </div>
+      </div>
+
+      {/* Giant watermark */}
+      <div
+        aria-hidden
+        className="pointer-events-none select-none whitespace-nowrap text-center text-[22vw] font-extrabold leading-[0.8] tracking-tighter text-white/[0.06]"
+      >
+        BETAMIND
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

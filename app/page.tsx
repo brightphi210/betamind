@@ -1,541 +1,688 @@
 'use client'
 
-import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
-import { OutlineBtn, SolidBlackBtn, SolidMainBtn, SolidWhiteBtn } from './components/btns'
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+import Image from 'next/image';
 import Link from 'next/link';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import { mentors } from './mocks/mentors';
-import RoleSelectionModal from './components/SelectModal';
-import { FaLinkedinIn, FaStar, FaXTwitter } from 'react-icons/fa6';
-import { FaMailchimp } from 'react-icons/fa';
-import { IoMdMail } from 'react-icons/io';
+import { useRef, useState } from 'react';
+import {
+  RiArrowLeftLine,
+  RiArrowRightLine,
+  RiArrowRightUpLine,
+  RiCalendarLine,
+  RiCheckLine,
+  RiMapPinLine,
+} from 'react-icons/ri';
+import {
+  Eyebrow,
+  GhostBtn,
+  Glow,
+  H2,
+  LIME,
+  Lime,
+  Modal,
+  PrimaryBtn,
+  Reveal,
+  Section,
+  SectionHead,
+  cardClass,
+} from './components/UI';
+import { GET_STARTED_URL } from './lib/links';
 
-const Home = () => {
-  useEffect(() => {
-    AOS.init();
-  }, [])
+/** Swap this for your own community photo, e.g. '/assets/community.png' */
+const COMMUNITY_BG = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1800&q=80';
 
+/* ----------------------------------------------------------------
+   Data (dummy where marked)
+---------------------------------------------------------------- */
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isModalOpen]);
+const opportunityCards = [
+  { tag: 'Experiences', title: 'Discover events worth attending.', href: '#events', img: '/assets/sec2a.png', big: true },
+  { tag: 'People', title: "Learn from those who've been there.", href: '#mentors', img: '/assets/sec2b.png', big: false },
+  { tag: 'Knowledge', title: 'Find resources worth keeping.', href: '#digital-products', img: '/assets/sec2c.png', big: false },
+];
 
-  const handleGetStarted = (e: any) => {
-    e.preventDefault();
-    setIsModalOpen(true);
-  };
-  return (
-    <div>
+// DUMMY events
+const eventList = [
+  {
+    cat: 'Creative', title: 'The Creative Economy Summit', date: 'Nov 21, 2026 · 10:00 AM', loc: 'Lagos, Nigeria', by: 'Future Africa Collective', price: '₦12,000',
+    img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=900&q=80',
+    desc: 'A day of talks and conversations with people building culture, products and possibilities across the creative economy.',
+    expect: ['Keynotes and panel conversations', 'Networking with creators and founders', 'Time for questions and follow-up conversations'],
+  },
+  {
+    cat: 'Career', title: 'Building Your Personal Brand', date: 'Nov 28, 2026 · 6:00 PM', loc: 'Online', by: 'The Growth Studio', price: 'Free',
+    img: 'https://images.unsplash.com/photo-1531058020387-3be344556be6?w=900&q=80',
+    desc: 'A practical session on how to show up with clarity, tell your story well and be remembered for the right reasons.',
+    expect: ['A step-by-step brand clarity framework', 'Live Q&A with the host', 'Take-home exercises'],
+  },
+  {
+    cat: 'Business', title: 'Founders & Innovators Meetup', date: 'Dec 5, 2026 · 4:00 PM', loc: 'Abuja, Nigeria', by: 'StartNorth', price: '₦8,500',
+    img: '/assets/sec2a.png',
+    desc: 'An evening for founders and early builders to share what is working, what is not, and who can help.',
+    expect: ['Lightning talks from founders', 'Structured networking', 'Open conversation with investors and mentors'],
+  },
+  {
+    cat: 'Technology', title: 'Design Systems Masterclass', date: 'Dec 12, 2026 · 2:00 PM', loc: 'Online', by: 'Pixel Lagos', price: '₦5,000',
+    img: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=900&q=80',
+    desc: 'Learn how to build and maintain a design system that keeps products consistent as teams grow.',
+    expect: ['Foundations: tokens, components, documentation', 'A live walkthrough of a real system', 'Q&A and resources to keep'],
+  },
+  {
+    cat: 'Personal Growth', title: 'Mindset & Momentum Workshop', date: 'Dec 19, 2026 · 11:00 AM', loc: 'Port Harcourt, Nigeria', by: 'Rise Collective', price: 'Free',
+    img: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=900&q=80',
+    desc: 'A hands-on workshop on building habits and focus, so good intentions turn into steady progress.',
+    expect: ['Guided reflection exercises', 'Habit-building tools you can start using today', 'A supportive group setting'],
+  },
+  {
+    cat: 'Business', title: 'Small Business Growth Clinic', date: 'Jan 9, 2027 · 10:00 AM', loc: 'Online', by: 'Venture Hub', price: '₦3,000',
+    img: 'https://images.unsplash.com/photo-1531058020387-3be344556be6?w=900&q=80',
+    desc: 'A working session for owners who want clearer pricing, steadier sales and a simple plan for the next quarter.',
+    expect: ['Pricing and offer review', 'Live case studies', 'A one-page growth plan to take away'],
+  },
+  {
+    cat: 'Technology', title: 'Intro to Product Management', date: 'Jan 16, 2027 · 3:00 PM', loc: 'Lagos, Nigeria', by: 'ProductCamp NG', price: 'Free',
+    img: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=900&q=80',
+    desc: 'A beginner-friendly session on what product managers do and how to start moving into the role.',
+    expect: ['The product lifecycle explained', 'Real examples from local teams', 'Q&A with working PMs'],
+  },
+  {
+    cat: 'Creative', title: 'Storytelling for Filmmakers', date: 'Jan 23, 2027 · 1:00 PM', loc: 'Port Harcourt, Nigeria', by: 'Frame Collective', price: '₦6,000',
+    img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=900&q=80',
+    desc: 'Learn how to shape an idea into a short film people remember, from first draft to final cut.',
+    expect: ['Story structure basics', 'Scene-building exercises', 'Feedback from working producers'],
+  },
+];
+type EventItem = (typeof eventList)[number];
 
-      <RoleSelectionModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-      />
-      <div className='relative overflow-hidden'>
-        <div className='absolute inset-0 lg:opacity-30 opacity-5'>
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="sand-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                <line x1="0" y1="0" x2="40" y2="40" stroke="#DBFF00" strokeWidth="0.5" opacity="0.3"/>
-                <line x1="40" y1="0" x2="0" y2="40" stroke="#DBFF00" strokeWidth="0.5" opacity="0.3"/>
-                <circle cx="20" cy="20" r="1" fill="#DBFF00" opacity="0.2"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#sand-pattern)"/>
-          </svg>
-        </div>
+const eventCategories = ['All Events', 'Business', 'Technology', 'Creative', 'Career', 'Personal Growth'];
 
-        <div className='relative '>
-          <div className='2xl:pt-64 xl:pt-40 lg:pt-28 pt-32 pb-8 px-5 sm:px-6 lg:px-8'>
-            <div className='lg:text-center text-left mb-5 lg:mb-5'>
-              <h2 data-aos="fade-up" data-aos-duration="100" className='text-[52px] lg:text-5xl xl:text-5xl 2xl:text-6xl  font-medium leading-14 lg:leading-tight'>
-                Get 
-                <span className='text-[#d4d7c2] font-bold'> Mentorship</span> that <br className='hidden sm:block'/> 
-                fits your <span className='text-[#DBFF00] font-bold'> Budget</span>
-              </h2>
-              <p data-aos="fade-up" data-aos-duration="200" className='2xl:w-[30%] xl:w-[55%] lg:w-[80%] md:w-[80%] w-full mx-auto pt-4 text-base sm:text-base lg:text-lg text-gray-300 leading-relaxed'>
-                Betamind is a hub where minds become better through mentorship. 
-                We make mentorship accessible and affordable for everyone.
-              </p>
-            </div>
+// DUMMY mentors
+const mentors = [
+  {
+    n: '01', field: 'Creative Direction', name: 'Amara Nwosu', role: 'Brand Strategist',
+    img: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=800&q=80',
+    bio: 'Helps founders and creatives build brands with substance, from positioning and voice to the visual systems that carry them.',
+    tags: ['Brand strategy', 'Positioning', 'Creative direction'],
+  },
+  {
+    n: '02', field: 'Design & Technology', name: 'Tobi Adebayo', role: 'Product Designer',
+    img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=80',
+    bio: 'Designs digital products people actually enjoy using, and coaches newer designers on craft, process and career growth.',
+    tags: ['Product design', 'UX research', 'Portfolio reviews'],
+  },
+  {
+    n: '03', field: 'Film & Storytelling', name: 'Kelechi Okafor', role: 'Creative Producer',
+    img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80',
+    bio: 'Produces film and branded stories, and mentors people who want to turn ideas into finished work.',
+    tags: ['Production', 'Storytelling', 'Project planning'],
+  },
+  {
+    n: '04', field: 'Marketing', name: 'Ngozi Eze', role: 'Growth Marketer',
+    img: 'https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=800&q=80',
+    bio: 'Builds marketing that grows steadily, and helps small teams choose the channels and habits worth their time.',
+    tags: ['Growth', 'Content', 'Audience building'],
+  },
+];
+type Mentor = (typeof mentors)[number];
 
-            <div data-aos="fade-up" data-aos-duration="200" className='lg:flex lg:flex-row flex flex-col gap-3 m-auto lg:justify-center'>
-              <div onClick={handleGetStarted}>
-                <SolidWhiteBtn title='Get Started'/>
-              </div>
-              <div>
-                <Link href={'/mentors'}>
-                  <OutlineBtn title='Browse Mentors'/>
-                </Link>
-              </div>
-            </div>
+const books = [
+  { type: 'E-BOOK', title: 'The Quiet Advantage', sub: 'A field guide to building a brand with substance.', bg: '#223329', fg: '#EDEBDD', offset: false },
+  { type: 'WORKBOOK', title: 'Make the Move', sub: 'A practical career clarity workbook.', bg: '#D4694A', fg: '#2a1308', offset: true },
+  { type: 'PLAYBOOK', title: 'Ideas Into Action', sub: "A product builder's practical manual.", bg: '#202233', fg: '#EDEBDD', offset: false },
+  { type: 'GUIDE', title: 'Creative Practice', sub: 'Make better work, more consistently.', bg: '#DAE3A5', fg: '#1d2310', offset: true },
+];
 
-            <div data-aos="fade-up" data-aos-duration="300" className='relative hidden pt-5 w-[90%] mx-auto '>
-              <div className='relative  w-full h-[300px] sm:h-[400px] lg:h-[500px] xl:h-[700px] rounded-lg overflow-hidden shadow-2xl'>
-                <Image 
-                  src={'/assets/bannera.png'}
-                  alt='hero-image showing mentorship'
-                  fill
-                  className='object-contain'
-                  priority
-                  quality={100}
-                  sizes="100vw"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+const testimonials = [
+  { q: 'Betamind made learning feel less like searching and more like finding the right room at the right time.', name: 'Zainab Bello', role: 'Aspiring Product Designer' },
+  { q: 'I came looking for direction and found people whose experience helped me make my next move with confidence.', name: 'Daniel Mensah', role: 'Creative Entrepreneur' },
+  { q: 'Sharing what I know became a meaningful way to connect with curious people who were ready to grow.', name: 'Chiamaka Eze', role: 'Brand Strategist' },
+];
 
-        <div className='bg-[#DBFF00] py-5 pt-10 lg:block block relative text-black text-center lg:w-[50%] w-[90%] justify-center m-auto h-full rounded-tl-4xl rounded-tr-4xl'>
-          <ul className='flex gap-2 m-auto justify-center bottom-5'>
-            <a 
-              href="mailto:betamind@gmail.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className=''
-            >
-              <div className='flex items-center gap-1'>
-                <div className='w-12 h-12 bg-[#171a01] rounded-full flex items-center justify-center transition-colors flex-shrink-0'>
-                  <IoMdMail className='text-white text-2xl' />
-                </div>
-              </div>
-            </a>
+/* ----------------------------------------------------------------
+   Events section (dark) + light modal
+---------------------------------------------------------------- */
 
-            <li>
-              <a 
-                href="https://www.linkedin.com/company/betaminds/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className=''
-              >
-                <div className='flex items-center gap-1'>
-                  <div className='w-12 h-12 bg-[#171a01] group-hover:bg-white rounded-full flex items-center justify-center transition-colors flex-shrink-0'>
-                    <FaLinkedinIn className='text-white text-2xl' />
-                  </div>
-                </div>
-              </a>
-            </li>
-            <li>
-              <a 
-                href="https://x.com/betamindxyz" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className=''
-              >
-                <div className='flex items-center gap-1'>
-                  <div className='w-12 h-12 bg-[#171a01] group-hover:bg-white rounded-full flex items-center justify-center transition-colors flex-shrink-0'>
-                    <FaXTwitter className='text-white text-2xl' />
-                  </div>
-                </div>
-              </a>
-            </li>
-          </ul>
-        </div>
+const EventDetail = ({ e }: { e: EventItem }) => (
+  <div className="text-black">
+    <div className="relative h-56 sm:h-64">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={e.img} alt={e.title} className="h-full w-full object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+      <span className="absolute bottom-4 left-6 rounded-full bg-white px-4 py-2 text-sm font-semibold shadow-sm">{e.price}</span>
+    </div>
+
+    <div className="p-6 sm:p-8">
+      <div className="flex items-center justify-between text-[11px]">
+        <span className="font-semibold uppercase tracking-[0.15em] text-black/60">{e.cat}</span>
+        <span className="text-black/40">Illustrative event</span>
+      </div>
+      <h3 className="mt-3 text-3xl font-normal leading-tight tracking-tight">{e.title}</h3>
+      <p className="mt-4 text-[15px] leading-relaxed text-black/70">{e.desc}</p>
+
+      <div className="mt-6 grid gap-3 rounded-2xl bg-black/[0.04] p-4 text-sm text-black/70 sm:grid-cols-2">
+        <p className="flex items-center gap-3"><RiCalendarLine className="text-lg" /> {e.date}</p>
+        <p className="flex items-center gap-3"><RiMapPinLine className="text-lg" /> {e.loc}</p>
+        <p className="sm:col-span-2">Hosted by <strong className="font-semibold text-black">{e.by}</strong></p>
       </div>
 
-      <div className='flex lg:flex-row flex-col lg:gap-0 gap-6 w-full items-center 2xl:px-88 xl:px-40 lg:px-40 px-5 justify-center m-auto p-10 py-16 bg-[#02160b]'>
-        <div>
-          <h2 data-aos="fade-up" data-aos-duration="200" className='2xl:text-5xl xl:text-4xl lg:text-4xl text-4xl'>Why the <span className='text-[#DBFF00] font-bold'>Right</span> Mentor Changes <span className='text-[#DBFF00] font-bold'>Everything !</span></h2>
-          <p data-aos="fade-up" data-aos-duration="300" className='text-base pt-4 lg:w-[90%] w-full'>
-            The right mentor provides guidance, clarity, & accountability 
-            that accelerate personal & professional growth. 
-            They help you avoid mistakes, refine your goals, 
-            & unlock opportunities you might not find alone.
-          </p>
-          <div data-aos="fade-up" data-aos-duration="300" className='w-fit pt-5'>
-            <Link href={'/mentors'}>
-              <SolidWhiteBtn title='Browse Mentors'/>
-            </Link>
-          </div>
-        </div>
+      <h4 className="mt-7 text-sm font-semibold uppercase tracking-wide text-black/60">What to expect</h4>
+      <ul className="mt-3 space-y-2.5 text-[15px] text-black/75">
+        {e.expect.map((x) => (
+          <li key={x} className="flex items-start gap-3">
+            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#C8F34D] text-xs text-black"><RiCheckLine /></span>
+            {x}
+          </li>
+        ))}
+      </ul>
 
-        <div data-aos="fade-up" data-aos-duration="300" className='w-full'>
-          <Image 
-            src={'/assets/mentorhand.png'}
-            alt='This is handshake'
-            width={0}
-            height={0}
-            priority
-            quality={100}
-            unoptimized
-            className='w-full'
-          />
-        </div>
-      </div>
-
-      <div className='2xl:px-88 xl:px-40 lg:px-40 px-4 pt-10'>
-        <div className='bg-[#DBFF00] lg:grid grid-cols-3 flex flex-col lg:gap-10 gap-5 items-center rounded-3xl text-black lg:p-10 p-7'>
-          <div className='col-span-2'>
-            <h2 data-aos="fade-up" data-aos-duration="200" className='2xl:text-5xl xl:text-4xl lg:text-4xl text-4xl font-bold pb-5'>Why Choose Betamind</h2>
-            <p data-aos="fade-up" data-aos-duration="300" className='lg:w-[90%] w-full pb-2'>
-              Betamind makes mentorship simple, accessible, and affordable. 
-              We connect you with experienced mentors who understand your goals, 
-              guide your growth, and help you achieve real results. 
-              Whether youre starting out or leveling up, 
-              Betamind ensures you get the right guidance—without the high costs or barriers.
-            </p>
-            <div data-aos="fade-up" data-aos-duration="800" className='w-fit pt-5'>
-              <Link href={'/about'}>
-                <SolidBlackBtn title='About Betamind'/>
-              </Link>
-            </div>
-          </div>
-          <div data-aos="fade-up" data-aos-duration="300" className='col-span-1'>
-            <Image 
-              src={'/assets/png.png'}
-              alt='patter'
-              width={0}
-              height={0}
-              priority
-              quality={100}
-              unoptimized
-              className='w-full'
-            />
-          </div>
-        </div>
-      </div>
-
-     <div className='flex lg:flex-row flex-col-reverse lg:gap-0 gap-0 w-full 2xl:px-88 xl:px-40 lg:px-40 px-4 justify-center m-auto mt-10 p-10 bg-[#02160b]'>
-        <div className='bg-white text-black w-full lg:h-auto h-auto lg:p-10 p-5 2xl:rounded-l-3xl xl:rounded-l-3xl lg:rounded-l-3xl lg:rounded-b-none rounded-b-2xl'>
-          <h2 data-aos="fade-up" data-aos-duration="200" className='2xl:text-5xl xl:text-4xl lg:text-4xl text-4xl'>No strings attached, fully vetted <span className='text-[#1b3b01] font-bold'>Mentors</span>.</h2>
-          <p className='text-base py-5' data-aos="fade-up" data-aos-duration="300">Connect directly with trusted mentors — no hidden fees, no commitments, just real guidance when you need it.</p>
-          <div onClick={handleGetStarted} data-aos="fade-up" data-aos-duration="300" className='w-fit pt-5'>
-            <SolidBlackBtn title='Get started here'/>
-          </div>
-        </div>
-
-        <div className='w-full h-full lg:h-auto overflow-hidden'>
-          <Image 
-            src={'/assets/nightfall.webp'}
-            alt='This is handshake'
-            width={0}
-            height={0}
-            priority
-            quality={100}
-            unoptimized
-            className='w-full h-full object-cover 2xl:rounded-r-3xl xl:rounded-r-3xl lg:rounded-r-3xl lg:rounded-t-none rounded-t-2xl'
-          />
-        </div>
-      </div>
-
-      <div className='2xl:px-88 xl:px-40 lg:px-40 px-4 py-20 text-white'>
-        <h2 data-aos="fade-up" data-aos-duration="200" className='lg:text-5xl mb-5 text-4xl text-center text-white'>
-          What People are <br className='lg:block hidden'/> saying about <span className='text-[#DBFF00] font-bold'>Betamind</span> 
-        </h2>
-
-        <p className='text-center text-base text-gray-400'>No testimonials yet</p>
-
-        {/* <Swiper
-          slidesPerView={1}
-          spaceBetween={5}
-          loop={true}
-          autoplay={{
-            delay: 100000,
-            disableOnInteraction: false,
-          }}
-          pagination={{
-            clickable: true,
-          }}
-          navigation={true}
-          breakpoints={{
-            640: {
-              slidesPerView: 1,
-              spaceBetween: 20,
-            },
-            768: {
-              slidesPerView: 3,
-              spaceBetween: 20,
-            },
-            1024: {
-              slidesPerView: 3,
-              spaceBetween: 20,
-            },
-          }}
-          modules={[Pagination, Navigation, Autoplay]}
-          className="mySwiper"
-        >
-            <SwiperSlide>
-              <div data-aos="fade-up" data-aos-duration="200" className='cursor-pointer border-amber-100 bg-[#051b0e] p-6 rounded-2xl'>
-                <p className='text-base text-justify'>
-                  My mentor gave me great tips on 
-                  how to make my resume and portfolio better 
-                  and he had great job recommendations during my career change. 
-                  He assured me many times that there were still a lot of transferable 
-                  skills that employers would really love
-                </p>
-                <div>
-                  <h3 className='pt-4 font-bold'>- Jane D.</h3>
-                  <p className='text-sm text-gray-400'>Product Designer</p>
-                </div>
-              </div>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <div data-aos="fade-up" data-aos-duration="200" className='border bg-amber-50 text-green-950 cursor-pointer border-gray-800 p-6 rounded-2xl'>
-                <p className='text-base text-justify'>
-                  My mentor gave me great tips on 
-                  how to make my resume and portfolio better 
-                  and he had great job recommendations during my career change. 
-                  He assured me many times that there were still a lot of transferable 
-                  skills that employers would really love
-                </p>
-                <div>
-                  <h3 className='pt-4 font-bold'>- Jane D.</h3>
-                  <p className='text-sm text-gray-400'>Product Designer</p>
-                </div>
-              </div>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <div data-aos="fade-up" data-aos-duration="300" className='cursor-pointer border-amber-100 bg-[#051b0e] p-6 rounded-2xl'>
-                <p className='text-base text-justify'>
-                  My mentor gave me great tips on 
-                  how to make my resume and portfolio better 
-                  and he had great job recommendations during my career change. 
-                  He assured me many times that there were still a lot of transferable 
-                  skills that employers would really love
-                </p>
-                <div>
-                  <h3 className='pt-4 font-bold'>- Jane D.</h3>
-                  <p className='text-sm text-gray-400'>Product Designer</p>
-                </div>
-              </div>
-            </SwiperSlide>
-
-             <SwiperSlide>
-              <div data-aos="fade-up" data-aos-duration="300" className='border bg-amber-50 text-green-950 cursor-pointer border-gray-800 p-6 rounded-2xl'>
-                <p className='text-base text-justify'>
-                  My mentor gave me great tips on 
-                  how to make my resume and portfolio better 
-                  and he had great job recommendations during my career change. 
-                  He assured me many times that there were still a lot of transferable 
-                  skills that employers would really love
-                </p>
-                <div>
-                  <h3 className='pt-4 font-bold'>- Jane D.</h3>
-                  <p className='text-sm text-gray-400'>Product Designer</p>
-                </div>
-              </div>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <div data-aos="fade-up" data-aos-duration="300" className='cursor-pointer border-amber-100 bg-[#051b0e] p-6 rounded-2xl'>
-                <p className='text-base text-justify'>
-                  My mentor gave me great tips on 
-                  how to make my resume and portfolio better 
-                  and he had great job recommendations during my career change. 
-                  He assured me many times that there were still a lot of transferable 
-                  skills that employers would really love
-                </p>
-                <div>
-                  <h3 className='pt-4 font-bold'>- Jane D.</h3>
-                  <p className='text-sm text-gray-400'>Product Designer</p>
-                </div>
-              </div>
-            </SwiperSlide>
-        </Swiper> */}
-      </div>
-
-      {/* Featured Mentors Section */}
-      <div className='2xl:px-88 xl:px-40 lg:px-40 px-4 py-20 bg-[#02160b] text-white'>
-        <h2 data-aos="fade-up" data-aos-duration="200" className='lg:text-5xl text-4xl text-center text-white mb-3'>
-          Explore available <span className='text-[#DBFF00] font-bold'>Mentors</span>
-        </h2>
-        <p data-aos="fade-up" data-aos-duration="600" className='text-center text-gray-300 mb-10 max-w-2xl mx-auto'>
-          Connect with experienced professionals who are ready to guide you on your journey
-        </p>
-        
-        <div className='grid 2xl:grid-cols-3 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 lg:gap-3 gap-8 pt-5'>
-            {mentors.slice(0, 6).map((mentor, index) => (
-              <div key={index} data-aos="fade-up" data-aos-duration={500 + (index * 100)} className='bg-[#0e1b14] text-white rounded-2xl space-y-3 cursor-pointer hover:shadow-2xl transition-shadow duration-300'>
-                {/* Card Content */}
-                <div className='p-6'>
-                  {/* Image Section */}
-                  <div className='h-[300px] overflow-hidden rounded-2xl mb-3'>
-                    <Image 
-                      src={mentor.imgUrl || "/placeholder.svg"}
-                      alt={mentor.fullName}
-                      width={0} 
-                      height={0}
-                      priority
-                      quality={100}
-                      unoptimized
-                      className='w-full h-full object-cover'
-                    />
-                  </div>
-
-                  {/* Category & Rating - on flex line */}
-                  <div className='flex gap-3 items-center mb-3'>
-                    {mentor.category && (
-                      <span className='inline-block bg-[#DBFF00] text-black px-3 py-1 rounded-full text-xs font-bold flex-shrink-0'>
-                        {mentor.category}
-                      </span>
-                    )}
-
-                      <div className='flex items-center gap-1 bg-black/50 px-2 py-1 rounded-full text-xs font-bold'>
-                        <FaStar className='text-yellow-400' />
-                        <span>{mentor.rating.toFixed(1)}</span>
-                      </div>
-                  </div>
-
-                  {/* Name & Title */}
-                  <div className='mb-3'>
-                    <h3 className='font-bold text-lg'>{mentor.fullName}</h3>
-                    <p className='text-sm text-gray-400 py-1'>{mentor.title}</p>
-                  </div>
-
-                  {/* Skills */}
-                  <ul className='flex flex-wrap gap-2 pt-2 mb-4'>
-                    {mentor.skills.slice(0, 3).map((skill, idx) => (
-                      <li key={idx} className='bg-none border border-emerald-200 text-emerald-200 text-xs rounded-full p-2 px-3'>{skill}</li>
-                    ))}
-                    {mentor.skills.length > 3 && (
-                      <li className='text-xs text-gray-500 p-2 px-3'>+{mentor.skills.length - 3} more</li>
-                    )}
-                  </ul>
-
-                  {/* View Profile Button */}
-                  <div className='pt-2'>
-                    <Link 
-                      href={{
-                        pathname: '/mentor',
-                        query: { 
-                          id: index,
-                          data: JSON.stringify(mentor)
-                        }
-                      }}
-                    >
-                      <SolidMainBtn title='View Profile' />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            ))}
-        </div>
-
-        {/* View All Mentors Button */}
-        <div data-aos="fade-up" data-aos-duration="300" className='flex justify-center mt-12'>
-          <Link href='/mentors'>
-            <SolidMainBtn title='View All Mentors'/>
-          </Link>
-        </div>
-      </div>
-
-      {/* Vision Section */}
-      <div className='2xl:px-88 xl:px-40 lg:px-40 px-4 py-24  text-white relative overflow-hidden'>
-        <div className='absolute inset-0 opacity-10'>
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="vision-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-                <circle cx="30" cy="30" r="2" fill="#DBFF00" opacity="0.4"/>
-                <circle cx="10" cy="10" r="1" fill="#DBFF00" opacity="0.3"/>
-                <circle cx="50" cy="50" r="1" fill="#DBFF00" opacity="0.3"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#vision-pattern)"/>
-          </svg>
-        </div>
-
-        <div className='relative max-w-5xl mx-auto text-center'>
-          <h2 data-aos="fade-up" data-aos-duration="200" className='lg:text-5xl text-4xl font-bold mb-6'>
-            Our <span className='text-[#DBFF00]'>Vision</span>
-          </h2>
-          
-          <div data-aos="fade-up" data-aos-duration="200" className='w-20 h-1 bg-[#DBFF00] mx-auto mb-10'></div>
-          
-          <p data-aos="fade-up" data-aos-duration="300" className='text-base lg:text-xl text-gray-200 leading-relaxed mb-8'>
-            We envision a world where <span className='text-[#DBFF00] font-semibold'>quality mentorship is accessible to everyone</span>, 
-            regardless of background or budget. A world where every aspiring professional can connect with 
-            experienced guides who genuinely care about their growth.
-          </p>
-
-          <div className='grid lg:grid-cols-3 grid-cols-1 gap-8 mt-16'>
-            <div data-aos="fade-up" data-aos-duration="200" className='bg-[#0c1310] p-8 rounded-2xl  hover:border-[#DBFF00]/60 transition-all duration-300'>
-              <div className='text-5xl mb-4'>🎯</div>
-              <h3 className='text-2xl font-bold mb-3 text-[#DBFF00]'>Accessibility</h3>
-              <p className='text-gray-300'>Breaking down barriers to make mentorship available to all who seek growth and guidance.</p>
-            </div>
-
-            <div data-aos="fade-up" data-aos-duration="300" className='bg-[#0c1310] p-8 rounded-2xl  hover:border-[#DBFF00]/60 transition-all duration-300'>
-              <div className='text-5xl mb-4'>🤝</div>
-              <h3 className='text-2xl font-bold mb-3 text-[#DBFF00]'>Connection</h3>
-              <p className='text-gray-300'>Creating meaningful relationships between mentors and mentees that foster real transformation.</p>
-            </div>
-
-            <div data-aos="fade-up" data-aos-duration="300" className='bg-[#0c1310] p-8 rounded-2xl  hover:border-[#DBFF00]/60 transition-all duration-300'>
-              <div className='text-5xl mb-4'>🚀</div>
-              <h3 className='text-2xl font-bold mb-3 text-[#DBFF00]'>Empowerment</h3>
-              <p className='text-gray-300'>Equipping individuals with the knowledge and confidence to achieve their full potential.</p>
-            </div>
-          </div>
-
-          <p data-aos="fade-up" data-aos-duration="300" className='text-lg text-gray-300 mt-12 italic'>
-            {"At Betamind, we're not just connecting people—we're building a community where knowledge flows freely, growth is celebrated, and success is shared."}
-          </p>
-        </div>
-      </div>
-
-      {/* Call to Action Section */}
-      <div className='2xl:px-88 xl:px-40 lg:px-40 px-4 py-24 bg-[#DBFF00] text-black relative overflow-hidden'>
-        <div className='absolute top-0 right-0 w-96 h-96 bg-black/5 rounded-full -translate-y-1/2 translate-x-1/2'></div>
-        <div className='absolute bottom-0 left-0 w-96 h-96 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/2'></div>
-        
-        <div className='relative max-w-4xl mx-auto text-center'>
-          <h2 data-aos="fade-up" data-aos-duration="500" className='lg:text-5xl text-4xl font-bold mb-6'>
-            Ready to Transform Your Career?
-          </h2>
-          
-          <p data-aos="fade-up" data-aos-duration="600" className='text-lg lg:text-xl mb-10 text-gray-800'>
-            Join thousands of professionals who are accelerating their growth with expert mentorship. 
-            Your journey to success starts with a single conversation.
-          </p>
-
-          <div data-aos="fade-up" data-aos-duration="700" className='flex flex-col sm:flex-row gap-5 justify-center items-center mb-12'>
-            <button onClick={handleGetStarted} className='bg-black text-[#DBFF00] font-bold px-6 py-3 rounded-lg hover:bg-gray-900 transition-all duration-300 text-base cursor-pointer shadow-xl hover:shadow-2xl hover:scale-105'>
-              Get Started for Free
-            </button>
-            
-            <Link href='/mentors'>
-              <button className='bg-white text-black font-bold px-6 py-3 rounded-lg hover:bg-gray-100 transition-all duration-300 text-base cursor-pointer shadow-xl hover:shadow-2xl hover:scale-105'>
-                Browse Mentors
-              </button>
-            </Link>
-          </div>
-
-          {/* <div data-aos="fade-up" data-aos-duration="300" className='grid grid-cols-1 md:grid-cols-3 gap-8 mt-16'>
-            <div className='bg-white/60 backdrop-blur p-6 rounded-2xl'>
-              <p className='text-4xl font-bold mb-2'>500+</p>
-              <p className='text-gray-700 font-medium'>Expert Mentors</p>
-            </div>
-            <div className='bg-white/60 backdrop-blur p-6 rounded-2xl'>
-              <p className='text-4xl font-bold mb-2'>10,000+</p>
-              <p className='text-gray-700 font-medium'>Success Stories</p>
-            </div>
-            <div className='bg-white/60 backdrop-blur p-6 rounded-2xl'>
-              <p className='text-4xl font-bold mb-2'>95%</p>
-              <p className='text-gray-700 font-medium'>Satisfaction Rate</p>
-            </div>
-          </div> */}
-        </div>
+      <div className="mt-8 flex flex-wrap gap-3">
+        <PrimaryBtn href={GET_STARTED_URL}>Register for this event</PrimaryBtn>
       </div>
     </div>
-  )
+  </div>
+);
+
+const EventsSection = () => {
+  const [active, setActive] = useState('All Events');
+  const [selected, setSelected] = useState<EventItem | null>(null);
+  const [open, setOpen] = useState(false);
+  const scroller = useRef<HTMLDivElement>(null);
+  const shown = active === 'All Events' ? eventList : eventList.filter((e) => e.cat === active);
+
+  // One full "page" per click (4 cards on desktop, 2 on tablet, 1 on mobile). 20px = gap-5
+  const scrollCards = (dir: 1 | -1) => {
+    const el = scroller.current;
+    if (el) el.scrollBy({ left: dir * (el.clientWidth + 20), behavior: 'smooth' });
+  };
+
+  return (
+    <Section id="events">
+      <Reveal>
+        <Eyebrow>Events &amp; experiences</Eyebrow>
+        <h2 className="text-4xl font-normal leading-[1.02] tracking-tighter sm:text-5xl lg:text-[64px]">
+          Make your next <br className="hidden sm:block" />
+          outing count.
+        </h2>
+      </Reveal>
+
+      <Reveal delay={100} className="mt-8 grid items-end gap-8 lg:grid-cols-[1fr_auto]">
+        <div className="max-w-xl space-y-4 text-[16px] leading-relaxed text-white/70">
+          <p>Not every event deserves a space on your calendar. Find the ones that do.</p>
+          <p>From industry conferences and business workshops to webinars, masterclasses and networking experiences, Betamind makes it easier to find what&apos;s happening and get involved.</p>
+        </div>
+        <div><PrimaryBtn href="/events">Find Your Next Event</PrimaryBtn></div>
+      </Reveal>
+
+      <Reveal delay={150} className="mt-10 flex items-center justify-between gap-4">
+        <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {eventCategories.map((c) => (
+            <button
+              key={c}
+              onClick={() => setActive(c)}
+              className={`shrink-0 rounded-full border px-4 py-2.5 text-sm font-medium transition-colors ${active === c ? 'border-white bg-white text-black' : 'border-white/15 text-white/70 hover:bg-white/10'
+                }`}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+        <div className="hidden shrink-0 gap-3 sm:flex">
+          <button onClick={() => scrollCards(-1)} aria-label="Previous events" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 transition-colors hover:bg-white/10">
+            <RiArrowLeftLine className="text-lg" />
+          </button>
+          <button onClick={() => scrollCards(1)} aria-label="Next events" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 transition-colors hover:bg-white/10">
+            <RiArrowRightLine className="text-lg" />
+          </button>
+        </div>
+      </Reveal>
+
+      <Reveal delay={200} className="mt-6">
+        <div
+          key={active}
+          ref={scroller}
+          className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {shown.map((e) => (
+            <button
+              key={e.title}
+              type="button"
+              onClick={() => { setSelected(e); setOpen(true); }}
+              className="group w-[86%] shrink-0 snap-start overflow-hidden rounded-3xl border border-white/10 bg-neutral-900 text-left text-white transition-colors hover:border-[#C8F34D]/40 sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-3.75rem)/4)]"
+            >
+              <div className="relative h-44 overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={e.img} alt={e.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <span className="absolute right-3 top-3 rounded-full bg-white px-3 py-1 text-xs font-semibold text-black shadow-sm">{e.price}</span>
+              </div>
+              <div className="p-5">
+                <div className="flex items-center justify-between gap-2 text-[10px]">
+                  <span className="font-semibold uppercase tracking-[0.15em] text-white/60">{e.cat}</span>
+                  <span className="text-white/40">Illustrative</span>
+                </div>
+                <h3 className="mt-3 min-h-[56px] text-xl font-normal leading-tight tracking-tight">{e.title}</h3>
+                <div className="mt-4 space-y-2.5 text-[13px] text-white/70">
+                  <p className="flex items-start gap-2.5"><RiCalendarLine className="mt-0.5 shrink-0 text-base text-white/60" /> {e.date}</p>
+                  <p className="flex items-start gap-2.5"><RiMapPinLine className="mt-0.5 shrink-0 text-base text-white/60" /> {e.loc}</p>
+                </div>
+                <div className="mt-4 flex items-center justify-between gap-2 border-t border-white/10 pt-4">
+                  <span className="truncate text-xs text-white/50">By {e.by}</span>
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 transition-colors group-hover:bg-[#C8F34D] group-hover:text-black">
+                    <RiArrowRightLine />
+                  </span>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </Reveal>
+
+      <Modal open={open} onClose={() => setOpen(false)} light label="Event details">
+        {selected && <EventDetail e={selected} />}
+      </Modal>
+    </Section>
+  );
+};
+
+/* ----------------------------------------------------------------
+   Mentors section (light, 4 per row) + dark modal
+---------------------------------------------------------------- */
+
+const MentorDetail = ({ m }: { m: Mentor }) => (
+  <div className="grid text-white md:grid-cols-[0.85fr_1.15fr]">
+    <div className="relative h-72 md:h-auto md:min-h-[460px]">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={m.img} alt={m.name} className="absolute inset-0 h-full w-full object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0f100e] via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-[#0f100e]/60" />
+    </div>
+
+    <div className="p-6 sm:p-8">
+      <p className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: LIME }}>{m.n} · {m.field}</p>
+      <h3 className="mt-2 text-3xl font-semibold tracking-tight">{m.name}</h3>
+      <p className="text-white/60">{m.role}</p>
+      <p className="mt-5 text-[15px] leading-relaxed text-white/75">{m.bio}</p>
+
+      <div className="mt-5 flex flex-wrap gap-2">
+        {m.tags.map((t) => (
+          <span key={t} className="rounded-full border border-white/20 px-3 py-1.5 text-xs text-white/80">{t}</span>
+        ))}
+      </div>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <div className="rounded-2xl bg-white/5 p-4">
+          <p className="text-sm font-semibold">One-on-one</p>
+          <p className="mt-1 text-xs text-white/60">A conversation focused on your growth.</p>
+        </div>
+        <div className="rounded-2xl bg-white/5 p-4">
+          <p className="text-sm font-semibold">Group mentorship</p>
+          <p className="mt-1 text-xs text-white/60">Learn alongside others with an expert guiding the session.</p>
+        </div>
+      </div>
+
+      <div className="mt-7 flex flex-wrap items-center gap-3">
+        <PrimaryBtn href={GET_STARTED_URL}>Book a session</PrimaryBtn>
+        {/* Plain link: this modal is dark, but it renders inside a light section's context */}
+        <Link
+          href="/become-a-mentor"
+          className="inline-flex items-center rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+        >
+          Become a mentor
+        </Link>
+      </div>
+      <p className="mt-5 text-[11px] text-white/30">Sample profile</p>
+    </div>
+  </div>
+);
+
+const MentorsSection = () => {
+  const [selected, setSelected] = useState<Mentor | null>(null);
+  const [open, setOpen] = useState(false);
+  const scroller = useRef<HTMLDivElement>(null);
+
+  const scrollCards = (dir: 1 | -1) => {
+    const el = scroller.current;
+    if (el) el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: 'smooth' });
+  };
+
+  return (
+    <Section id="mentors" tone="light">
+      <SectionHead eyebrow="Featured mentors" title={<>People worth <Lime>learning</Lime> from.</>}>
+        <p>You don&apos;t have to figure everything out on your own.</p>
+        <p>Get access to experienced professionals who can share practical knowledge, offer guidance and help you approach your next challenge with greater clarity.</p>
+      </SectionHead>
+
+      <Reveal className="mt-10">
+        <div
+          ref={scroller}
+          className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {mentors.map((m) => (
+            <button
+              key={m.n}
+              type="button"
+              onClick={() => { setSelected(m); setOpen(true); }}
+              className="group relative h-[380px] w-[78%] shrink-0 snap-start overflow-hidden rounded-3xl text-left text-white sm:w-[46%] lg:w-[calc((100%-3.75rem)/4)]"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={m.img} alt={m.name} className="absolute inset-0 h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-5">
+                <p className="text-[10px] font-semibold" style={{ color: LIME }}>{m.n} · {m.field}</p>
+                <h3 className="mt-1 text-xl font-bold tracking-tight">{m.name}</h3>
+                <p className="text-sm text-white/60">{m.role}</p>
+                <div className="mt-3 flex items-center justify-between border-t border-white/20 pt-3 text-xs font-semibold" style={{ color: LIME }}>
+                  View Profile <RiArrowRightUpLine className="text-base text-white" />
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+        <div className="mt-4 flex justify-end gap-3 lg:hidden">
+          <button onClick={() => scrollCards(-1)} aria-label="Previous mentors" className="flex h-11 w-11 items-center justify-center rounded-full bg-black/10"><RiArrowLeftLine /></button>
+          <button onClick={() => scrollCards(1)} aria-label="Next mentors" className="flex h-11 w-11 items-center justify-center rounded-full bg-black/10"><RiArrowRightLine /></button>
+        </div>
+      </Reveal>
+
+      <Modal open={open} onClose={() => setOpen(false)} label="Mentor profile">
+        {selected && <MentorDetail m={selected} />}
+      </Modal>
+    </Section>
+  );
+};
+
+/* ----------------------------------------------------------------
+   Page
+   Order: hero (dark) → light → dark → light → dark → light → dark → light
+          → testimonials (dark) → light CTA → footer (dark)
+---------------------------------------------------------------- */
+
+const Page = () => {
+  return (
+    <main className="bg-black text-white">
+      {/* ============ 1. HERO (dark) ============ */}
+      <section className="relative overflow-hidden bg-black px-5 pb-16 pt-32 sm:px-8 md:pt-36 lg:px-10">
+        <Glow at="bottom" />
+        <div className="relative z-10 mx-auto grid max-w-[1080px] items-center gap-10 lg:grid-cols-[1fr_1.05fr] lg:gap-8">
+          <Reveal>
+            <Eyebrow>Discover · Connect · Grow</Eyebrow>
+            <h1 className="text-5xl font-light leading-[0.95] tracking-tighter sm:text-6xl lg:text-[76px]">
+              The right room <Lime>changes</Lime> things.
+            </h1>
+            <p className="mt-8 max-w-md text-[17px] leading-snug text-white/80">
+              Somewhere, there&apos;s an event you should attend, a mentor you should meet or knowledge you haven&apos;t come across yet.
+            </p>
+            <p className="mt-5 max-w-md text-[17px] leading-snug text-white/80">
+              Betamind brings these opportunities within reach. Find experiences worth having, people worth learning from and resources worth your time.
+            </p>
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <PrimaryBtn href={GET_STARTED_URL}>Get started</PrimaryBtn>
+              <GhostBtn href="/events">Host an Event</GhostBtn>
+            </div>
+          </Reveal>
+
+          <Reveal delay={150}>
+            <Image
+              src="/assets/hero.png"
+              width={1200}
+              height={1000}
+              priority
+              sizes="(min-width: 1024px) 540px, 100vw"
+              alt="People connecting at a Betamind event"
+              className="h-auto w-full object-contain"
+            />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ============ 2. A WORLD OF OPPORTUNITIES (light) ============ */}
+      <Section id="explore" tone="light">
+        <SectionHead
+          eyebrow="A world of opportunities"
+          title={<>There&apos;s more than one way to <Lime>move</Lime> forward.</>}
+        >
+          <p>Sometimes, progress begins with attending the right event. Sometimes, it&apos;s a conversation with someone who&apos;s been there before. And sometimes, it&apos;s finding the resource that gives you a fresh perspective.</p>
+          <p>Betamind puts these experiences in one place, so you spend less time searching and more time doing.</p>
+        </SectionHead>
+
+        <div className="mt-10 grid gap-5 lg:grid-cols-[1.5fr_1fr] lg:grid-rows-2">
+          {opportunityCards.map((c, i) => (
+            <Reveal key={c.tag} delay={i * 100} className={c.big ? 'lg:row-span-2' : ''}>
+              <Link
+                href={c.href}
+                className={`group relative block h-full overflow-hidden rounded-3xl border-t-2 border-[#C8F34D] bg-neutral-900 text-white ${c.big ? 'min-h-[380px] sm:min-h-[460px] lg:min-h-[560px]' : 'min-h-[260px]'
+                  }`}
+              >
+                <Image
+                  src={c.img}
+                  alt={c.tag}
+                  fill
+                  sizes={c.big ? '(min-width: 1024px) 620px, 100vw' : '(min-width: 1024px) 420px, 100vw'}
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6 md:p-8">
+                  <div>
+                    <p className="mb-2 text-xs font-semibold uppercase" style={{ color: LIME }}>{c.tag}</p>
+                    <h3 className="max-w-xs text-2xl font-semibold leading-[1.05] tracking-tighter md:text-3xl">{c.title}</h3>
+                  </div>
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-black transition-transform group-hover:scale-110">
+                    <RiArrowRightUpLine />
+                  </span>
+                </div>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+
+      {/* ============ 3. EVENTS (dark) ============ */}
+      <EventsSection />
+
+      {/* ============ 4. FOR EVENT ORGANIZERS (light) ============ */}
+      <Section id="organizers" tone="light">
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-12">
+          <Reveal>
+            <Eyebrow>For event organizers</Eyebrow>
+            <H2>
+              Don&apos;t just fill seats. Get <Lime>people</Lime> through the door
+            </H2>
+            <p className="mt-6 max-w-md text-[17px] leading-relaxed text-black/75">
+              A registration is a promise to attend. Help people keep it.
+            </p>
+            <p className="mt-4 max-w-md text-[17px] leading-relaxed text-black/75">
+              Betamind takes the pressure off manual follow-ups with automated email and WhatsApp communication that keeps your attendees informed before your event.
+            </p>
+            <div className="mt-8"><PrimaryBtn href="/events">Host Your Event</PrimaryBtn></div>
+          </Reveal>
+
+          <Reveal delay={150}>
+            <Image
+              src="/assets/phone.png"
+              alt="Betamind WhatsApp and email reminders on phone"
+              width={1000}
+              height={900}
+              sizes="(min-width: 1024px) 520px, 100vw"
+              className="h-auto w-full object-contain"
+            />
+          </Reveal>
+        </div>
+      </Section>
+
+      {/* ============ 5. MENTORSHIP (dark) ============ */}
+      <Section id="mentorship">
+        <SectionHead eyebrow="Mentorship" title={<>Experience is better when it&apos;s <Lime>shared</Lime>.</>}>
+          <p>You don&apos;t have to figure everything out on your own.</p>
+          <p>Get access to experienced professionals who can share practical knowledge, offer guidance and help you approach your next challenge with greater clarity.</p>
+          <p>Whether you prefer personal guidance or learning alongside others, there&apos;s a mentorship experience for you.</p>
+        </SectionHead>
+
+        <div className="mt-10 grid gap-6 md:grid-cols-2">
+          {[
+            { n: '01 · One-on-one', t: 'Your questions. Their experience.', d: 'A conversation focused on your growth.', tags: ['Affordable sessions', 'Personalized guidance', 'Experienced professionals', 'Flexible booking'] },
+            { n: '02 · Group mentorship', t: 'Learn better, together.', d: 'Learn alongside others, exchange perspectives and benefit from the experience of a mentor.', tags: ['Expert-led sessions', 'Shared learning', 'Multiple participants', 'Accessible pricing'] },
+          ].map((c, i) => (
+            <Reveal key={c.n} delay={i * 120}>
+              <div className={`${cardClass(false)} h-full p-7 md:p-9`}>
+                <p className="mb-10 text-sm font-semibold uppercase text-white/70">{c.n}</p>
+                <h3 className="text-3xl font-normal leading-[1.05] tracking-tighter md:text-4xl">{c.t}</h3>
+                <p className="mt-4 max-w-md text-white/80">{c.d}</p>
+                <div className="mt-8 flex flex-wrap gap-2.5">
+                  {c.tags.map((t) => (
+                    <span key={t} className="rounded-full border border-white/20 px-4 py-2 text-sm text-white/80">{t}</span>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+
+      {/* ============ 6. FEATURED MENTORS (light) ============ */}
+      <MentorsSection />
+
+      {/* ============ 7. KNOWLEDGE MARKETPLACE (dark) ============ */}
+      <Section id="digital-products">
+        <Reveal>
+          <Eyebrow>The knowledge marketplace</Eyebrow>
+          <div className="max-w-3xl">
+            <H2>Good <Lime>knowledge</Lime> deserves to be within reach.</H2>
+          </div>
+          <div className="mt-6 max-w-xl space-y-4 text-[15px] leading-relaxed text-white/70">
+            <p>Some lessons come through experience. Others come in a book, a guide or a resource that helps you see things differently.</p>
+            <p>Explore practical digital resources created by experienced mentors. Find materials you can learn from, return to and put into practice.</p>
+          </div>
+          <div className="mt-8"><PrimaryBtn href="/digital-products">Explore Digital Products</PrimaryBtn></div>
+        </Reveal>
+
+        <div className="mt-10 grid grid-cols-2 gap-5 lg:grid-cols-4">
+          {books.map((b, i) => (
+            <Reveal key={i} delay={i * 100} className={b.offset ? 'lg:mt-10' : ''}>
+              <Link href="/digital-products" className="block">
+                <div className="flex aspect-square flex-col justify-between rounded-2xl p-5 shadow-sm sm:p-6" style={{ background: b.bg, color: b.fg }}>
+                  <div>
+                    <p className="text-[10px] font-semibold tracking-widest opacity-70">{b.type}</p>
+                    <h3 className="mt-3 font-serif text-2xl font-semibold leading-none sm:text-3xl">{b.title}</h3>
+                  </div>
+                  <div>
+                    <p className="text-[11px] opacity-80">{b.sub}</p>
+                    <p className="mt-3 text-[9px] tracking-widest opacity-50">BETAMIND EDITIONS · 2026</p>
+                  </div>
+                </div>
+                <p className="mt-4 text-[11px] font-semibold uppercase" style={{ color: LIME }}>E-Book</p>
+                <h4 className="mt-1 text-base font-semibold sm:text-lg">{b.title}</h4>
+                <p className="text-sm text-white/60">By Amara Okafor</p>
+                <p className="mt-3 border-t border-white/10 pt-3 text-xl font-bold sm:text-2xl">₦6,500</p>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+
+      {/* ============ 8. CREATE WITH BETAMIND (light) ============ */}
+      <Section id="creators" tone="light">
+        <SectionHead
+          eyebrow="Create with Betamind"
+          title={<>What you know can take <Lime>someone</Lime> further.</>}
+        >
+          <p>Your experience, expertise and ideas have value. Betamind gives you a place to put them to work.</p>
+          <p>Whether you want to bring people together, guide someone through their journey or package your knowledge into valuable resources, there&apos;s room to create.</p>
+        </SectionHead>
+
+        <div className="mt-10 grid gap-6 md:grid-cols-2">
+          <Reveal>
+            <div className={`${cardClass(true)} h-full p-7 md:p-9`}>
+              <p className="mb-8 text-sm font-semibold uppercase text-black/60">For everyone</p>
+              <h3 className="text-4xl font-light leading-[1.05] tracking-tighter md:text-5xl">Bring people together.</h3>
+              <p className="mt-5 max-w-md text-black/70">Have something worth bringing people together for? Create an event, set your ticket prices, manage registrations and reach people interested in what you have to offer.</p>
+              <div className="mt-8"><GhostBtn href="/events">Start Hosting</GhostBtn></div>
+            </div>
+          </Reveal>
+
+          <Reveal delay={120}>
+            <div className={`${cardClass(true)} h-full p-7 md:p-9`}>
+              <p className="mb-8 text-sm font-semibold uppercase text-black/60">For approved mentors</p>
+              <h3 className="text-4xl font-light leading-[1.05] tracking-tighter md:text-5xl">Turn your experience into impact.</h3>
+              <p className="mt-5 max-w-md text-black/70">Share what you&apos;ve learned. Offer one-on-one or group mentorship, create educational resources and earn from your expertise.</p>
+              <p className="mt-4 max-w-md text-black/70">Mentorship and digital product selling are available to approved mentors.</p>
+              <div className="mt-8"><PrimaryBtn href="/become-a-mentor">Become a Mentor</PrimaryBtn></div>
+            </div>
+          </Reveal>
+        </div>
+      </Section>
+
+      {/* ============ 9. TESTIMONIALS (dark, image + overlay) ============ */}
+      <section className="relative overflow-hidden px-5 py-14 sm:px-8 md:py-16 lg:px-10">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={COMMUNITY_BG} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-black/75" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
+
+        <div className="relative z-10 mx-auto max-w-[1080px] text-center">
+          <Reveal>
+            <div className="flex justify-center"><Eyebrow>Resources for your next step</Eyebrow></div>
+            <h2 className="mx-auto max-w-3xl text-4xl font-light leading-[1.05] tracking-tighter sm:text-5xl lg:text-[56px]">
+              Growth feels different when you&apos;re <Lime>not doing it alone.</Lime>
+            </h2>
+            <p className="mx-auto mt-5 max-w-md text-white/80">
+              Find the people who understand what you&apos;re building, share what they&apos;ve learned, and make the journey feel possible.
+            </p>
+          </Reveal>
+
+          <div className="mt-10 grid gap-5 text-left md:grid-cols-3">
+            {testimonials.map((t, i) => (
+              <Reveal key={t.name} delay={i * 120}>
+                <div className="h-full rounded-t-3xl rounded-b-2xl border border-t-2 border-white/5 border-t-[#C8F34D] bg-black/60 p-6 backdrop-blur-md">
+                  <span className="text-3xl font-bold leading-none" style={{ color: LIME }}>&ldquo;</span>
+                  <p className="mt-4 min-h-[84px] text-white/90">{t.q}</p>
+                  <div className="mt-6 border-t border-white/10 pt-4">
+                    <p className="font-semibold">{t.name}</p>
+                    <p className="text-sm text-white/60">{t.role}</p>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal className="mt-8">
+            <div className="flex justify-center gap-2">
+              {[0, 1, 2, 3].map((d) => <span key={d} className="h-2.5 w-2.5 rounded-full bg-white" />)}
+            </div>
+            <div className="mt-8 flex justify-center"><PrimaryBtn href={GET_STARTED_URL}>Join the community</PrimaryBtn></div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ============ 10. FINAL CTA (light) ============ */}
+      <Section tone="light">
+        <div className="relative py-6 md:py-10">
+          <span aria-hidden className="pointer-events-none absolute -left-4 top-0 select-none text-[11vw] font-extrabold leading-none tracking-tighter text-black/[0.05] lg:text-[130px]">MEET</span>
+          <span aria-hidden className="pointer-events-none absolute -right-4 top-16 select-none text-[11vw] font-extrabold leading-none tracking-tighter text-black/[0.05] lg:text-[130px]">LEARN</span>
+          <span aria-hidden className="pointer-events-none absolute -bottom-6 left-0 select-none text-[11vw] font-extrabold leading-none tracking-tighter text-black/[0.05] lg:text-[130px]">CREATE</span>
+
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={eventList[1].img} alt="" aria-hidden className="absolute left-2 top-10 hidden h-28 w-24 -rotate-6 rounded-xl object-cover md:block" />
+          <div aria-hidden className="absolute right-4 top-0 hidden h-32 w-24 rotate-6 rounded-lg bg-[#223329] p-2.5 font-serif text-[10px] leading-tight text-[#EDEBDD] md:block">
+            <span className="block font-sans text-[6px] tracking-widest opacity-70">E-BOOK</span>
+            The Quiet Advantage
+          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={mentors[0].img} alt="" aria-hidden className="absolute bottom-0 right-8 hidden h-32 w-28 rotate-6 rounded-xl object-cover md:block" />
+
+          <Reveal className="relative mx-auto max-w-2xl text-center">
+            <div className="flex justify-center"><Eyebrow>Your next step is here</Eyebrow></div>
+            <H2>
+              Something worth <Lime>discovering</Lime> is waiting.
+            </H2>
+            <p className="mx-auto mt-5 max-w-sm text-black/70">
+              An event to attend. A person to learn from. Knowledge to put to work. Or an opportunity to create.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+              <PrimaryBtn href={GET_STARTED_URL}>Get started</PrimaryBtn>
+              <GhostBtn href="/events">Host an Event</GhostBtn>
+            </div>
+          </Reveal>
+        </div>
+      </Section>
+    </main>
+  );
 }
 
-export default Home
+export default Page;

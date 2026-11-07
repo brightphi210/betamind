@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geist:ital,wght@0,100..900;1,100..900&family=Saira:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
+/* @plugin "daisyui"; */
+
 
 :root {
   --background: #ffffff;
@@ -22,13 +25,12 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  /* font-family: var(--font-hanken-grotesk), sans-serif; */  
   font-family: var(--font-bricolage), sans-serif;
-  /* font-family: var(--font-space), sans-serif; */
+  font-family: "DM Sans", sans-serif;
 }
 
 
-.swiper-button-next .swiper-navigation-icon{
+.swiper-button-next .swiper-navigation-icon {
   width: 35px;
   height: 35px;
   background-color: gainsboro;
@@ -37,7 +39,7 @@ body {
   color: rgb(1, 44, 35);
 }
 
-.swiper-button-prev .swiper-navigation-icon{
+.swiper-button-prev .swiper-navigation-icon {
   width: 35px;
   height: 35px;
   background-color: gainsboro;
