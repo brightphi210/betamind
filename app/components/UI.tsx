@@ -2,7 +2,6 @@
 
 /**
  * Shared building blocks for the Betamind pages (home, about, contact).
- * Put this file in the same folder as the home page.tsx (e.g. app/ui.tsx).
  */
 
 import Link from 'next/link';
@@ -67,7 +66,7 @@ export const Eyebrow = ({ children }: { children: React.ReactNode }) => {
     const light = useLight();
     return (
         <div
-            className={`mb-6 flex items-center gap-3 text-sm font-medium uppercase tracking-tight ${light ? 'text-black/60' : 'text-white/70'
+            className={`mb-3 flex items-center gap-3 text-xs font-medium uppercase tracking-tight ${light ? 'text-black/60' : 'text-white/70'
                 }`}
         >
             {children}
@@ -98,7 +97,7 @@ export const H2 = ({ children }: { children: React.ReactNode }) => {
     );
 };
 
-/* ---------------- buttons (text-sm, padding never above 3) ---------------- */
+/* ---------------- buttons ---------------- */
 
 type BtnProps = {
     href?: string;
@@ -143,6 +142,19 @@ export const PrimaryBtn = (p: BtnProps) => (
     <BtnShell {...p} className={`${base} bg-[#C8F34D] text-black hover:bg-[#d6ff5c]`}>
         {p.children}
         <Arrow cls="bg-black text-[#C8F34D]" />
+    </BtnShell>
+);
+
+/** White button with roomier padding, used for the main "Get started" call to action */
+export const WhiteBtn = (p: BtnProps) => (
+    <BtnShell
+        {...p}
+        className="group inline-flex items-center gap-5 rounded-full bg-white py-2.5 pl-8 pr-2.5 text-base font-semibold text-black transition-colors hover:bg-white/90"
+    >
+        {p.children}
+        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-black text-lg text-white transition-transform group-hover:translate-x-0.5">
+            <RiArrowRightLine />
+        </span>
     </BtnShell>
 );
 

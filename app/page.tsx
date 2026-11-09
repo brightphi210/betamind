@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import { useRef, useState } from 'react';
 import {
   RiArrowLeftLine,
@@ -12,6 +13,7 @@ import {
   RiMapPinLine,
 } from 'react-icons/ri';
 import {
+  B,
   Eyebrow,
   GhostBtn,
   Glow,
@@ -23,6 +25,7 @@ import {
   Reveal,
   Section,
   SectionHead,
+  WhiteBtn,
   cardClass,
 } from './components/UI';
 import { GET_STARTED_URL } from './lib/links';
@@ -131,10 +134,34 @@ const books = [
   { type: 'GUIDE', title: 'Creative Practice', sub: 'Make better work, more consistently.', bg: '#DAE3A5', fg: '#1d2310', offset: true },
 ];
 
-const testimonials = [
-  { q: 'Betamind made learning feel less like searching and more like finding the right room at the right time.', name: 'Zainab Bello', role: 'Aspiring Product Designer' },
-  { q: 'I came looking for direction and found people whose experience helped me make my next move with confidence.', name: 'Daniel Mensah', role: 'Creative Entrepreneur' },
-  { q: 'Sharing what I know became a meaningful way to connect with curious people who were ready to grow.', name: 'Chiamaka Eze', role: 'Brand Strategist' },
+const testimonials: { q: ReactNode; name: string; role: string }[] = [
+  {
+    q: <>Betamind made learning feel less like searching and more like <B>finding the right room at the right time</B>.</>,
+    name: 'Zainab Bello', role: 'Aspiring Product Designer',
+  },
+  {
+    q: <>I came looking for direction and found people whose experience helped me <B>make my next move with confidence</B>.</>,
+    name: 'Daniel Mensah', role: 'Creative Entrepreneur',
+  },
+  {
+    q: <>Sharing what I know became a <B>meaningful way to connect</B> with curious people who were ready to grow.</>,
+    name: 'Chiamaka Eze', role: 'Brand Strategist',
+  },
+];
+
+const mentorshipCards: { n: string; t: string; d: ReactNode; tags: string[] }[] = [
+  {
+    n: '01 · One-on-one',
+    t: 'Your questions. Their experience.',
+    d: <>A conversation <B>focused on your growth</B>.</>,
+    tags: ['Affordable sessions', 'Personalized guidance', 'Experienced professionals', 'Flexible booking'],
+  },
+  {
+    n: '02 · Group mentorship',
+    t: 'Learn better, together.',
+    d: <>Learn alongside others, <B>exchange perspectives</B> and benefit from the <B>experience of a mentor</B>.</>,
+    tags: ['Expert-led sessions', 'Shared learning', 'Multiple participants', 'Accessible pricing'],
+  },
 ];
 
 /* ----------------------------------------------------------------
@@ -206,8 +233,8 @@ const EventsSection = () => {
 
       <Reveal delay={100} className="mt-8 grid items-end gap-8 lg:grid-cols-[1fr_auto]">
         <div className="max-w-xl space-y-4 text-[16px] leading-relaxed text-white/70">
-          <p>Not every event deserves a space on your calendar. Find the ones that do.</p>
-          <p>From industry conferences and business workshops to webinars, masterclasses and networking experiences, Betamind makes it easier to find what&apos;s happening and get involved.</p>
+          <p>Not every event deserves a space on your calendar. <B>Find the ones that do.</B></p>
+          <p>From <B>industry conferences</B> and <B>business workshops</B> to <B>webinars</B>, <B>masterclasses</B> and <B>networking experiences</B>, Betamind makes it easier to <B>find what&apos;s happening</B> and <B>get involved</B>.</p>
         </div>
         <div><PrimaryBtn href="/events">Find Your Next Event</PrimaryBtn></div>
       </Reveal>
@@ -218,7 +245,7 @@ const EventsSection = () => {
             <button
               key={c}
               onClick={() => setActive(c)}
-              className={`shrink-0 rounded-full border px-4 py-2.5 text-sm font-medium transition-colors ${active === c ? 'border-white bg-white text-black' : 'border-white/15 text-white/70 hover:bg-white/10'
+              className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-medium transition-colors ${active === c ? 'bg-white text-black' : 'bg-white/[0.07] text-white/70 hover:bg-white/15'
                 }`}
             >
               {c}
@@ -226,10 +253,10 @@ const EventsSection = () => {
           ))}
         </div>
         <div className="hidden shrink-0 gap-3 sm:flex">
-          <button onClick={() => scrollCards(-1)} aria-label="Previous events" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 transition-colors hover:bg-white/10">
+          <button onClick={() => scrollCards(-1)} aria-label="Previous events" className="flex h-11 w-11 items-center justify-center rounded-full bg-white/[0.07] transition-colors hover:bg-white/15">
             <RiArrowLeftLine className="text-lg" />
           </button>
-          <button onClick={() => scrollCards(1)} aria-label="Next events" className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 transition-colors hover:bg-white/10">
+          <button onClick={() => scrollCards(1)} aria-label="Next events" className="flex h-11 w-11 items-center justify-center rounded-full bg-white/[0.07] transition-colors hover:bg-white/15">
             <RiArrowRightLine className="text-lg" />
           </button>
         </div>
@@ -246,27 +273,31 @@ const EventsSection = () => {
               key={e.title}
               type="button"
               onClick={() => { setSelected(e); setOpen(true); }}
-              className="group w-[86%] shrink-0 snap-start overflow-hidden rounded-3xl border border-white/10 bg-neutral-900 text-left text-white transition-colors hover:border-[#C8F34D]/40 sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-3.75rem)/4)]"
+              className="group relative h-[420px] w-[86%] shrink-0 snap-start overflow-hidden rounded-[28px] text-left text-white sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-3.75rem)/4)]"
             >
-              <div className="relative h-44 overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={e.img} alt={e.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <span className="absolute right-3 top-3 rounded-full bg-white px-3 py-1 text-xs font-semibold text-black shadow-sm">{e.price}</span>
-              </div>
-              <div className="p-5">
-                <div className="flex items-center justify-between gap-2 text-[10px]">
-                  <span className="font-semibold uppercase tracking-[0.15em] text-white/60">{e.cat}</span>
-                  <span className="text-white/40">Illustrative</span>
-                </div>
-                <h3 className="mt-3 min-h-[56px] text-xl font-normal leading-tight tracking-tight">{e.title}</h3>
-                <div className="mt-4 space-y-2.5 text-[13px] text-white/70">
-                  <p className="flex items-start gap-2.5"><RiCalendarLine className="mt-0.5 shrink-0 text-base text-white/60" /> {e.date}</p>
-                  <p className="flex items-start gap-2.5"><RiMapPinLine className="mt-0.5 shrink-0 text-base text-white/60" /> {e.loc}</p>
-                </div>
-                <div className="mt-4 flex items-center justify-between gap-2 border-t border-white/10 pt-4">
-                  <span className="truncate text-xs text-white/50">By {e.by}</span>
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 transition-colors group-hover:bg-[#C8F34D] group-hover:text-black">
-                    <RiArrowRightLine />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={e.img} alt={e.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+
+              <span className="absolute left-4 top-4 rounded-full bg-black/50 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider backdrop-blur">
+                {e.cat}
+              </span>
+              <span className="absolute right-4 top-4 rounded-full bg-white px-3 py-1.5 text-xs font-bold text-black">
+                {e.price}
+              </span>
+
+              <div className="absolute inset-x-0 bottom-0 p-5">
+                <h3 className="text-2xl font-medium leading-[1.1] tracking-tight">{e.title}</h3>
+                <p className="mt-3 flex items-center gap-2 text-[13px] text-white/75">
+                  <RiCalendarLine className="shrink-0" /> {e.date}
+                </p>
+                <p className="mt-1.5 flex items-center gap-2 text-[13px] text-white/75">
+                  <RiMapPinLine className="shrink-0" /> {e.loc}
+                </p>
+                <div className="mt-4 flex items-center justify-between">
+                  <span className="truncate text-xs text-white/55">By {e.by}</span>
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-black transition-transform group-hover:scale-110">
+                    <RiArrowRightUpLine />
                   </span>
                 </div>
               </div>
@@ -346,7 +377,7 @@ const MentorsSection = () => {
     <Section id="mentors" tone="light">
       <SectionHead eyebrow="Featured mentors" title={<>People worth <Lime>learning</Lime> from.</>}>
         <p>You don&apos;t have to figure everything out on your own.</p>
-        <p>Get access to experienced professionals who can share practical knowledge, offer guidance and help you approach your next challenge with greater clarity.</p>
+        <p>Get access to <B>experienced professionals</B> who can share <B>practical knowledge</B>, offer guidance and help you approach your next challenge with greater clarity.</p>
       </SectionHead>
 
       <Reveal className="mt-10">
@@ -398,23 +429,19 @@ const Page = () => {
   return (
     <main className="bg-black text-white">
       {/* ============ 1. HERO (dark) ============ */}
-      <section className="relative overflow-hidden bg-black px-5 pb-16 pt-32 sm:px-8 md:pt-36 lg:px-10">
+      <section className="relative overflow-hidden bg-black px-5 pb-12 pt-28 sm:px-8 md:pt-32 lg:px-10">
         <Glow at="bottom" />
         <div className="relative z-10 mx-auto grid max-w-[1080px] items-center gap-10 lg:grid-cols-[1fr_1.05fr] lg:gap-8">
           <Reveal>
             <Eyebrow>Discover · Connect · Grow</Eyebrow>
-            <h1 className="text-5xl font-light leading-[0.95] tracking-tighter sm:text-6xl lg:text-[76px]">
+            <h1 className="text-5xl font-bold leading-[0.95] tracking-tighter sm:text-6xl lg:text-[72px]">
               The right room <Lime>changes</Lime> things.
             </h1>
-            <p className="mt-8 max-w-md text-[17px] leading-snug text-white/80">
-              Somewhere, there&apos;s an event you should attend, a mentor you should meet or knowledge you haven&apos;t come across yet.
+            <p className="mt-7 max-w-md text-[17px] leading-snug text-white/70">
+              Find <B>events worth attending</B>, <B>people worth learning from</B> and <B>resources worth your time</B>, all in <B>one place</B>.
             </p>
-            <p className="mt-5 max-w-md text-[17px] leading-snug text-white/80">
-              Betamind brings these opportunities within reach. Find experiences worth having, people worth learning from and resources worth your time.
-            </p>
-            <div className="mt-10 flex flex-wrap items-center gap-4">
-              <PrimaryBtn href={GET_STARTED_URL}>Get started</PrimaryBtn>
-              <GhostBtn href="/events">Host an Event</GhostBtn>
+            <div className="mt-10">
+              <WhiteBtn href={GET_STARTED_URL}>Get started</WhiteBtn>
             </div>
           </Reveal>
 
@@ -438,8 +465,8 @@ const Page = () => {
           eyebrow="A world of opportunities"
           title={<>There&apos;s more than one way to <Lime>move</Lime> forward.</>}
         >
-          <p>Sometimes, progress begins with attending the right event. Sometimes, it&apos;s a conversation with someone who&apos;s been there before. And sometimes, it&apos;s finding the resource that gives you a fresh perspective.</p>
-          <p>Betamind puts these experiences in one place, so you spend less time searching and more time doing.</p>
+          <p>Sometimes, progress begins with <B>attending the right event</B>. Sometimes, it&apos;s a <B>conversation with someone who&apos;s been there before</B>. And sometimes, it&apos;s finding <B>the resource that gives you a fresh perspective</B>.</p>
+          <p>Betamind puts these experiences <B>in one place</B>, so you spend <B>less time searching and more time doing</B>.</p>
         </SectionHead>
 
         <div className="mt-10 grid gap-5 lg:grid-cols-[1.5fr_1fr] lg:grid-rows-2">
@@ -485,10 +512,10 @@ const Page = () => {
               Don&apos;t just fill seats. Get <Lime>people</Lime> through the door
             </H2>
             <p className="mt-6 max-w-md text-[17px] leading-relaxed text-black/75">
-              A registration is a promise to attend. Help people keep it.
+              A registration is a promise to attend. <B>Help people keep it.</B>
             </p>
             <p className="mt-4 max-w-md text-[17px] leading-relaxed text-black/75">
-              Betamind takes the pressure off manual follow-ups with automated email and WhatsApp communication that keeps your attendees informed before your event.
+              Betamind takes the pressure off manual follow-ups with <B>automated email and WhatsApp communication</B> that keeps your attendees informed before your event.
             </p>
             <div className="mt-8"><PrimaryBtn href="/events">Host Your Event</PrimaryBtn></div>
           </Reveal>
@@ -510,15 +537,12 @@ const Page = () => {
       <Section id="mentorship">
         <SectionHead eyebrow="Mentorship" title={<>Experience is better when it&apos;s <Lime>shared</Lime>.</>}>
           <p>You don&apos;t have to figure everything out on your own.</p>
-          <p>Get access to experienced professionals who can share practical knowledge, offer guidance and help you approach your next challenge with greater clarity.</p>
-          <p>Whether you prefer personal guidance or learning alongside others, there&apos;s a mentorship experience for you.</p>
+          <p>Get access to <B>experienced professionals</B> who can share <B>practical knowledge</B>, offer guidance and help you approach your next challenge with greater clarity.</p>
+          <p>Whether you prefer <B>personal guidance</B> or <B>learning alongside others</B>, there&apos;s a mentorship experience for you.</p>
         </SectionHead>
 
         <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {[
-            { n: '01 · One-on-one', t: 'Your questions. Their experience.', d: 'A conversation focused on your growth.', tags: ['Affordable sessions', 'Personalized guidance', 'Experienced professionals', 'Flexible booking'] },
-            { n: '02 · Group mentorship', t: 'Learn better, together.', d: 'Learn alongside others, exchange perspectives and benefit from the experience of a mentor.', tags: ['Expert-led sessions', 'Shared learning', 'Multiple participants', 'Accessible pricing'] },
-          ].map((c, i) => (
+          {mentorshipCards.map((c, i) => (
             <Reveal key={c.n} delay={i * 120}>
               <div className={`${cardClass(false)} h-full p-7 md:p-9`}>
                 <p className="mb-10 text-sm font-semibold uppercase text-white/70">{c.n}</p>
@@ -546,8 +570,8 @@ const Page = () => {
             <H2>Good <Lime>knowledge</Lime> deserves to be within reach.</H2>
           </div>
           <div className="mt-6 max-w-xl space-y-4 text-[15px] leading-relaxed text-white/70">
-            <p>Some lessons come through experience. Others come in a book, a guide or a resource that helps you see things differently.</p>
-            <p>Explore practical digital resources created by experienced mentors. Find materials you can learn from, return to and put into practice.</p>
+            <p>Some lessons come through experience. Others come in <B>a book, a guide or a resource</B> that helps you <B>see things differently</B>.</p>
+            <p>Explore <B>practical digital resources</B> created by experienced mentors. Find materials you can <B>learn from, return to and put into practice</B>.</p>
           </div>
           <div className="mt-8"><PrimaryBtn href="/digital-products">Explore Digital Products</PrimaryBtn></div>
         </Reveal>
@@ -582,8 +606,8 @@ const Page = () => {
           eyebrow="Create with Betamind"
           title={<>What you know can take <Lime>someone</Lime> further.</>}
         >
-          <p>Your experience, expertise and ideas have value. Betamind gives you a place to put them to work.</p>
-          <p>Whether you want to bring people together, guide someone through their journey or package your knowledge into valuable resources, there&apos;s room to create.</p>
+          <p>Your <B>experience, expertise and ideas</B> have value. Betamind gives you a place to put them to work.</p>
+          <p>Whether you want to <B>bring people together</B>, <B>guide someone through their journey</B> or <B>package your knowledge into valuable resources</B>, there&apos;s room to create.</p>
         </SectionHead>
 
         <div className="mt-10 grid gap-6 md:grid-cols-2">
@@ -591,7 +615,7 @@ const Page = () => {
             <div className={`${cardClass(true)} h-full p-7 md:p-9`}>
               <p className="mb-8 text-sm font-semibold uppercase text-black/60">For everyone</p>
               <h3 className="text-4xl font-light leading-[1.05] tracking-tighter md:text-5xl">Bring people together.</h3>
-              <p className="mt-5 max-w-md text-black/70">Have something worth bringing people together for? Create an event, set your ticket prices, manage registrations and reach people interested in what you have to offer.</p>
+              <p className="mt-5 max-w-md text-black/70">Have something worth bringing people together for? <B>Create an event</B>, <B>set your ticket prices</B>, <B>manage registrations</B> and reach people interested in what you have to offer.</p>
               <div className="mt-8"><GhostBtn href="/events">Start Hosting</GhostBtn></div>
             </div>
           </Reveal>
@@ -600,8 +624,8 @@ const Page = () => {
             <div className={`${cardClass(true)} h-full p-7 md:p-9`}>
               <p className="mb-8 text-sm font-semibold uppercase text-black/60">For approved mentors</p>
               <h3 className="text-4xl font-light leading-[1.05] tracking-tighter md:text-5xl">Turn your experience into impact.</h3>
-              <p className="mt-5 max-w-md text-black/70">Share what you&apos;ve learned. Offer one-on-one or group mentorship, create educational resources and earn from your expertise.</p>
-              <p className="mt-4 max-w-md text-black/70">Mentorship and digital product selling are available to approved mentors.</p>
+              <p className="mt-5 max-w-md text-black/70">Share what you&apos;ve learned. Offer <B>one-on-one or group mentorship</B>, create <B>educational resources</B> and <B>earn from your expertise</B>.</p>
+              <p className="mt-4 max-w-md text-black/70">Mentorship and digital product selling are available to <B>approved mentors</B>.</p>
               <div className="mt-8"><PrimaryBtn href="/become-a-mentor">Become a Mentor</PrimaryBtn></div>
             </div>
           </Reveal>
@@ -622,7 +646,7 @@ const Page = () => {
               Growth feels different when you&apos;re <Lime>not doing it alone.</Lime>
             </h2>
             <p className="mx-auto mt-5 max-w-md text-white/80">
-              Find the people who understand what you&apos;re building, share what they&apos;ve learned, and make the journey feel possible.
+              Find the people who understand what you&apos;re building, <B>share what they&apos;ve learned</B>, and make the journey feel possible.
             </p>
           </Reveal>
 
@@ -672,7 +696,7 @@ const Page = () => {
               Something worth <Lime>discovering</Lime> is waiting.
             </H2>
             <p className="mx-auto mt-5 max-w-sm text-black/70">
-              An event to attend. A person to learn from. Knowledge to put to work. Or an opportunity to create.
+              <B>An event to attend. A person to learn from. Knowledge to put to work.</B> Or an opportunity to create.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
               <PrimaryBtn href={GET_STARTED_URL}>Get started</PrimaryBtn>
