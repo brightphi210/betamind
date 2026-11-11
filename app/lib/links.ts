@@ -1,4 +1,4 @@
-export const GET_STARTED_URL = 'https://betamindwebapp.vercel.app/';
+export const GET_STARTED_URL = 'https://app.betaminds.online/';
 
 export const SOCIALS = {
     x: 'https://x.com/betamindhq',

@@ -26,7 +26,6 @@ const columns = [
     links: [
       { label: 'About Betamind', href: '/about' },
       { label: 'Contact and Support', href: '/support' },
-      { label: 'Log in', href: GET_STARTED_URL },
       { label: 'Get started', href: GET_STARTED_URL },
     ],
   },

@@ -5,11 +5,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { RiArrowRightLine, RiCloseLine, RiMenu4Fill } from 'react-icons/ri';
+import { GET_STARTED_URL } from '../lib/links';
 
-/**
- * Every link points at a section id on the home page (see page.tsx).
- * From other pages they resolve to "/#id", so they still work everywhere.
- */
+
 const navLinks = [
   { label: 'Explore', id: 'explore' },
   { label: 'Mentors', id: 'mentors' },
@@ -174,13 +172,7 @@ const Navbar = () => {
           {/* Actions */}
           <div className="hidden items-center gap-1 md:flex">
             <Link
-              href="/login"
-              className="rounded-full px-4 py-2.5 text-sm font-medium text-white/70 transition-colors hover:text-white"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/get-started"
+              href={GET_STARTED_URL}
               className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors duration-200 hover:bg-[#C8F34D]"
             >
               Get Started
@@ -253,14 +245,7 @@ const Navbar = () => {
 
         <div className="grid grid-cols-2 gap-3 pt-8">
           <Link
-            href="/login"
-            onClick={() => setIsOpen(false)}
-            className="rounded-full border border-white/20 py-3.5 text-center font-medium text-white"
-          >
-            Log in
-          </Link>
-          <Link
-            href="/get-started"
+            href={GET_STARTED_URL}
             onClick={() => setIsOpen(false)}
             className="flex items-center justify-center gap-2 rounded-full bg-[#C8F34D] py-3.5 font-semibold text-black"
           >
