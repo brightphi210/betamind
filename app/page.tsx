@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
-import { useRef, useState } from 'react';
+import type { CSSProperties, FormEvent, ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   RiArrowLeftLine,
   RiArrowRightLine,
@@ -419,6 +419,338 @@ const MentorsSection = () => {
   );
 };
 
+/* ================================================================
+   WAITLIST MODAL  ← TEMPORARY
+   Opens as soon as the site loads and can't be closed (no X button,
+   no Escape, no click-outside). To remove it later, delete this whole
+   block and the single <WaitlistModal /> line inside <main> in Page.
+   (You can also drop the `useEffect`, `CSSProperties` and `FormEvent`
+   imports at the top if nothing else uses them.)
+================================================================ */
+
+/**
+ * Where the form data is sent (POST, JSON body):
+ *   { fullName, email, phone, source, createdAt }
+ * Examples: '/api/waitlist', a Formspree URL, a Google Apps Script web-app URL, etc.
+ * Leave it empty and the form just simulates a successful submit (handy for testing the UI).
+ */
+const WAITLIST_URL = '';
+
+type WaitlistField = 'fullName' | 'email' | 'phone';
+
+// 14 little dots that burst out of the success badge
+const BURST = Array.from({ length: 14 }, (_, i) => {
+  const angle = (i / 14) * Math.PI * 2;
+  const dist = 74 + (i % 3) * 14;
+  return {
+    x: Math.round(Math.cos(angle) * dist),
+    y: Math.round(Math.sin(angle) * dist),
+    size: 5 + (i % 3) * 2,
+    delay: (i % 5) * 40,
+    color: i % 3 === 0 ? '#ffffff' : LIME,
+  };
+});
+
+const waitlistInput =
+  'w-full rounded-xl border bg-white/[0.05] px-4 py-3 text-[15px] text-white outline-none transition-colors placeholder:text-white/30 focus:bg-white/[0.08]';
+
+const WaitlistModal = () => {
+  const [form, setForm] = useState<Record<WaitlistField, string>>({ fullName: '', email: '', phone: '' });
+  const [errors, setErrors] = useState<Partial<Record<WaitlistField, string>>>({});
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+  const [submitError, setSubmitError] = useState('');
+  const [visible, setVisible] = useState(false);
+  const firstFieldRef = useRef<HTMLInputElement>(null);
+
+  // Fade in on load, lock page scroll while the modal is up
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setVisible(true));
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const focusTimer = window.setTimeout(() => firstFieldRef.current?.focus({ preventScroll: true }), 350);
+    return () => {
+      cancelAnimationFrame(id);
+      window.clearTimeout(focusTimer);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, []);
+
+  const setField = (key: WaitlistField, value: string) => {
+    setForm((f) => ({ ...f, [key]: value }));
+    if (errors[key]) setErrors((e) => ({ ...e, [key]: undefined }));
+    if (submitError) setSubmitError('');
+  };
+
+  const validate = () => {
+    const next: Partial<Record<WaitlistField, string>> = {};
+    if (form.fullName.trim().length < 2) next.fullName = 'Please enter your full name.';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())) next.email = 'Please enter a valid email address.';
+    const digits = form.phone.replace(/\D/g, '');
+    if (digits.length < 7 || digits.length > 15) next.phone = 'Please enter a valid phone number.';
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (status === 'loading' || !validate()) return;
+
+    setStatus('loading');
+    setSubmitError('');
+
+    try {
+      if (WAITLIST_URL) {
+        const res = await fetch(WAITLIST_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fullName: form.fullName.trim(),
+            email: form.email.trim(),
+            phone: form.phone.trim(),
+            source: 'website',
+            createdAt: new Date().toISOString(),
+          }),
+        });
+        if (!res.ok) throw new Error('Request failed');
+      } else {
+        // No endpoint configured yet: simulate a short network call
+        await new Promise((resolve) => setTimeout(resolve, 900));
+      }
+      setStatus('success');
+    } catch {
+      setStatus('idle');
+      setSubmitError('Something went wrong. Please try again.');
+    }
+  };
+
+  const firstName = form.fullName.trim().split(/\s+/)[0] || 'there';
+
+  return (
+    <div
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4 pt-24 transition-opacity duration-500 sm:pt-28"
+      style={{
+        background: 'rgba(0,0,0,0.6)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+        opacity: visible ? 1 : 0,
+      }}
+    // No onClick / onKeyDown close handlers on purpose: this modal can't be dismissed
+    >
+      {/* Simple navbar (same capsule style as the real one). Not clickable: the waitlist blocks the site */}
+      <header
+        className="absolute inset-x-0 top-4 flex justify-center px-4 transition-all duration-700"
+        style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(-16px)' }}
+      >
+        <nav className="flex w-full max-w-5xl items-center justify-between rounded-full border border-white/10 bg-black/55 py-2 pl-6 pr-2 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8)] backdrop-blur-xl">
+          <Image
+            src="/assets/betamindlogo.png"
+            alt="Betamind logo"
+            width={112}
+            height={30}
+            priority
+            unoptimized
+            className="h-auto w-[112px] object-contain"
+          />
+          <span className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-black" style={{ background: LIME }}>
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-black/60 opacity-70" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-black" />
+            </span>
+            Waitlist open
+          </span>
+        </nav>
+      </header>
+
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Join the Betamind waitlist"
+        className="relative max-h-[calc(100vh-7rem)] w-full max-w-md overflow-y-auto border border-white/5 rounded-[20px] bg-black/80 p-6 shadow-2xl transition-all duration-500 sm:p-8 lg:max-w-xl lg:p-10"
+        style={{
+          opacity: visible ? 1 : 0,
+          transform: visible ? 'translateY(0) scale(1)' : 'translateY(24px) scale(0.97)',
+          transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)',
+        }}
+      >
+        {/* soft lime glow behind the card content */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 left-1/2 h-48 w-72 -translate-x-1/2 rounded-full opacity-25 blur-3xl"
+          style={{ background: LIME }}
+        />
+
+        {status === 'success' ? (
+          /* ───────── Success state ───────── */
+          <div className="wl-fade-up relative flex flex-col items-center py-6 text-center">
+            <div className="relative flex h-28 w-28 items-center justify-center">
+              {/* expanding rings */}
+              <span className="wl-ring absolute inset-0 rounded-full" style={{ border: `2px solid ${LIME}` }} />
+              <span className="wl-ring wl-ring-2 absolute inset-0 rounded-full" style={{ border: `2px solid ${LIME}` }} />
+
+              {/* burst dots */}
+              {BURST.map((d, i) => (
+                <span
+                  key={i}
+                  className="wl-burst absolute left-1/2 top-1/2 rounded-full"
+                  style={
+                    {
+                      width: d.size,
+                      height: d.size,
+                      marginLeft: -d.size / 2,
+                      marginTop: -d.size / 2,
+                      background: d.color,
+                      animationDelay: `${300 + d.delay}ms`,
+                      '--x': `${d.x}px`,
+                      '--y': `${d.y}px`,
+                    } as CSSProperties
+                  }
+                />
+              ))}
+
+              {/* badge + drawn check */}
+              <span
+                className="wl-pop relative flex h-24 w-24 items-center justify-center rounded-full"
+                style={{ background: LIME, boxShadow: `0 0 50px ${LIME}66` }}
+              >
+                <svg viewBox="0 0 52 52" className="h-12 w-12" fill="none" stroke="#000" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
+                  <path className="wl-check" d="M14 27l8 8 16-17" />
+                </svg>
+              </span>
+            </div>
+
+            <h3 className="wl-fade-up mt-8 text-3xl font-semibold tracking-tight" style={{ animationDelay: '450ms' }}>
+              You&apos;re on the list, {firstName}!
+            </h3>
+            <p className="wl-fade-up mt-3 max-w-xs text-[15px] leading-relaxed text-white/65" style={{ animationDelay: '600ms' }}>
+              Thanks for joining the Betamind waitlist. We&apos;ll reach out to <span className="font-medium text-white">{form.email.trim()}</span> as
+              soon as we&apos;re ready for you.
+            </p>
+
+            <div
+              className="wl-fade-up mt-7 inline-flex items-center gap-2 rounded-full bg-white/[0.07] px-4 py-2 text-xs font-medium text-white/70"
+              style={{ animationDelay: '750ms' }}
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-70" style={{ background: LIME }} />
+                <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: LIME }} />
+              </span>
+              Early access, coming soon
+            </div>
+          </div>
+        ) : (
+          /* ───────── Form state ───────── */
+          <div className="relative">
+            <Eyebrow>Waitlist</Eyebrow>
+            <h2 className="text-3xl font-semibold leading-[1.05] tracking-tight sm:text-4xl">
+              Be first in the <Lime>room</Lime>.
+            </h2>
+            <p className="mt-3 text-[15px] leading-relaxed text-white/65">
+              Join the Betamind waitlist and we&apos;ll let you know the moment we open the doors.
+            </p>
+
+            <form onSubmit={handleSubmit} noValidate className="mt-7 space-y-4">
+              <div>
+                <label htmlFor="wl-name" className="mb-1.5 block text-xs font-medium text-white/60">Full name</label>
+                <input
+                  ref={firstFieldRef}
+                  id="wl-name"
+                  type="text"
+                  autoComplete="name"
+                  value={form.fullName}
+                  onChange={(e) => setField('fullName', e.target.value)}
+                  placeholder="e.g. Amara Nwosu"
+                  disabled={status === 'loading'}
+                  aria-invalid={!!errors.fullName}
+                  className={waitlistInput}
+                  style={{ borderColor: errors.fullName ? '#f87171' : 'rgba(255,255,255,0.1)' }}
+                />
+                {errors.fullName && <p className="mt-1.5 text-xs text-red-400">{errors.fullName}</p>}
+              </div>
+
+              <div className="grid gap-4 lg:grid-cols-2">
+                <div>
+                  <label htmlFor="wl-email" className="mb-1.5 block text-xs font-medium text-white/60">Email</label>
+                  <input
+                    id="wl-email"
+                    type="email"
+                    autoComplete="email"
+                    value={form.email}
+                    onChange={(e) => setField('email', e.target.value)}
+                    placeholder="you@example.com"
+                    disabled={status === 'loading'}
+                    aria-invalid={!!errors.email}
+                    className={waitlistInput}
+                    style={{ borderColor: errors.email ? '#f87171' : 'rgba(255,255,255,0.1)' }}
+                  />
+                  {errors.email && <p className="mt-1.5 text-xs text-red-400">{errors.email}</p>}
+                </div>
+
+                <div>
+                  <label htmlFor="wl-phone" className="mb-1.5 block text-xs font-medium text-white/60">Phone number</label>
+                  <input
+                    id="wl-phone"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    value={form.phone}
+                    onChange={(e) => setField('phone', e.target.value)}
+                    placeholder="+234 800 000 0000"
+                    disabled={status === 'loading'}
+                    aria-invalid={!!errors.phone}
+                    className={waitlistInput}
+                    style={{ borderColor: errors.phone ? '#f87171' : 'rgba(255,255,255,0.1)' }}
+                  />
+                  {errors.phone && <p className="mt-1.5 text-xs text-red-400">{errors.phone}</p>}
+                </div>
+              </div>
+
+              {submitError && (
+                <p className="rounded-xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-xs text-red-300">{submitError}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={status === 'loading'}
+                className="mt-2 flex w-full items-center bg-white justify-center gap-2 rounded-full px-6 py-3.5 text-[15px] font-semibold text-black transition-all hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {status === 'loading' ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-black/30 border-t-black" />
+                    Joining...
+                  </>
+                ) : (
+                  'Join the waitlist'
+                )}
+              </button>
+
+              <p className="text-center text-[11px] text-white/35">No spam. We&apos;ll only contact you about Betamind.</p>
+            </form>
+          </div>
+        )}
+      </div>
+
+      {/* Animations for the success UI */}
+      <style>{`
+        @keyframes wl-pop { 0% { transform: scale(0); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+        @keyframes wl-draw { from { stroke-dashoffset: 40; } to { stroke-dashoffset: 0; } }
+        @keyframes wl-ring { 0% { transform: scale(0.7); opacity: 0.7; } 100% { transform: scale(1.7); opacity: 0; } }
+        @keyframes wl-burst { 0% { transform: translate(0,0) scale(0); opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(1); opacity: 0; } }
+        @keyframes wl-fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        .wl-pop { animation: wl-pop 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+        .wl-check { stroke-dasharray: 40; stroke-dashoffset: 40; animation: wl-draw 500ms 350ms ease-out forwards; }
+        .wl-ring { animation: wl-ring 1.8s 300ms ease-out infinite; }
+        .wl-ring-2 { animation-delay: 1.1s; }
+        .wl-burst { opacity: 0; animation: wl-burst 900ms ease-out both; }
+        .wl-fade-up { opacity: 0; animation: wl-fade-up 600ms ease-out forwards; }
+        @media (prefers-reduced-motion: reduce) {
+          .wl-pop, .wl-check, .wl-ring, .wl-burst, .wl-fade-up { animation: none !important; opacity: 1; stroke-dashoffset: 0; }
+          .wl-ring, .wl-burst { display: none; }
+        }
+      `}</style>
+    </div>
+  );
+};
+
 /* ----------------------------------------------------------------
    Page
    Order: hero (dark) → light → dark → light → dark → light → dark → light
@@ -428,6 +760,9 @@ const MentorsSection = () => {
 const Page = () => {
   return (
     <main className="bg-black text-white">
+      {/* TEMPORARY: waitlist modal. Remove this line (and the WaitlistModal block above) when your app launches */}
+      <WaitlistModal />
+
       {/* ============ 1. HERO (dark) ============ */}
       <section className="relative overflow-hidden bg-black px-5 pb-12 pt-28 sm:px-8 md:pt-32 lg:px-10">
         <Glow at="bottom" />
