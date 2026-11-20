@@ -434,7 +434,7 @@ const MentorsSection = () => {
  * Examples: '/api/waitlist', a Formspree URL, a Google Apps Script web-app URL, etc.
  * Leave it empty and the form just simulates a successful submit (handy for testing the UI).
  */
-const WAITLIST_URL = '';
+const WAITLIST_URL = 'https://api.betaminds.online/api/v1/waitlist/join/';
 
 type WaitlistField = 'fullName' | 'email' | 'phone';
 
@@ -450,6 +450,23 @@ const BURST = Array.from({ length: 14 }, (_, i) => {
     color: i % 3 === 0 ? '#ffffff' : LIME,
   };
 });
+
+const extractApiError = async (res: Response): Promise<string> => {
+  try {
+    const data = await res.json();
+    if (typeof data === 'string') return data;
+    if (data?.detail) return String(data.detail);
+    if (data?.message) return String(data.message);
+    if (data?.error) return String(data.error);
+    // Field-level errors, e.g. { email: ["already exists"] }
+    const first = Object.values(data ?? {})[0];
+    if (Array.isArray(first) && first[0]) return String(first[0]);
+    if (typeof first === 'string') return first;
+  } catch {
+    /* response wasn't JSON */
+  }
+  return 'Something went wrong. Please try again.';
+};
 
 const waitlistInput =
   'w-full rounded-xl border bg-white/[0.05] px-4 py-3 text-[15px] text-white outline-none transition-colors placeholder:text-white/30 focus:bg-white/[0.08]';
@@ -499,27 +516,27 @@ const WaitlistModal = () => {
     setSubmitError('');
 
     try {
-      if (WAITLIST_URL) {
-        const res = await fetch(WAITLIST_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            fullName: form.fullName.trim(),
-            email: form.email.trim(),
-            phone: form.phone.trim(),
-            source: 'website',
-            createdAt: new Date().toISOString(),
-          }),
-        });
-        if (!res.ok) throw new Error('Request failed');
-      } else {
-        // No endpoint configured yet: simulate a short network call
-        await new Promise((resolve) => setTimeout(resolve, 900));
+      const res = await fetch(WAITLIST_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: form.email.trim(),
+          name: form.fullName.trim(),
+          phone_number: form.phone.trim(),
+        }),
+      });
+
+      if (!res.ok) {
+        setStatus('idle');
+        setSubmitError(await extractApiError(res));
+        return;
       }
+
       setStatus('success');
     } catch {
+      // Network failure or CORS block
       setStatus('idle');
-      setSubmitError('Something went wrong. Please try again.');
+      setSubmitError('Could not reach the server. Check your connection and try again.');
     }
   };
 
