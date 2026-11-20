@@ -4,13 +4,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
+  RiArrowDownSLine,
   RiArrowLeftLine,
   RiArrowRightLine,
   RiArrowRightUpLine,
   RiCalendarLine,
   RiCheckLine,
   RiMapPinLine,
+  RiSearchLine,
 } from 'react-icons/ri';
 import {
   B,
@@ -424,8 +427,9 @@ const MentorsSection = () => {
    Opens as soon as the site loads and can't be closed (no X button,
    no Escape, no click-outside). To remove it later, delete this whole
    block and the single <WaitlistModal /> line inside <main> in Page.
-   (You can also drop the `useEffect`, `CSSProperties` and `FormEvent`
-   imports at the top if nothing else uses them.)
+   (You can also drop the `useEffect`, `CSSProperties`, `FormEvent`,
+   `createPortal` and the Ri icon imports used only here if nothing
+   else uses them.)
 ================================================================ */
 
 /**
@@ -461,6 +465,69 @@ const COUNTRIES: Country[] = [
   { iso: 'GB', name: 'United Kingdom', dial: '+44', min: 9, max: 10, example: '7400 123456' },
   { iso: 'AE', name: 'United Arab Emirates', dial: '+971', min: 9, max: 9, example: '50 123 4567' },
   { iso: 'IN', name: 'India', dial: '+91', min: 10, max: 10, pattern: /^[6-9]\d{9}$/, example: '98765 43210' },
+
+  // Africa
+  { iso: 'AO', name: 'Angola', dial: '+244', min: 9, max: 9, example: '923 123 456' },
+  { iso: 'BJ', name: 'Benin', dial: '+229', min: 8, max: 10, example: '01 90 12 34 56' },
+  { iso: 'BW', name: 'Botswana', dial: '+267', min: 7, max: 8, example: '71 234 567' },
+  { iso: 'BF', name: 'Burkina Faso', dial: '+226', min: 8, max: 8, example: '70 12 34 56' },
+  { iso: 'CM', name: 'Cameroon', dial: '+237', min: 9, max: 9, example: '6 71 23 45 67' },
+  { iso: 'CI', name: "Côte d'Ivoire", dial: '+225', min: 10, max: 10, example: '01 23 45 67 89' },
+  { iso: 'DZ', name: 'Algeria', dial: '+213', min: 9, max: 9, example: '551 23 45 67' },
+  { iso: 'EG', name: 'Egypt', dial: '+20', min: 10, max: 10, example: '100 123 4567' },
+  { iso: 'ET', name: 'Ethiopia', dial: '+251', min: 9, max: 9, example: '91 123 4567' },
+  { iso: 'GM', name: 'Gambia', dial: '+220', min: 7, max: 7, example: '301 2345' },
+  { iso: 'LR', name: 'Liberia', dial: '+231', min: 7, max: 9, example: '77 012 3456' },
+  { iso: 'MA', name: 'Morocco', dial: '+212', min: 9, max: 9, example: '612 345 678' },
+  { iso: 'ML', name: 'Mali', dial: '+223', min: 8, max: 8, example: '65 01 23 45' },
+  { iso: 'MZ', name: 'Mozambique', dial: '+258', min: 9, max: 9, example: '82 123 4567' },
+  { iso: 'NA', name: 'Namibia', dial: '+264', min: 9, max: 9, example: '81 123 4567' },
+  { iso: 'NE', name: 'Niger', dial: '+227', min: 8, max: 8, example: '93 12 34 56' },
+  { iso: 'RW', name: 'Rwanda', dial: '+250', min: 9, max: 9, example: '788 123 456' },
+  { iso: 'SD', name: 'Sudan', dial: '+249', min: 9, max: 9, example: '91 123 1234' },
+  { iso: 'SL', name: 'Sierra Leone', dial: '+232', min: 8, max: 8, example: '25 123456' },
+  { iso: 'SN', name: 'Senegal', dial: '+221', min: 9, max: 9, example: '77 123 45 67' },
+  { iso: 'TG', name: 'Togo', dial: '+228', min: 8, max: 8, example: '90 12 34 56' },
+  { iso: 'TN', name: 'Tunisia', dial: '+216', min: 8, max: 8, example: '20 123 456' },
+  { iso: 'TZ', name: 'Tanzania', dial: '+255', min: 9, max: 9, example: '712 345 678' },
+  { iso: 'UG', name: 'Uganda', dial: '+256', min: 9, max: 9, example: '712 345 678' },
+  { iso: 'ZM', name: 'Zambia', dial: '+260', min: 9, max: 9, example: '95 123 4567' },
+  { iso: 'ZW', name: 'Zimbabwe', dial: '+263', min: 9, max: 10, example: '71 234 5678' },
+
+  // Europe
+  { iso: 'BE', name: 'Belgium', dial: '+32', min: 8, max: 9, example: '470 12 34 56' },
+  { iso: 'CH', name: 'Switzerland', dial: '+41', min: 9, max: 9, example: '78 123 45 67' },
+  { iso: 'DE', name: 'Germany', dial: '+49', min: 10, max: 11, example: '1512 3456789' },
+  { iso: 'ES', name: 'Spain', dial: '+34', min: 9, max: 9, example: '612 34 56 78' },
+  { iso: 'FR', name: 'France', dial: '+33', min: 9, max: 9, example: '6 12 34 56 78' },
+  { iso: 'IE', name: 'Ireland', dial: '+353', min: 8, max: 9, example: '85 123 4567' },
+  { iso: 'IT', name: 'Italy', dial: '+39', min: 9, max: 10, example: '312 345 6789' },
+  { iso: 'NL', name: 'Netherlands', dial: '+31', min: 9, max: 9, example: '6 12345678' },
+  { iso: 'NO', name: 'Norway', dial: '+47', min: 8, max: 8, example: '412 34 567' },
+  { iso: 'PT', name: 'Portugal', dial: '+351', min: 9, max: 9, example: '912 345 678' },
+  { iso: 'SE', name: 'Sweden', dial: '+46', min: 7, max: 9, example: '70 123 45 67' },
+
+  // Middle East, Asia & Pacific
+  { iso: 'AU', name: 'Australia', dial: '+61', min: 9, max: 9, example: '412 345 678' },
+  { iso: 'BD', name: 'Bangladesh', dial: '+880', min: 10, max: 10, example: '1812 345678' },
+  { iso: 'CN', name: 'China', dial: '+86', min: 11, max: 11, example: '131 2345 6789' },
+  { iso: 'ID', name: 'Indonesia', dial: '+62', min: 9, max: 12, example: '812 3456 789' },
+  { iso: 'JP', name: 'Japan', dial: '+81', min: 10, max: 10, example: '90 1234 5678' },
+  { iso: 'KR', name: 'South Korea', dial: '+82', min: 9, max: 10, example: '10 1234 5678' },
+  { iso: 'MY', name: 'Malaysia', dial: '+60', min: 9, max: 10, example: '12 345 6789' },
+  { iso: 'NZ', name: 'New Zealand', dial: '+64', min: 8, max: 10, example: '21 123 4567' },
+  { iso: 'PH', name: 'Philippines', dial: '+63', min: 10, max: 10, example: '917 123 4567' },
+  { iso: 'PK', name: 'Pakistan', dial: '+92', min: 10, max: 10, example: '301 2345678' },
+  { iso: 'QA', name: 'Qatar', dial: '+974', min: 8, max: 8, example: '3312 3456' },
+  { iso: 'SA', name: 'Saudi Arabia', dial: '+966', min: 9, max: 9, example: '51 234 5678' },
+  { iso: 'SG', name: 'Singapore', dial: '+65', min: 8, max: 8, example: '8123 4567' },
+  { iso: 'TR', name: 'Türkiye', dial: '+90', min: 10, max: 10, example: '501 234 56 78' },
+
+  // Americas
+  { iso: 'AR', name: 'Argentina', dial: '+54', min: 10, max: 10, example: '11 2345 6789' },
+  { iso: 'BR', name: 'Brazil', dial: '+55', min: 10, max: 11, example: '11 91234 5678' },
+  { iso: 'CO', name: 'Colombia', dial: '+57', min: 10, max: 10, example: '321 1234567' },
+  { iso: 'MX', name: 'Mexico', dial: '+52', min: 10, max: 10, example: '222 123 4567' },
 ];
 
 const DEFAULT_COUNTRY = COUNTRIES[0];
@@ -583,6 +650,171 @@ const BURST = Array.from({ length: 14 }, (_, i) => {
     color: i % 3 === 0 ? '#ffffff' : LIME,
   };
 });
+
+/* ───────── Country code dropdown ───────── */
+
+/**
+ * Custom dropdown that shows only the dial code on the button (e.g. "+234")
+ * and the full country list (name + code, searchable) in the panel.
+ * The panel is rendered in a portal so the modal's overflow/transform can't clip it.
+ */
+const CountrySelect = ({
+  value,
+  onChange,
+  disabled,
+  invalid,
+}: {
+  value: string;
+  onChange: (iso: string) => void;
+  disabled?: boolean;
+  invalid?: boolean;
+}) => {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const [pos, setPos] = useState<{ left: number; width: number; top?: number; bottom?: number }>({ left: 0, width: 288 });
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  const selected = COUNTRIES.find((c) => c.iso === value) ?? DEFAULT_COUNTRY;
+
+  const q = query.trim().toLowerCase().replace(/^\+/, '');
+  const filtered = q
+    ? COUNTRIES.filter((c) => c.name.toLowerCase().includes(q) || c.dial.replace('+', '').startsWith(q))
+    : COUNTRIES;
+
+  const openPanel = () => {
+    const r = btnRef.current?.getBoundingClientRect();
+    if (!r) return;
+    const width = Math.min(300, window.innerWidth - 24);
+    const left = Math.max(12, Math.min(r.left, window.innerWidth - width - 12));
+    const spaceBelow = window.innerHeight - r.bottom;
+    // Open upwards when there isn't enough room below
+    setPos(
+      spaceBelow < 340 && r.top > spaceBelow
+        ? { left, width, bottom: window.innerHeight - r.top + 8 }
+        : { left, width, top: r.bottom + 8 },
+    );
+    setQuery('');
+    setOpen(true);
+  };
+
+  const pick = (iso: string) => {
+    onChange(iso);
+    setOpen(false);
+    btnRef.current?.focus();
+  };
+
+  useEffect(() => {
+    if (!open) return;
+
+    const onPointerDown = (e: PointerEvent) => {
+      const t = e.target as Node;
+      if (panelRef.current?.contains(t) || btnRef.current?.contains(t)) return;
+      setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+        btnRef.current?.focus();
+      }
+    };
+    const onScroll = (e: Event) => {
+      if (panelRef.current?.contains(e.target as Node)) return;
+      setOpen(false);
+    };
+    const onResize = () => setOpen(false);
+
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKey);
+    window.addEventListener('scroll', onScroll, true);
+    window.addEventListener('resize', onResize);
+    const t = window.setTimeout(() => searchRef.current?.focus({ preventScroll: true }), 30);
+
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKey);
+      window.removeEventListener('scroll', onScroll, true);
+      window.removeEventListener('resize', onResize);
+      window.clearTimeout(t);
+    };
+  }, [open]);
+
+  return (
+    <>
+      <button
+        ref={btnRef}
+        type="button"
+        onClick={() => (open ? setOpen(false) : openPanel())}
+        disabled={disabled}
+        aria-label={`Country code, ${selected.name} ${selected.dial}`}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="flex w-[104px] shrink-0 items-center justify-between gap-1 rounded-xl border bg-white/[0.05] pl-3.5 pr-2.5 text-[15px] font-medium text-white outline-none transition-colors hover:bg-white/[0.08] focus-visible:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-70"
+        style={{ borderColor: invalid ? '#f87171' : open ? LIME : 'rgba(255,255,255,0.1)' }}
+      >
+        <span>{selected.dial}</span>
+        <RiArrowDownSLine
+          className={`text-xl text-white/50 transition-transform duration-200 ${open ? 'rotate-180 text-white' : ''}`}
+        />
+      </button>
+
+      {open &&
+        createPortal(
+          <div
+            ref={panelRef}
+            role="listbox"
+            aria-label="Select country code"
+            className="wl-dd fixed z-[300] overflow-hidden rounded-2xl border border-white/10 bg-neutral-900/95 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.9)] backdrop-blur-xl"
+            style={{ left: pos.left, width: pos.width, top: pos.top, bottom: pos.bottom }}
+          >
+            <div className="flex items-center gap-2 border-b border-white/10 px-3.5 py-3">
+              <RiSearchLine className="shrink-0 text-base text-white/40" />
+              <input
+                ref={searchRef}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && filtered[0]) {
+                    e.preventDefault();
+                    pick(filtered[0].iso);
+                  }
+                }}
+                placeholder="Search country or code"
+                className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/30"
+              />
+            </div>
+
+            <ul className="max-h-56 overflow-y-auto p-1.5 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]">
+              {filtered.length === 0 && <li className="px-3 py-6 text-center text-sm text-white/40">No country found</li>}
+              {filtered.map((c) => {
+                const isSel = c.iso === selected.iso;
+                return (
+                  <li key={c.iso}>
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={isSel}
+                      onClick={() => pick(c.iso)}
+                      className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-colors hover:bg-white/10 ${isSel ? 'bg-white/[0.07] text-white' : 'text-white/80'
+                        }`}
+                    >
+                      <span className="flex-1 truncate">{c.name}</span>
+                      <span className="shrink-0 tabular-nums text-white/50">{c.dial}</span>
+                      <span className="flex h-4 w-4 shrink-0 items-center justify-center" style={{ color: LIME }}>
+                        {isSel && <RiCheckLine className="text-base" />}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>,
+          document.body,
+        )}
+    </>
+  );
+};
 
 const waitlistInput =
   'w-full rounded-xl border bg-white/[0.05] px-4 py-3 text-[15px] text-white outline-none transition-colors placeholder:text-white/30 focus:bg-white/[0.08]';
@@ -858,20 +1090,12 @@ const WaitlistModal = () => {
               <div>
                 <label htmlFor="wl-phone" className="mb-1.5 block text-xs font-medium text-white/60">Phone number</label>
                 <div className="flex gap-2">
-                  <select
-                    aria-label="Country code"
+                  <CountrySelect
                     value={countryIso}
-                    onChange={(e) => handleCountryChange(e.target.value)}
+                    onChange={handleCountryChange}
                     disabled={status === 'loading'}
-                    className="w-[110px] shrink-0 rounded-xl border bg-white/[0.05] px-3 py-3 text-[15px] text-white outline-none transition-colors [color-scheme:dark] focus:bg-white/[0.08]"
-                    style={{ borderColor: errors.phone ? '#f87171' : 'rgba(255,255,255,0.1)' }}
-                  >
-                    {COUNTRIES.map((c) => (
-                      <option key={c.iso} value={c.iso} className="bg-neutral-900 text-white">
-                        {c.iso} {c.dial}
-                      </option>
-                    ))}
-                  </select>
+                    invalid={!!errors.phone}
+                  />
                   <input
                     id="wl-phone"
                     type="tel"
@@ -920,21 +1144,23 @@ const WaitlistModal = () => {
         )}
       </div>
 
-      {/* Animations for the success UI */}
+      {/* Animations for the success UI + country dropdown */}
       <style>{`
         @keyframes wl-pop { 0% { transform: scale(0); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
         @keyframes wl-draw { from { stroke-dashoffset: 40; } to { stroke-dashoffset: 0; } }
         @keyframes wl-ring { 0% { transform: scale(0.7); opacity: 0.7; } 100% { transform: scale(1.7); opacity: 0; } }
         @keyframes wl-burst { 0% { transform: translate(0,0) scale(0); opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(1); opacity: 0; } }
         @keyframes wl-fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes wl-dd-in { from { opacity: 0; transform: translateY(-6px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
         .wl-pop { animation: wl-pop 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both; }
         .wl-check { stroke-dasharray: 40; stroke-dashoffset: 40; animation: wl-draw 500ms 350ms ease-out forwards; }
         .wl-ring { animation: wl-ring 1.8s 300ms ease-out infinite; }
         .wl-ring-2 { animation-delay: 1.1s; }
         .wl-burst { opacity: 0; animation: wl-burst 900ms ease-out both; }
         .wl-fade-up { opacity: 0; animation: wl-fade-up 600ms ease-out forwards; }
+        .wl-dd { animation: wl-dd-in 160ms ease-out both; }
         @media (prefers-reduced-motion: reduce) {
-          .wl-pop, .wl-check, .wl-ring, .wl-burst, .wl-fade-up { animation: none !important; opacity: 1; stroke-dashoffset: 0; }
+          .wl-pop, .wl-check, .wl-ring, .wl-burst, .wl-fade-up, .wl-dd { animation: none !important; opacity: 1; stroke-dashoffset: 0; }
           .wl-ring, .wl-burst { display: none; }
         }
       `}</style>
