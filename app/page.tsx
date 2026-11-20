@@ -429,14 +429,147 @@ const MentorsSection = () => {
 ================================================================ */
 
 /**
- * Where the form data is sent (POST, JSON body):
- *   { fullName, email, phone, source, createdAt }
- * Examples: '/api/waitlist', a Formspree URL, a Google Apps Script web-app URL, etc.
- * Leave it empty and the form just simulates a successful submit (handy for testing the UI).
+ * Waitlist API (POST, JSON body):
+ *   { email, name, phone_number }
+ * phone_number is sent in international format, e.g. "+2348031234567".
  */
 const WAITLIST_URL = 'https://api.betaminds.online/api/v1/waitlist/join/';
 
 type WaitlistField = 'fullName' | 'email' | 'phone';
+
+/* ───────── Validation helpers ───────── */
+
+type Country = {
+  iso: string;
+  name: string;
+  dial: string;
+  /** min/max length of the national number (no country code, no leading 0) */
+  min: number;
+  max: number;
+  /** optional stricter pattern for the national number */
+  pattern?: RegExp;
+  example: string;
+};
+
+const COUNTRIES: Country[] = [
+  { iso: 'NG', name: 'Nigeria', dial: '+234', min: 10, max: 10, pattern: /^[789]\d{9}$/, example: '803 123 4567' },
+  { iso: 'GH', name: 'Ghana', dial: '+233', min: 9, max: 9, pattern: /^[235]\d{8}$/, example: '24 123 4567' },
+  { iso: 'KE', name: 'Kenya', dial: '+254', min: 9, max: 9, pattern: /^[17]\d{8}$/, example: '712 345 678' },
+  { iso: 'ZA', name: 'South Africa', dial: '+27', min: 9, max: 9, pattern: /^[1-8]\d{8}$/, example: '82 123 4567' },
+  { iso: 'US', name: 'United States', dial: '+1', min: 10, max: 10, pattern: /^[2-9]\d{9}$/, example: '415 555 0123' },
+  { iso: 'CA', name: 'Canada', dial: '+1', min: 10, max: 10, pattern: /^[2-9]\d{9}$/, example: '416 555 0123' },
+  { iso: 'GB', name: 'United Kingdom', dial: '+44', min: 9, max: 10, example: '7400 123456' },
+  { iso: 'AE', name: 'United Arab Emirates', dial: '+971', min: 9, max: 9, example: '50 123 4567' },
+  { iso: 'IN', name: 'India', dial: '+91', min: 10, max: 10, pattern: /^[6-9]\d{9}$/, example: '98765 43210' },
+];
+
+const DEFAULT_COUNTRY = COUNTRIES[0];
+
+const normalizeName = (v: string) => v.trim().replace(/\s+/g, ' ');
+
+// Each part of a name: starts with a letter, then letters, apostrophes, dots or hyphens
+const NAME_PART = /^\p{L}[\p{L}'’.-]*$/u;
+
+const validateName = (v: string): string | undefined => {
+  const name = normalizeName(v);
+  if (!name) return 'Please enter your full name.';
+  if (name.length < 6) return 'Full name must be at least 6 characters.';
+  const parts = name.split(' ');
+  if (parts.length < 2 || parts.filter((p) => p.length >= 2).length < 2) {
+    return 'Please enter your first and last name.';
+  }
+  if (!parts.every((p) => NAME_PART.test(p))) {
+    return 'Names can only contain letters, hyphens and apostrophes.';
+  }
+  return undefined;
+};
+
+const EMAIL_RE =
+  /^[A-Za-z0-9](?:[A-Za-z0-9._%+-]*[A-Za-z0-9])?@(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/;
+
+const validateEmail = (v: string): string | undefined => {
+  const email = v.trim();
+  if (!email) return 'Please enter your email address.';
+  if (email.length > 254 || email.includes('..') || !EMAIL_RE.test(email)) {
+    return 'Please enter a valid email address.';
+  }
+  return undefined;
+};
+
+/**
+ * Reduces whatever the user typed to just the national number:
+ *   "0803 123 4567"      -> "8031234567"
+ *   "+234 803 123 4567"  -> "8031234567"
+ *   "2348031234567"      -> "8031234567"
+ */
+const normalizePhone = (raw: string, country: Country): string => {
+  const trimmed = raw.trim();
+  const dialDigits = country.dial.replace('+', '');
+  let digits = trimmed.replace(/\D/g, '');
+
+  if (trimmed.startsWith('00')) digits = digits.slice(2);
+
+  const typedWithPrefix = trimmed.startsWith('+') || trimmed.startsWith('00');
+  const looksPrefixed = digits.startsWith(dialDigits) && digits.length === dialDigits.length + country.max;
+  if ((typedWithPrefix && digits.startsWith(dialDigits)) || looksPrefixed) {
+    digits = digits.slice(dialDigits.length);
+  }
+
+  // Drop the local trunk prefix (the leading 0 in 0803...)
+  return digits.replace(/^0+/, '');
+};
+
+const validatePhone = (raw: string, country: Country): string | undefined => {
+  if (!raw.trim()) return 'Please enter your phone number.';
+  const national = normalizePhone(raw, country);
+  const badLength = national.length < country.min || national.length > country.max;
+  const badPattern = country.pattern ? !country.pattern.test(national) : false;
+  if (badLength || badPattern) {
+    return `Enter a valid ${country.name} phone number, e.g. ${country.example}.`;
+  }
+  return undefined;
+};
+
+/** Full international number, e.g. "+2348031234567" */
+const toInternational = (raw: string, country: Country) => `${country.dial}${normalizePhone(raw, country)}`;
+
+/* ───────── API error mapping ───────── */
+
+const API_FIELD_MAP: Record<string, WaitlistField> = {
+  name: 'fullName',
+  email: 'email',
+  phone_number: 'phone',
+};
+
+const parseApiError = async (
+  res: Response,
+): Promise<{ message: string; fields: Partial<Record<WaitlistField, string>> }> => {
+  const out: { message: string; fields: Partial<Record<WaitlistField, string>> } = { message: '', fields: {} };
+  try {
+    const data = await res.json();
+    if (typeof data === 'string') {
+      out.message = data;
+    } else if (data && typeof data === 'object') {
+      const source: Record<string, unknown> = {
+        ...data,
+        ...(data.errors && typeof data.errors === 'object' ? data.errors : {}),
+      };
+      for (const [key, value] of Object.entries(source)) {
+        const text = Array.isArray(value) ? String(value[0] ?? '') : typeof value === 'string' ? value : '';
+        if (!text) continue;
+        const field = API_FIELD_MAP[key];
+        if (field) out.fields[field] = text;
+        else if (!out.message && ['detail', 'message', 'error', 'non_field_errors'].includes(key)) out.message = text;
+      }
+    }
+  } catch {
+    /* response wasn't JSON */
+  }
+  if (!out.message && Object.keys(out.fields).length === 0) {
+    out.message = 'Something went wrong. Please try again.';
+  }
+  return out;
+};
 
 // 14 little dots that burst out of the success badge
 const BURST = Array.from({ length: 14 }, (_, i) => {
@@ -451,33 +584,19 @@ const BURST = Array.from({ length: 14 }, (_, i) => {
   };
 });
 
-const extractApiError = async (res: Response): Promise<string> => {
-  try {
-    const data = await res.json();
-    if (typeof data === 'string') return data;
-    if (data?.detail) return String(data.detail);
-    if (data?.message) return String(data.message);
-    if (data?.error) return String(data.error);
-    // Field-level errors, e.g. { email: ["already exists"] }
-    const first = Object.values(data ?? {})[0];
-    if (Array.isArray(first) && first[0]) return String(first[0]);
-    if (typeof first === 'string') return first;
-  } catch {
-    /* response wasn't JSON */
-  }
-  return 'Something went wrong. Please try again.';
-};
-
 const waitlistInput =
   'w-full rounded-xl border bg-white/[0.05] px-4 py-3 text-[15px] text-white outline-none transition-colors placeholder:text-white/30 focus:bg-white/[0.08]';
 
 const WaitlistModal = () => {
   const [form, setForm] = useState<Record<WaitlistField, string>>({ fullName: '', email: '', phone: '' });
+  const [countryIso, setCountryIso] = useState(DEFAULT_COUNTRY.iso);
   const [errors, setErrors] = useState<Partial<Record<WaitlistField, string>>>({});
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
   const [submitError, setSubmitError] = useState('');
   const [visible, setVisible] = useState(false);
   const firstFieldRef = useRef<HTMLInputElement>(null);
+
+  const country = COUNTRIES.find((c) => c.iso === countryIso) ?? DEFAULT_COUNTRY;
 
   // Fade in on load, lock page scroll while the modal is up
   useEffect(() => {
@@ -498,14 +617,39 @@ const WaitlistModal = () => {
     if (submitError) setSubmitError('');
   };
 
+  const validateField = (key: WaitlistField, value: string, c: Country = country) => {
+    if (key === 'fullName') return validateName(value);
+    if (key === 'email') return validateEmail(value);
+    return validatePhone(value, c);
+  };
+
+  // Show the error for a field as soon as the user leaves it (only if they typed something)
+  const handleBlur = (key: WaitlistField) => {
+    if (!form[key].trim()) return;
+    setErrors((e) => ({ ...e, [key]: validateField(key, form[key]) }));
+  };
+
+  const handleCountryChange = (iso: string) => {
+    setCountryIso(iso);
+    setErrors((e) => ({ ...e, phone: undefined }));
+    if (submitError) setSubmitError('');
+  };
+
   const validate = () => {
-    const next: Partial<Record<WaitlistField, string>> = {};
-    if (form.fullName.trim().length < 2) next.fullName = 'Please enter your full name.';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())) next.email = 'Please enter a valid email address.';
-    const digits = form.phone.replace(/\D/g, '');
-    if (digits.length < 7 || digits.length > 15) next.phone = 'Please enter a valid phone number.';
+    const next: Partial<Record<WaitlistField, string>> = {
+      fullName: validateName(form.fullName),
+      email: validateEmail(form.email),
+      phone: validatePhone(form.phone, country),
+    };
     setErrors(next);
-    return Object.keys(next).length === 0;
+
+    const firstInvalid = (['fullName', 'email', 'phone'] as WaitlistField[]).find((k) => next[k]);
+    if (firstInvalid) {
+      const ids: Record<WaitlistField, string> = { fullName: 'wl-name', email: 'wl-email', phone: 'wl-phone' };
+      document.getElementById(ids[firstInvalid])?.focus();
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -520,15 +664,17 @@ const WaitlistModal = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: form.email.trim(),
-          name: form.fullName.trim(),
-          phone_number: form.phone.trim(),
+          email: form.email.trim().toLowerCase(),
+          name: normalizeName(form.fullName),
+          phone_number: toInternational(form.phone, country),
         }),
       });
 
       if (!res.ok) {
+        const { message, fields } = await parseApiError(res);
         setStatus('idle');
-        setSubmitError(await extractApiError(res));
+        if (Object.keys(fields).length) setErrors((prev) => ({ ...prev, ...fields }));
+        setSubmitError(message);
         return;
       }
 
@@ -540,7 +686,8 @@ const WaitlistModal = () => {
     }
   };
 
-  const firstName = form.fullName.trim().split(/\s+/)[0] || 'there';
+  const firstName = normalizeName(form.fullName).split(' ')[0] || 'there';
+  const phoneIsValid = !!form.phone.trim() && !validatePhone(form.phone, country);
 
   return (
     <div
@@ -639,7 +786,7 @@ const WaitlistModal = () => {
               You&apos;re on the list, {firstName}!
             </h3>
             <p className="wl-fade-up mt-3 max-w-xs text-[15px] leading-relaxed text-white/65" style={{ animationDelay: '600ms' }}>
-              Thanks for joining the Betamind waitlist. We&apos;ll reach out to <span className="font-medium text-white">{form.email.trim()}</span> as
+              Thanks for joining the Betamind waitlist. We&apos;ll reach out to <span className="font-medium text-white">{form.email.trim().toLowerCase()}</span> as
               soon as we&apos;re ready for you.
             </p>
 
@@ -673,8 +820,10 @@ const WaitlistModal = () => {
                   id="wl-name"
                   type="text"
                   autoComplete="name"
+                  maxLength={80}
                   value={form.fullName}
                   onChange={(e) => setField('fullName', e.target.value)}
+                  onBlur={() => handleBlur('fullName')}
                   placeholder="e.g. Amara Nwosu"
                   disabled={status === 'loading'}
                   aria-invalid={!!errors.fullName}
@@ -684,41 +833,66 @@ const WaitlistModal = () => {
                 {errors.fullName && <p className="mt-1.5 text-xs text-red-400">{errors.fullName}</p>}
               </div>
 
-              <div className="grid gap-4 lg:grid-cols-2">
-                <div>
-                  <label htmlFor="wl-email" className="mb-1.5 block text-xs font-medium text-white/60">Email</label>
-                  <input
-                    id="wl-email"
-                    type="email"
-                    autoComplete="email"
-                    value={form.email}
-                    onChange={(e) => setField('email', e.target.value)}
-                    placeholder="you@example.com"
-                    disabled={status === 'loading'}
-                    aria-invalid={!!errors.email}
-                    className={waitlistInput}
-                    style={{ borderColor: errors.email ? '#f87171' : 'rgba(255,255,255,0.1)' }}
-                  />
-                  {errors.email && <p className="mt-1.5 text-xs text-red-400">{errors.email}</p>}
-                </div>
+              <div>
+                <label htmlFor="wl-email" className="mb-1.5 block text-xs font-medium text-white/60">Email</label>
+                <input
+                  id="wl-email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  maxLength={254}
+                  value={form.email}
+                  onChange={(e) => setField('email', e.target.value)}
+                  onBlur={() => handleBlur('email')}
+                  placeholder="you@example.com"
+                  disabled={status === 'loading'}
+                  aria-invalid={!!errors.email}
+                  className={waitlistInput}
+                  style={{ borderColor: errors.email ? '#f87171' : 'rgba(255,255,255,0.1)' }}
+                />
+                {errors.email && <p className="mt-1.5 text-xs text-red-400">{errors.email}</p>}
+              </div>
 
-                <div>
-                  <label htmlFor="wl-phone" className="mb-1.5 block text-xs font-medium text-white/60">Phone number</label>
+              <div>
+                <label htmlFor="wl-phone" className="mb-1.5 block text-xs font-medium text-white/60">Phone number</label>
+                <div className="flex gap-2">
+                  <select
+                    aria-label="Country code"
+                    value={countryIso}
+                    onChange={(e) => handleCountryChange(e.target.value)}
+                    disabled={status === 'loading'}
+                    className="w-[110px] shrink-0 rounded-xl border bg-white/[0.05] px-3 py-3 text-[15px] text-white outline-none transition-colors [color-scheme:dark] focus:bg-white/[0.08]"
+                    style={{ borderColor: errors.phone ? '#f87171' : 'rgba(255,255,255,0.1)' }}
+                  >
+                    {COUNTRIES.map((c) => (
+                      <option key={c.iso} value={c.iso} className="bg-neutral-900 text-white">
+                        {c.iso} {c.dial}
+                      </option>
+                    ))}
+                  </select>
                   <input
                     id="wl-phone"
                     type="tel"
                     inputMode="tel"
-                    autoComplete="tel"
+                    autoComplete="tel-national"
+                    maxLength={20}
                     value={form.phone}
-                    onChange={(e) => setField('phone', e.target.value)}
-                    placeholder="+234 800 000 0000"
+                    onChange={(e) => setField('phone', e.target.value.replace(/[^\d+\s()-]/g, ''))}
+                    onBlur={() => handleBlur('phone')}
+                    placeholder={country.example}
                     disabled={status === 'loading'}
                     aria-invalid={!!errors.phone}
                     className={waitlistInput}
                     style={{ borderColor: errors.phone ? '#f87171' : 'rgba(255,255,255,0.1)' }}
                   />
-                  {errors.phone && <p className="mt-1.5 text-xs text-red-400">{errors.phone}</p>}
                 </div>
+                {errors.phone ? (
+                  <p className="mt-1.5 text-xs text-red-400">{errors.phone}</p>
+                ) : phoneIsValid ? (
+                  <p className="mt-1.5 text-xs text-white/40">We&apos;ll save this as {toInternational(form.phone, country)}</p>
+                ) : null}
               </div>
 
               {submitError && (
