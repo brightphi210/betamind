@@ -439,7 +439,7 @@ const MentorsSection = () => {
  */
 const WAITLIST_URL = 'https://api.betaminds.online/api/v1/waitlist/join/';
 
-type WaitlistField = 'fullName' | 'email' | 'phone';
+type WaitlistField = 'fullName' | 'email' | 'confirmEmail' | 'phone';
 
 /* ───────── Validation helpers ───────── */
 
@@ -563,6 +563,14 @@ const validateEmail = (v: string): string | undefined => {
   return undefined;
 };
 
+const validateConfirmEmail = (email: string, confirm: string): string | undefined => {
+  if (!confirm.trim()) return 'Please confirm your email address.';
+  if (email.trim().toLowerCase() !== confirm.trim().toLowerCase()) {
+    return 'Email addresses do not match.';
+  }
+  return undefined;
+};
+
 /**
  * Reduces whatever the user typed to just the national number:
  *   "0803 123 4567"      -> "8031234567"
@@ -657,6 +665,13 @@ const BURST = Array.from({ length: 14 }, (_, i) => {
  * Custom dropdown that shows only the dial code on the button (e.g. "+234")
  * and the full country list (name + code, searchable) in the panel.
  * The panel is rendered in a portal so the modal's overflow/transform can't clip it.
+ *
+ * Mobile fixes:
+ *  - the search box is NOT auto-focused on touch devices (the keyboard used to
+ *    resize the viewport and close the panel immediately)
+ *  - resize events only close the panel when the WIDTH changes (keyboard only changes height)
+ *  - scroll events caused by focusing the search box / right after opening are ignored
+ *  - inputs are 16px on mobile so iOS Safari doesn't zoom in
  */
 const CountrySelect = ({
   value,
@@ -675,6 +690,7 @@ const CountrySelect = ({
   const btnRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const openedAt = useRef(0);
 
   const selected = COUNTRIES.find((c) => c.iso === value) ?? DEFAULT_COUNTRY;
 
@@ -695,6 +711,7 @@ const CountrySelect = ({
         ? { left, width, bottom: window.innerHeight - r.top + 8 }
         : { left, width, top: r.bottom + 8 },
     );
+    openedAt.current = Date.now();
     setQuery('');
     setOpen(true);
   };
@@ -708,35 +725,51 @@ const CountrySelect = ({
   useEffect(() => {
     if (!open) return;
 
+    const isTouch = window.matchMedia('(pointer: coarse)').matches;
+    let lastWidth = window.innerWidth;
+
     const onPointerDown = (e: PointerEvent) => {
       const t = e.target as Node;
       if (panelRef.current?.contains(t) || btnRef.current?.contains(t)) return;
       setOpen(false);
     };
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setOpen(false);
         btnRef.current?.focus();
       }
     };
+
     const onScroll = (e: Event) => {
       if (panelRef.current?.contains(e.target as Node)) return;
+      // Ignore scrolls caused by the keyboard / focusing the search box
+      if (document.activeElement === searchRef.current) return;
+      if (Date.now() - openedAt.current < 500) return;
       setOpen(false);
     };
-    const onResize = () => setOpen(false);
+
+    const onResize = () => {
+      // The mobile keyboard only changes the height. Only close on real width changes (rotation, etc.)
+      if (window.innerWidth === lastWidth) return;
+      lastWidth = window.innerWidth;
+      setOpen(false);
+    };
 
     document.addEventListener('pointerdown', onPointerDown);
     document.addEventListener('keydown', onKey);
     window.addEventListener('scroll', onScroll, true);
     window.addEventListener('resize', onResize);
-    const t = window.setTimeout(() => searchRef.current?.focus({ preventScroll: true }), 30);
+
+    // Don't auto-focus search on touch devices: it pops the keyboard over the list
+    const t = isTouch ? undefined : window.setTimeout(() => searchRef.current?.focus({ preventScroll: true }), 30);
 
     return () => {
       document.removeEventListener('pointerdown', onPointerDown);
       document.removeEventListener('keydown', onKey);
       window.removeEventListener('scroll', onScroll, true);
       window.removeEventListener('resize', onResize);
-      window.clearTimeout(t);
+      if (t) window.clearTimeout(t);
     };
   }, [open]);
 
@@ -750,7 +783,7 @@ const CountrySelect = ({
         aria-label={`Country code, ${selected.name} ${selected.dial}`}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex w-[104px] shrink-0 items-center justify-between gap-1 rounded-xl border bg-white/[0.05] pl-3.5 pr-2.5 text-[15px] font-medium text-white outline-none transition-colors hover:bg-white/[0.08] focus-visible:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-70"
+        className="flex w-[104px] shrink-0 items-center justify-between gap-1 rounded-xl border bg-white/[0.05] pl-3.5 pr-2.5 text-base font-medium text-white outline-none transition-colors hover:bg-white/[0.08] focus-visible:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-70 sm:text-[15px]"
         style={{ borderColor: invalid ? '#f87171' : open ? LIME : 'rgba(255,255,255,0.1)' }}
       >
         <span>{selected.dial}</span>
@@ -781,7 +814,7 @@ const CountrySelect = ({
                   }
                 }}
                 placeholder="Search country or code"
-                className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/30"
+                className="w-full bg-transparent text-base text-white outline-none placeholder:text-white/30 sm:text-sm"
               />
             </div>
 
@@ -816,11 +849,12 @@ const CountrySelect = ({
   );
 };
 
+// text-base on mobile (16px) prevents iOS Safari from zooming in on focus
 const waitlistInput =
-  'w-full rounded-xl border bg-white/[0.05] px-4 py-3 text-[15px] text-white outline-none transition-colors placeholder:text-white/30 focus:bg-white/[0.08]';
+  'w-full rounded-xl border bg-white/[0.05] px-4 py-3 text-base text-white outline-none transition-colors placeholder:text-white/30 focus:bg-white/[0.08] sm:text-[15px]';
 
 const WaitlistModal = () => {
-  const [form, setForm] = useState<Record<WaitlistField, string>>({ fullName: '', email: '', phone: '' });
+  const [form, setForm] = useState<Record<WaitlistField, string>>({ fullName: '', email: '', confirmEmail: '', phone: '' });
   const [countryIso, setCountryIso] = useState(DEFAULT_COUNTRY.iso);
   const [errors, setErrors] = useState<Partial<Record<WaitlistField, string>>>({});
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
@@ -846,19 +880,29 @@ const WaitlistModal = () => {
   const setField = (key: WaitlistField, value: string) => {
     setForm((f) => ({ ...f, [key]: value }));
     if (errors[key]) setErrors((e) => ({ ...e, [key]: undefined }));
+    // Editing the email makes any "doesn't match" message on the confirm field stale
+    if (key === 'email' && errors.confirmEmail) setErrors((e) => ({ ...e, confirmEmail: undefined }));
     if (submitError) setSubmitError('');
   };
 
   const validateField = (key: WaitlistField, value: string, c: Country = country) => {
     if (key === 'fullName') return validateName(value);
     if (key === 'email') return validateEmail(value);
+    if (key === 'confirmEmail') return validateConfirmEmail(form.email, value);
     return validatePhone(value, c);
   };
 
   // Show the error for a field as soon as the user leaves it (only if they typed something)
   const handleBlur = (key: WaitlistField) => {
     if (!form[key].trim()) return;
-    setErrors((e) => ({ ...e, [key]: validateField(key, form[key]) }));
+    setErrors((e) => {
+      const next = { ...e, [key]: validateField(key, form[key]) };
+      // If they fix the email after typing the confirmation, re-check the match
+      if (key === 'email' && form.confirmEmail.trim()) {
+        next.confirmEmail = validateConfirmEmail(form.email, form.confirmEmail);
+      }
+      return next;
+    });
   };
 
   const handleCountryChange = (iso: string) => {
@@ -871,13 +915,19 @@ const WaitlistModal = () => {
     const next: Partial<Record<WaitlistField, string>> = {
       fullName: validateName(form.fullName),
       email: validateEmail(form.email),
+      confirmEmail: validateConfirmEmail(form.email, form.confirmEmail),
       phone: validatePhone(form.phone, country),
     };
     setErrors(next);
 
-    const firstInvalid = (['fullName', 'email', 'phone'] as WaitlistField[]).find((k) => next[k]);
+    const firstInvalid = (['fullName', 'email', 'confirmEmail', 'phone'] as WaitlistField[]).find((k) => next[k]);
     if (firstInvalid) {
-      const ids: Record<WaitlistField, string> = { fullName: 'wl-name', email: 'wl-email', phone: 'wl-phone' };
+      const ids: Record<WaitlistField, string> = {
+        fullName: 'wl-name',
+        email: 'wl-email',
+        confirmEmail: 'wl-confirm-email',
+        phone: 'wl-phone',
+      };
       document.getElementById(ids[firstInvalid])?.focus();
       return false;
     }
@@ -961,7 +1011,7 @@ const WaitlistModal = () => {
         role="dialog"
         aria-modal="true"
         aria-label="Join the Betamind waitlist"
-        className="relative max-h-[calc(100vh-7rem)] w-full max-w-md overflow-y-auto border border-white/5 rounded-[20px] bg-black/80 p-6 shadow-2xl transition-all duration-500 sm:p-8 lg:max-w-xl lg:p-10"
+        className="relative max-h-[calc(100vh-7rem)] w-full max-w-md overflow-y-auto rounded-[20px] border border-white/5 bg-black/80 p-6 shadow-2xl transition-all duration-500 supports-[height:100dvh]:max-h-[calc(100dvh-7rem)] sm:p-8 lg:max-w-xl lg:p-10"
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? 'translateY(0) scale(1)' : 'translateY(24px) scale(0.97)',
@@ -1088,6 +1138,28 @@ const WaitlistModal = () => {
               </div>
 
               <div>
+                <label htmlFor="wl-confirm-email" className="mb-1.5 block text-xs font-medium text-white/60">Confirm email</label>
+                <input
+                  id="wl-confirm-email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  maxLength={254}
+                  value={form.confirmEmail}
+                  onChange={(e) => setField('confirmEmail', e.target.value)}
+                  onBlur={() => handleBlur('confirmEmail')}
+                  placeholder="Re-enter your email"
+                  disabled={status === 'loading'}
+                  aria-invalid={!!errors.confirmEmail}
+                  className={waitlistInput}
+                  style={{ borderColor: errors.confirmEmail ? '#f87171' : 'rgba(255,255,255,0.1)' }}
+                />
+                {errors.confirmEmail && <p className="mt-1.5 text-xs text-red-400">{errors.confirmEmail}</p>}
+              </div>
+
+              <div>
                 <label htmlFor="wl-phone" className="mb-1.5 block text-xs font-medium text-white/60">Phone number</label>
                 <div className="flex gap-2">
                   <CountrySelect
@@ -1126,7 +1198,7 @@ const WaitlistModal = () => {
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                className="mt-2 flex w-full items-center bg-white justify-center gap-2 rounded-full px-6 py-3.5 text-[15px] font-semibold text-black transition-all hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-[15px] font-semibold text-black transition-all hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {status === 'loading' ? (
                   <>
